@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { FaInfoCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-const AuthCard = () => {
+const AuthCard = ({ placeholder = "Enter ID" }: { placeholder?: string }) => {
   const navigate = useNavigate();
   const form = useForm({
     defaultValues: {
@@ -31,13 +31,15 @@ const AuthCard = () => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="p-10">
         <Input
           {...form.register("id")}
-          placeholder="Enter ID"
+          placeholder={placeholder}
           className="h-[5.375rem] max-w-[34rem] mx-auto bg-transparent border-black rounded-[12.5rem] text-center !text-2xl"
         />
         <div className="flex justify-between items-center mt-9">
           <div className="flex items-center space-x-2">
             <Switch id="switch-mode" className="w-[5.5625rem] h-11 p-1" />
-            <Label htmlFor="switch-mode" className="text-xl">Store Credentials</Label>
+            <Label htmlFor="switch-mode" className="text-xl">
+              Store Credentials
+            </Label>
           </div>
           <Button className="rounded-[12.5rem] bg-black w-full max-w-[11.8rem] h-[4.1875rem] text-xl font-semibold">
             Send OTP
