@@ -1,0 +1,17 @@
+import React from "react";
+
+const MinusIcon: React.FC = () => {
+  return (
+    <svg
+      width="10"
+      height="2"
+      viewBox="0 0 10 2"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M10 2H0V0H10V2Z" fill="#FFFDFD" />
+    </svg>
+  );
+};
+
+export default MinusIcon;

@@ -1,9 +1,17 @@
+import PageLayout from "@/layout";
+import RecentSection from "./recent-section";
+import { recentItems } from "@/data";
+import OverViewSection from "./overview-section";
+
 const DashboardOverview = () => {
   return (
-    <div>
-      <h1>Dashboard Overview</h1>
-    </div>
-  )
-}
+    <PageLayout>
+      {/* <div className=""> */}
+      <RecentSection items={recentItems} />
+      <OverViewSection />
+      {/* </div> */}
+    </PageLayout>
+  );
+};
 
-export default DashboardOverview
+export default DashboardOverview;
