@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 
 const InsuranceCard = () => {
   return (
-    <Card className="py-0 gap-0 max-w-[17rem] h-[20.25rem]">
+    <Card className="py-0 gap-0 max-w-[17rem] h-[20.25rem] overflow-hidden">
       <div className="relative">
         <img
           src="/assets/images/hospital-sample.png"

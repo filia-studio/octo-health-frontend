@@ -57,7 +57,7 @@
   --popover-foreground: oklch(0.145 0 0);
   --primary: #C80740;
   --primary-foreground: #FFF7F7;
-  --secondary: oklch(0.97 0 0);
+  --secondary: #C807401F;
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
@@ -89,4 +89,18 @@
   body {
     @apply bg-background text-foreground !font-family;
   }
+}
+
+.sidebar a.active {
+  position: relative;
+}
+
+.sidebar a.active::after {
+  content: "";
+  position: absolute;
+  top: 0.625rem;
+  left: -0.625rem;
+  width: 0.125rem;
+  height: 0.125rem;
+  background-color: var(--primary);
 }
