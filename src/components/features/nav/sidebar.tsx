@@ -1,8 +1,22 @@
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { BsArrowsAngleExpand } from "react-icons/bs";
 import { NavLink } from "react-router-dom";
 
-const Sidebar = () => {
+const Sidebar = ({
+  isOpen,
+  toggle,
+}: {
+  isOpen?: boolean;
+  toggle: () => void;
+}) => {
   return (
-    <section className="w-[20%] border-r border-[#E1E1E1] h-full sidebar">
+    <section
+      className={cn(
+        "z-50 bg-white md:w-[30%] lg:w-[20%] w-full border-r border-[#E1E1E1] h-full sidebar",
+        { "absolute -left-full": isOpen, "absolute lg:static": !isOpen }
+      )}
+    >
       <div className="h-[10.8rem] flex items-center justify-center border-b border-[#E1E1E1]">
         <img
           src="/assets/images/octo-health.png"
@@ -20,6 +34,13 @@ const Sidebar = () => {
           <NavLink to="/storefront/pharmacy">Pharmacy</NavLink>
         </div>
       </div>
+      <Button
+        size="icon"
+        className="rounded-full size-7 bg-black absolute top-2.5 right-2.5 lg:hidden"
+        onClick={toggle}
+      >
+        <BsArrowsAngleExpand className="size-3" />
+      </Button>
     </section>
   );
 };

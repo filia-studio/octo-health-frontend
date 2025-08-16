@@ -7,7 +7,7 @@ const AuthLayout = ({
 }) => {
   return (
     <main
-      className="h-dvh overflow-hidden flex flex-col items-center justify-center relative before:absolute before:inset-0 before:bg-black/30 before:z-0"
+      className="h-dvh px-2 lg:pl-[8.3125rem] lg:pr-24 overflow-hidden flex flex-col items-center justify-center relative before:absolute before:inset-0 before:bg-black/30 before:z-0"
       style={{
         backgroundImage: `url('${bgImage}')`,
         backgroundSize: "cover",
@@ -15,11 +15,11 @@ const AuthLayout = ({
         backgroundRepeat: "no-repeat",
       }}
     >
-      <div className="flex items-center justify-between pl-[8.3125rem] pr-24 w-full relative">
+      <div className="flex flex-col items-center justify-between w-full relative max-w-[80rem] mx-auto xl:flex-row">
         <img
           src="/assets/images/octo-health-white.png"
           alt=""
-          className="w-[22rem]"
+          className="w-[15.2rem] lg:w-[22rem]"
         />
         <AuthCard />
       </div>

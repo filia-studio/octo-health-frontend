@@ -7,7 +7,7 @@ import { MdVerified } from "react-icons/md";
 
 const HospitalCard = () => {
   return (
-    <Card className="py-0 gap-0 max-w-[17rem] h-[22.625rem] overflow-hidden">
+    <Card className="py-0 gap-0 lg:max-w-[17rem] h-[22.625rem] overflow-hidden">
       <div className="relative">
         <img
           src="/assets/images/hospital-sample.png"

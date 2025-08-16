@@ -21,27 +21,30 @@ const AuthCard = ({ placeholder = "Enter ID" }: { placeholder?: string }) => {
   };
 
   return (
-    <Card className="h-[28.375rem] w-full max-w-[39.125rem] py-0 gap-0 rounded-4xl overflow-hidden">
-      <div className="bg-primary text-white h-[5.5625rem] px-10 py-8">
-        <h5 className="text-2xl font-bold">
-          <FaInfoCircle className="inline w-6 h-6 mr-3" /> Please verify your
+    <Card className="h-[18rem] lg:h-[28.375rem] w-full max-w-[39.125rem] py-0 gap-0 rounded-4xl overflow-hidden">
+      <div className="bg-primary text-white h-[5.5625rem] px-7 lg:px-10 py-8">
+        <h5 className="lg:text-2xl font-bold">
+          <FaInfoCircle className="inline w-6 h-6 mr-2 lg:mr-3" /> Please verify your
           credentials
         </h5>
       </div>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="p-10">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="py-8 px-9 lg:p-10">
         <Input
           {...form.register("id")}
           placeholder={placeholder}
-          className="h-[5.375rem] max-w-[34rem] mx-auto bg-transparent border-black rounded-[12.5rem] text-center !text-2xl"
+          className="h-16 lg:h-[5.375rem] max-w-[18.75rem] md:max-w-[34rem] mx-auto bg-transparent border-black rounded-[12.5rem] text-center lg:!text-2xl"
         />
         <div className="flex justify-between items-center mt-9">
           <div className="flex items-center space-x-2">
-            <Switch id="switch-mode" className="w-[5.5625rem] h-11 p-1" />
-            <Label htmlFor="switch-mode" className="text-xl">
+            <Switch
+              id="switch-mode"
+              className="w-8 lg:w-[5.5625rem] h-4 lg:h-11 lg:p-1"
+            />
+            <Label htmlFor="switch-mode" className="text-sm lg:text-xl">
               Store Credentials
             </Label>
           </div>
-          <Button className="rounded-[12.5rem] bg-black w-full max-w-[11.8rem] h-[4.1875rem] text-xl font-semibold">
+          <Button className="rounded-[12.5rem] bg-black w-full max-w-[6.5rem] lg:max-w-[11.8rem] h-10 lg:h-[4.1875rem] text-sm lg:text-xl font-semibold">
             Send OTP
           </Button>
         </div>

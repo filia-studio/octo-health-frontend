@@ -9,7 +9,7 @@ const InsurancePlanCard = ({
   plan?: "premium" | "intermediate" | "basic";
 }) => {
   return (
-    <Card className="py-0 gap-0 max-w-[17rem] h-[20.25rem] overflow-hidden">
+    <Card className="py-0 gap-0 lg:max-w-[17rem] h-[20.25rem] overflow-hidden">
       <div className="relative">
         <img
           src={`/assets/images/insurance-plan-${plan}.png`}
