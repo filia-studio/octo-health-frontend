@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import Input from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useForm } from "react-hook-form";
@@ -24,11 +24,14 @@ const AuthCard = ({ placeholder = "Enter ID" }: { placeholder?: string }) => {
     <Card className="h-[18rem] lg:h-[28.375rem] w-full max-w-[39.125rem] py-0 gap-0 rounded-4xl overflow-hidden">
       <div className="bg-primary text-white h-[5.5625rem] px-7 lg:px-10 py-8">
         <h5 className="lg:text-2xl font-bold">
-          <FaInfoCircle className="inline w-6 h-6 mr-2 lg:mr-3" /> Please verify your
-          credentials
+          <FaInfoCircle className="inline w-6 h-6 mr-2 lg:mr-3" /> Please verify
+          your credentials
         </h5>
       </div>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="py-8 px-9 lg:p-10">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="py-8 px-9 lg:p-10"
+      >
         <Input
           {...form.register("id")}
           placeholder={placeholder}
