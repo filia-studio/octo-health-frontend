@@ -1,6 +1,5 @@
 import FilterIcon from "@/components/icons/FilterIcon";
 import IconButton from "@/components/ui/IconButton";
-import Input from "@/components/ui/Input";
 import React from "react";
 
 interface ScheduleTabsProps {
@@ -33,7 +32,8 @@ const ScheduleTabs: React.FC<ScheduleTabsProps> = ({
           ))}
         </div>
         <div className="flex items-center gap-3">
-          <Input
+          <input
+            type="text"
             placeholder="Search"
             className="h-[45px] border border-black rounded-[200px] bg-white w-[428px] px-[16px]"
           />

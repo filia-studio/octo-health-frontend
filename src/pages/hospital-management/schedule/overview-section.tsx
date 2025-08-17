@@ -1,5 +1,4 @@
 import React from "react";
-import Card from "@/components/ui/card";
 import { ArrowIcon, ChevronIcon } from "@/components/icons";
 
 const OverViewSection: React.FC = () => {
@@ -49,7 +48,10 @@ const OverViewSection: React.FC = () => {
           //   changeColor: "text-red-600",
           // },
         ].map((stat, idx) => (
-          <Card key={idx}>
+          <div
+            className="min-w-[343px] h-[198px] border-[0.3px] border-[#D6D6D6] rounded-[4px] bg-white p-[24px]"
+            key={idx}
+          >
             {/* <CardHeader className="pb-2"> */}
             <span className="text-[15px] font-semibold text-[#000000]">
               {stat.label}
@@ -68,7 +70,7 @@ const OverViewSection: React.FC = () => {
                 </span>
               </div>
             </div>
-          </Card>
+          </div>
         ))}
       </div>
     </div>

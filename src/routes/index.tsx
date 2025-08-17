@@ -1,11 +1,12 @@
 import DashboardOverview from "@/pages/dashboard/overview";
-import Schedule from "@/pages/schedule";
 import StorefrontLayout from "@/components/features/layouts/storefront";
 import StorefrontLogin from "@/pages/dashboard/storefront/auth/login";
 import StorefrontInsurance from "@/pages/dashboard/storefront/insurance";
 import StorefrontPharmacy from "@/pages/dashboard/storefront/pharmacy";
 import StorefrontSchedule from "@/pages/dashboard/storefront/schedule";
 import { Outlet, Route, Routes } from "react-router-dom";
+import HospitalMgmtLayout from "@/components/features/layouts/hospital-mgmt";
+import HMSchedule from "@/pages/hospital-management/schedule";
 
 const AppRouter = () => {
   return (
@@ -21,8 +22,8 @@ const AppRouter = () => {
           <Route path="insurance" element={<StorefrontInsurance />} />
         </Route>
       </Route>
-      <Route path="hospital-management" element={<Outlet />}>
-        <Route path="schedule" element={<Schedule />} />
+      <Route path="hospital-mgmt" element={<HospitalMgmtLayout />}>
+        <Route path="schedule" element={<HMSchedule />} />
       </Route>
     </Routes>
   );
