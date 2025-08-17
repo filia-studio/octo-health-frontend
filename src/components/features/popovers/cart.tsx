@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import { AiOutlineClose } from "react-icons/ai";
-import CartItem from "./item";
+import CartItem from "../cart/item";
 
 const CartList = ({ toggle }: { toggle?: () => void }) => {
   return (
@@ -66,7 +66,7 @@ const CartList = ({ toggle }: { toggle?: () => void }) => {
   );
 };
 
-const CartButton = ({
+const CartPopover = ({
   className,
   wrapperClassName,
 }: {
@@ -80,7 +80,7 @@ const CartButton = ({
   return (
     <div className={cn("w-fit", wrapperClassName)}>
       <div className="w-fit relative">
-        <Popover open={open}>
+        <Popover open={open} onOpenChange={setOpen}>
           <PopoverAnchor>
             <Button
               type="button"
@@ -100,4 +100,4 @@ const CartButton = ({
   );
 };
 
-export default CartButton;
+export default CartPopover;
