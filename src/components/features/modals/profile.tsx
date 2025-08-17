@@ -1,24 +1,9 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import ProfileInfo from "../profile/profile-info";
 import { Button } from "@/components/ui/button";
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
-
-type ProfileDataProps = { title: string; value: ReactNode; value2?: ReactNode };
-
-const ProfileData = ({ data }: { data: ProfileDataProps[] }) => {
-  return (
-    <section className="grid grid-cols-1 sm:grid-cols-2 gap-9 my-7">
-      {data.map((item, index) => (
-        <div key={index} className="flex flex-col gap-1.5">
-          <p className="text-sm font-medium text-gray-400">{item.title}</p>
-          <p className="text-sm font-medium">{item.value}</p>
-          {item.value2 && <p className="text-sm font-medium">{item.value2}</p>}
-        </div>
-      ))}
-    </section>
-  );
-};
+import GridData, { type GridDataProps } from "../common/grid-data";
 
 const ProfileModal = ({
   open,
@@ -29,7 +14,7 @@ const ProfileModal = ({
 }) => {
   const [tab, setTab] = useState("overview");
 
-  const overviewData: ProfileDataProps[] = [
+  const overviewData: GridDataProps[] = [
     {
       title: "Email",
       value: "yetundeabokoku@gmail.com",
@@ -57,7 +42,7 @@ const ProfileModal = ({
     },
   ];
 
-  const insuranceData: ProfileDataProps[] = [
+  const insuranceData: GridDataProps[] = [
     {
       title: "Provider",
       value: "AXA Mansard",
@@ -113,11 +98,15 @@ const ProfileModal = ({
               </Button>
             </div>
             <div>
-              {tab === "overview" && <ProfileData data={overviewData} />}
+              {tab === "overview" && (
+                <GridData className="my-7" data={overviewData} />
+              )}
               {tab === "insurance" && (
                 <>
-                  <ProfileData data={insuranceData} />
-                  <Button type="button" className="rounded-[3.125rem] mb-7">Upgrade</Button>
+                  <GridData className="my-7" data={insuranceData} />
+                  <Button type="button" className="rounded-[3.125rem] mb-7">
+                    Upgrade
+                  </Button>
                 </>
               )}
             </div>
