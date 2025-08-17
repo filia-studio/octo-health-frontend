@@ -7,6 +7,7 @@ import StorefrontSchedule from "@/pages/dashboard/storefront/schedule";
 import { Outlet, Route, Routes } from "react-router-dom";
 import HospitalMgmtLayout from "@/components/features/layouts/hospital-mgmt";
 import HMSchedule from "@/pages/hospital-management/schedule";
+import HMPatient from "@/pages/hospital-management/schedule/patient";
 
 const AppRouter = () => {
   return (
@@ -24,6 +25,7 @@ const AppRouter = () => {
       </Route>
       <Route path="hospital-mgmt" element={<HospitalMgmtLayout />}>
         <Route path="schedule" element={<HMSchedule />} />
+        <Route path="schedule/:id" element={<HMPatient />} />
       </Route>
     </Routes>
   );

@@ -9,7 +9,7 @@ const HospitalMgmtLayout: React.FC = () => {
       <Sidebar />
       <div className="w-[calc(100vw-16rem)] flex flex-col">
         <Header />
-        <main className="pl-[64px] py-[32px] overflow-y-auto">
+        <main className="pl-[16px] py-[32px] overflow-y-auto">
           <Outlet />
         </main>
       </div>

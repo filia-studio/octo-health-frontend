@@ -1,7 +1,16 @@
 import React from "react";
 import { ArrowIcon, ChevronIcon } from "@/components/icons";
 
-const OverViewSection: React.FC = () => {
+interface OverviewCardProps {
+  data: {
+    label: string;
+    value: string;
+    change: string;
+    changeColor: string;
+  }[];
+}
+
+const OverViewCard: React.FC<OverviewCardProps> = ({ data }) => {
   return (
     <div className="mb-6">
       <div className="flex items-center justify-between mb-4">
@@ -16,47 +25,14 @@ const OverViewSection: React.FC = () => {
         </div>
       </div>
       <div className="flex items-center gap-4 pb-2">
-        {[
-          {
-            label: "Total Patients",
-            value: "1300",
-            change: "5%",
-            changeColor: "text-green-600",
-          },
-          {
-            label: "Total Claims",
-            value: "1000",
-            change: "10%",
-            changeColor: "text-green-600",
-          },
-          {
-            label: "Total Staff",
-            value: "2000",
-            change: "20%",
-            changeColor: "text-red-600",
-          },
-          // {
-          //   label: "Total Claims",
-          //   value: "1000",
-          //   change: "10%",
-          //   changeColor: "text-green-600",
-          // },
-          // {
-          //   label: "Total Staff",
-          //   value: "2000",
-          //   change: "20%",
-          //   changeColor: "text-red-600",
-          // },
-        ].map((stat, idx) => (
+        {data?.map((stat, idx) => (
           <div
             className="min-w-[343px] h-[198px] border-[0.3px] border-[#D6D6D6] rounded-[4px] bg-white p-[24px]"
             key={idx}
           >
-            {/* <CardHeader className="pb-2"> */}
             <span className="text-[15px] font-semibold text-[#000000]">
               {stat.label}
             </span>
-            {/* </CardHeader> */}
             <div>
               <div className="text-[60px] font-semibold text-[#000000] mb-2">
                 {stat.value}
@@ -77,4 +53,4 @@ const OverViewSection: React.FC = () => {
   );
 };
 
-export default OverViewSection;
+export default OverViewCard;

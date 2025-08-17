@@ -1,5 +1,6 @@
 import FilterIcon from "@/components/icons/FilterIcon";
 import IconButton from "@/components/ui/IconButton";
+import Tabs from "@/components/ui/tabs";
 import React from "react";
 
 interface ScheduleTabsProps {
@@ -16,21 +17,7 @@ const ScheduleTabs: React.FC<ScheduleTabsProps> = ({
   return (
     <div className="mb-6 pr-[64px]">
       <div className="flex items-center gap-[75px] justify-between">
-        <div className="flex items-center gap-[30px]">
-          {tabs.map((tab: string) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`text-[16px] transition-colors ${
-                activeTab === tab
-                  ? "text-black font-bold"
-                  : "text-[#676767] font-normal"
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
+        <Tabs tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
         <div className="flex items-center gap-3">
           <input
             type="text"

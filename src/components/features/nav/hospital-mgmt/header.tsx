@@ -6,7 +6,7 @@ import IconButton from "@/components/ui/IconButton";
 
 const Header = () => {
   return (
-    <header className="h-[173px] flex items-center justify-between bg-white border-b border-gray-200 px-[64px] py-4">
+    <header className="min-h-[173px] flex items-center justify-between bg-white border-b border-gray-200 px-[64px] py-4">
       {/* <div className="flex items-center justify-between"> */}
       <div className="flex items-center gap-4">
         <div className="">
