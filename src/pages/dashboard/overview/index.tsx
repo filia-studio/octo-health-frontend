@@ -1,8 +1,8 @@
-import PharmacyDrugCard from "@/components/features/cards/pharmacy-drug"
-import HospitalCard from "@/components/features/cards/hospital"
-import InsuranceCard from "@/components/features/cards/insurance"
-import InsurancePlanCard from "@/components/features/cards/insurance-plan"
-import ProfileInfo from "@/components/features/profile/profile-info"
+import PharmacyDrugCard from "@/components/features/cards/pharmacy-drug";
+import HospitalCard from "@/components/features/cards/hospital";
+import InsuranceCard from "@/components/features/cards/insurance";
+import InsurancePlanCard from "@/components/features/cards/insurance-plan";
+import ProfileInfo from "@/components/features/profile/profile-info";
 
 const DashboardOverview = () => {
   return (
@@ -14,7 +14,7 @@ const DashboardOverview = () => {
       <PharmacyDrugCard />
       <InsurancePlanCard />
     </div>
-  )
-}
+  );
+};
 
-export default DashboardOverview
+export default DashboardOverview;
