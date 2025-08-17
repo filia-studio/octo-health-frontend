@@ -2,12 +2,16 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { MdOutlineAddShoppingCart } from "react-icons/md";
+import InsurancePlan from "../modals/insurance-plan";
+import { useState } from "react";
 
 const InsurancePlanCard = ({
   plan = "premium",
 }: {
   plan?: "premium" | "intermediate" | "basic";
 }) => {
+  const [open, setOpen] = useState(false);
+
   return (
     <Card className="py-0 gap-0 lg:max-w-[17rem] h-[20.25rem] overflow-hidden">
       <div className="relative">
@@ -18,7 +22,7 @@ const InsurancePlanCard = ({
         />
         <Badge
           variant="secondary"
-          className="absolute top-4 left-4 text-[0.625rem] text-primary"
+          className="absolute top-4 left-4 text-[0.625rem] text-primary bg-white"
         >
           Popular
         </Badge>
@@ -35,6 +39,7 @@ const InsurancePlanCard = ({
             variant="outline"
             size="icon"
             className="rounded-full w-9 h-9"
+            onClick={() => setOpen(true)}
           >
             <img
               src="/assets/svgs/image-text.svg"
@@ -47,6 +52,7 @@ const InsurancePlanCard = ({
           </Button>
         </div>
       </div>
+      <InsurancePlan open={open} onOpenChange={setOpen} />
     </Card>
   );
 };

@@ -1,8 +1,12 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import InsurancePlans from "../modals/insurance-plans";
+import { useState } from "react";
 
 const InsuranceCard = () => {
+  const [open, setOpen] = useState(false);
+
   return (
     <Card className="py-0 gap-0 lg:max-w-[17rem] h-[20.25rem] overflow-hidden">
       <div className="relative">
@@ -30,6 +34,7 @@ const InsuranceCard = () => {
             variant="outline"
             size="icon"
             className="rounded-full w-9 h-9"
+            onClick={() => setOpen(true)}
           >
             <img src="/assets/svgs/image-compare.svg" alt="" className="w-5 h-5" />
           </Button>
@@ -42,6 +47,7 @@ const InsuranceCard = () => {
           </Button>
         </div>
       </div>
+      <InsurancePlans open={open} onOpenChange={setOpen} />
     </Card>
   );
 };
