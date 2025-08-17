@@ -8,14 +8,19 @@ import { BsArrowsAngleExpand } from "react-icons/bs";
 const ProfileInfo = ({
   toggleSidebar,
   resizeOnMobile,
+  onClick,
 }: {
   toggleSidebar?: () => void;
   resizeOnMobile?: boolean;
+  onClick?: () => void;
 }) => {
   return (
     <div className="flex gap-3">
       <div className="w-fit relative">
-        <Avatar className="size-[3.125rem] lg:size-[5.7rem] border border-primary">
+        <Avatar
+          onClick={onClick}
+          className="size-[3.125rem] lg:size-[5.7rem] border border-primary"
+        >
           <AvatarImage src="https://github.com/shadcn.png" />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
@@ -44,7 +49,7 @@ const ProfileInfo = ({
             Deluxe Pro II
           </Badge>
         </p>
-        <div className="mt-1.5 flex gap-7 items-center">
+        <div className={cn("mt-1.5 flex gap-7 items-center", { "mt-4": !toggleSidebar })}>
           {toggleSidebar && (
             <Button
               size="icon"

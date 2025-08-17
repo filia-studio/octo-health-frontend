@@ -13,7 +13,7 @@ const InsuranceCard = () => {
         />
         <Badge
           variant="secondary"
-          className="absolute top-4 left-4 text-[0.625rem] text-primary"
+          className="absolute top-4 left-4 text-[0.625rem] bg-white text-primary"
         >
           Popular
         </Badge>

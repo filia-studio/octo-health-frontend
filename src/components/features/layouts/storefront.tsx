@@ -3,7 +3,7 @@ import StorefrontNav from "../nav/storefront";
 import Sidebar from "../nav/sidebar";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import CartButton from "../cart/button";
+import CartPopover from "../popovers/cart";
 
 const StorefrontLayout = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,7 +22,7 @@ const StorefrontLayout = () => {
         <section>
           <Outlet />
         </section>
-      <CartButton wrapperClassName="fixed bottom-8 right-8 z-50 shadow-2xl" />
+      <CartPopover wrapperClassName="fixed bottom-8 right-8 z-50 shadow-2xl" />
       </section>
     </main>
   );

@@ -4,8 +4,12 @@ import { Card } from "@/components/ui/card";
 import { MdOutlineAddShoppingCart } from "react-icons/md";
 import { CiClock2 } from "react-icons/ci";
 import { MdVerified } from "react-icons/md";
+import DrugModal from "../modals/drug";
+import { useReducerState } from "@/hooks/use-reducer-state";
 
 const PharmacyDrugCard = () => {
+  const [state, setState] = useReducerState({ openDetails: false });
+
   return (
     <Card className="py-0 gap-0 lg:max-w-[17rem] h-[22.625rem] overflow-hidden">
       <div className="relative">
@@ -30,7 +34,11 @@ const PharmacyDrugCard = () => {
           <small className="text-[0.5rem]">Delivers in 2hrs</small>
         </div>
         <p className="font-semibold mt-2 mb-3 line-clamp-1">
-          Medplus <MdVerified fill="#C80740" className="w-3 h-3 inline relative -top-1.5" />
+          Medplus{" "}
+          <MdVerified
+            fill="#C80740"
+            className="w-3 h-3 inline relative -top-1.5"
+          />
         </p>
         <h3 className="font-semibold line-clamp-1 text-primary">
           Coartem Multi-vitamin D
@@ -64,6 +72,7 @@ const PharmacyDrugCard = () => {
               variant="outline"
               size="icon"
               className="rounded-full w-9 h-9"
+              onClick={() => setState({ openDetails: true })}
             >
               <img
                 src="/assets/svgs/image-text.svg"
@@ -80,6 +89,10 @@ const PharmacyDrugCard = () => {
           </p>
         </div>
       </div>
+      <DrugModal
+        open={state.openDetails}
+        onOpenChange={(value) => setState({ openDetails: value })}
+      />
     </Card>
   );
 };
