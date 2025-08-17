@@ -24,7 +24,7 @@ const DrugModal = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[29.25rem] rounded-3xl gap-0">
-        <DialogHeader>
+        <DialogHeader className="text-left">
           <DialogTitle className="text-2xl">Coartem </DialogTitle>
           <DialogDescription className="text-black">
             Artemether/Lumefantrine
