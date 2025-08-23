@@ -14,7 +14,7 @@ const PharmacyDrugCard = () => {
     <Card className="py-0 gap-0 lg:max-w-[17rem] h-[22.625rem] overflow-hidden">
       <div className="relative">
         <img
-          src="/assets/images/hospital-sample.png"
+          src="/assets/images/drug-sample.png"
           alt=""
           className="w-full h-[9.3125rem] object-cover"
         />

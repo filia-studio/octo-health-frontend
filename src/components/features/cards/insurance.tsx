@@ -11,7 +11,7 @@ const InsuranceCard = () => {
     <Card className="py-0 gap-0 lg:max-w-[17rem] h-[20.25rem] overflow-hidden">
       <div className="relative">
         <img
-          src="/assets/images/hospital-sample.png"
+          src="/assets/images/insurance-sample.png"
           alt=""
           className="w-full h-[9.3125rem] object-cover"
         />
