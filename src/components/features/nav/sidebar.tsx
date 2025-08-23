@@ -1,15 +1,31 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { hospitalSidebarRoutes, storefrontSidebarRoutes } from "@/routes/paths";
 import { BsArrowsAngleExpand } from "react-icons/bs";
 import { NavLink } from "react-router-dom";
+import { DashboardModule } from "@/types/common";
 
 const Sidebar = ({
   isOpen,
   toggle,
+  logo = (
+    <img src="/assets/images/octo-health.png" alt="" className="w-[9.875rem]" />
+  ),
+  module = DashboardModule.Storefront,
 }: {
   isOpen?: boolean;
   toggle: () => void;
+  logo?: React.ReactNode;
+  module?: string;
 }) => {
+  const routes: Record<
+    string,
+    typeof storefrontSidebarRoutes | typeof hospitalSidebarRoutes
+  > = {
+    [DashboardModule.Storefront]: storefrontSidebarRoutes,
+    [DashboardModule.Hospital]: hospitalSidebarRoutes,
+  };
+
   return (
     <section
       className={cn(
@@ -18,20 +34,16 @@ const Sidebar = ({
       )}
     >
       <div className="h-[10.8rem] flex items-center justify-center border-b border-[#E1E1E1]">
-        <img
-          src="/assets/images/octo-health.png"
-          alt=""
-          className="w-[9.875rem]"
-        />
+        {logo}
       </div>
       <div className="py-4 px-5">
         <p className="text-[0.625rem] text-primary font-bold tracking-[19%]">
           MENU
         </p>
         <div className="flex flex-col gap-10 mt-8">
-          <NavLink to="/storefront/schedule">Schedule</NavLink>
-          <NavLink to="/storefront/insurance">Insurance</NavLink>
-          <NavLink to="/storefront/pharmacy">Pharmacy</NavLink>
+          {routes[module].map(({ label, path }) => (
+            <NavLink to={path}>{label}</NavLink>
+          ))}
         </div>
       </div>
       <Button

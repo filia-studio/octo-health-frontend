@@ -8,7 +8,11 @@ const DashboardOverview = () => {
   return (
     <div>
       <h1>Dashboard Overview</h1>
-      <ProfileInfo />
+      <ProfileInfo
+        name="Yetunde Abokoku"
+        subName="AXA Mansard"
+        badge="Deluxe Pro II"
+      />
       <HospitalCard />
       <InsuranceCard />
       <PharmacyDrugCard />

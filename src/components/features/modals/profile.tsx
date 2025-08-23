@@ -73,7 +73,11 @@ const ProfileModal = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <div className="max-h-[35rem] md:max-h-full overflow-y-auto">
-          <ProfileInfo />
+          <ProfileInfo
+            name="Yetunde Abokoku"
+            subName="AXA Mansard"
+            badge="Deluxe Pro II"
+          />
           <div className="mt-7">
             <div className="flex gap-8">
               <Button

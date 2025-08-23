@@ -1,33 +1,26 @@
-import ProfileImage from "@/assets/images/profile-image.png";
-import { BellIcon } from "@/components/icons";
 import AddIcon from "@/components/icons/AddIcon";
-import ExpandIcon from "@/components/icons/ExpandIcon";
 import IconButton from "@/components/ui/IconButton";
+import Notifications from "../../notifications";
+import ProfileInfo from "../../profile/profile-info";
 
-const Header = () => {
+const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
   return (
-    <header className="min-h-[173px] flex items-center justify-between bg-white border-b border-gray-200 px-[64px] py-4">
-      {/* <div className="flex items-center justify-between"> */}
-      <div className="flex items-center gap-4">
-        <div className="">
-          <img src={ProfileImage} alt="" className="" />
-        </div>
-        <div className="flex flex-col">
-          <span className="font-bold text-[23px] text-black">
-            Femi Adejuwon
-          </span>
-          <span className="text-[17px] text-black">Doctor</span>
-          <IconButton>
-            <ExpandIcon />
+    <header className="min-h-[10.8rem] flex flex-col justify-center items-center bg-white border-b border-gray-200 px-4 lg:px-16 py-4 sticky top-0 z-10">
+      <div className="max-w-[75.5rem] w-full mx-auto flex items-center justify-between">
+        <ProfileInfo
+          name="Femi Adejuwon"
+          subName="Doctor"
+          profileImage="/assets/images/profile-image.png"
+          showProgress={false}
+          onExpand={toggleSidebar}
+        />
+        <div className="flex items-center gap-3">
+          <IconButton width="36px" height="36px">
+            <AddIcon />
           </IconButton>
-        </div>
-      </div>
-      <div className="flex items-center gap-3">
-        <IconButton width="36px" height="36px">
-          <AddIcon />
-        </IconButton>
 
-        <BellIcon />
+          <Notifications />
+        </div>
       </div>
     </header>
   );

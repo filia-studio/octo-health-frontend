@@ -1,12 +1,12 @@
 import React from "react";
 
-type Column<T> = {
+export type Column<T> = {
   header: string;
   key: keyof T | string; // key in object OR custom
   render?: (row: T) => React.ReactNode; // custom cell renderer
 };
 
-type DataTableProps<T> = {
+export type DataTableProps<T> = {
   columns: Column<T>[];
   data: T[];
 };
@@ -39,7 +39,9 @@ const DataTable = <T extends object>({ columns, data }: DataTableProps<T>) => (
                   colIndex === 0 ? "bg-[#A80334] text-white" : "text-black"
                 }`}
               >
-                {render ? render(row) : (row as any)[key]}
+                {render
+                  ? render(row)
+                  : (row as Record<string, string>)[key as string]}
               </td>
             ))}
           </tr>

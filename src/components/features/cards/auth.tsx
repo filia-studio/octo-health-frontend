@@ -3,11 +3,18 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { storefrontUrl } from "@/routes/paths";
 import { useForm } from "react-hook-form";
 import { FaInfoCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-const AuthCard = ({ placeholder = "Enter ID" }: { placeholder?: string }) => {
+const AuthCard = ({
+  placeholder = "Enter ID",
+  dashboardUrl,
+}: {
+  placeholder?: string;
+  dashboardUrl?: string;
+}) => {
   const navigate = useNavigate();
   const form = useForm({
     defaultValues: {
@@ -17,11 +24,11 @@ const AuthCard = ({ placeholder = "Enter ID" }: { placeholder?: string }) => {
 
   const onSubmit = (data: { id: string }) => {
     console.log(data);
-    navigate("/storefront/schedule");
+    navigate(dashboardUrl || `${storefrontUrl}/schedule`);
   };
 
   return (
-    <Card className="h-[18rem] lg:h-[28.375rem] w-full max-w-[39.125rem] py-0 gap-0 rounded-4xl overflow-hidden">
+    <Card className="h-[18rem] lg:h-[28.375rem] w-full max-w-[39.125rem] py-0 gap-0 rounded-4xl overflow-hidden border-none">
       <div className="bg-primary text-white h-[5.5625rem] px-7 lg:px-10 py-8">
         <h5 className="lg:text-2xl font-bold">
           <FaInfoCircle className="inline w-6 h-6 mr-2 lg:mr-3" /> Please verify

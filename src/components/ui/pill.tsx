@@ -6,7 +6,7 @@ interface PillProps {
 
 const Pill: React.FC<PillProps> = ({ label }) => {
   return (
-    <div className="h-[36px] py-[8px] px-[24px] text-center text-[15px] font-normal text-black flex items-center justify-center border border-[#D6D6D6] rounded-[20px] w-max bg-white">
+    <div className="h-9 py-2 px-6 text-center font-normal text-black flex items-center justify-center border border-[#D6D6D6] rounded-[1.25rem] w-max bg-white">
       {label}
     </div>
   );

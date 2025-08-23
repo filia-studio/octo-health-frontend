@@ -5,8 +5,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Event {
   id: string;
-  date: any;
-  fullDate?: any;
+  date: string;
+  fullDate?: string;
   time: string;
   title: string;
 }
@@ -479,7 +479,7 @@ const Calendar = () => {
   return (
     <div className="bg-white rounded-lg shadow-lg overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200">
+      <div className="flex items-center justify-between flex-wrap gap-4 p-4 border-b border-gray-200">
         <div className="flex items-center space-x-2">
           <button
             onClick={handlePrevious}

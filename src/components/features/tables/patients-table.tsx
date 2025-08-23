@@ -1,5 +1,5 @@
 import DeleteIcon from "@/components/icons/DeleteIcon";
-import DataTable from "@/components/features/common/data-table";
+import DataTable, { type Column } from "@/components/features/common/data-table";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -72,11 +72,11 @@ const patientData = [
 const PatientsTable: React.FC = () => {
   const navigate = useNavigate();
 
-  const columns = [
+  const columns: Column<typeof patientData[0]>[] = [
     {
       header: "Name",
       key: "name",
-      render: (row: any) => (
+      render: (row) => (
         <div onClick={() => navigate(`${row?.id}`)} className="text-white">
           {row?.name}
         </div>
@@ -89,7 +89,7 @@ const PatientsTable: React.FC = () => {
     {
       header: "Usage",
       key: "usage",
-      render: (row: any) => {
+      render: (row) => {
         const splitUsage = row.usage.split("/");
         return (
           <div className="flex items-center">

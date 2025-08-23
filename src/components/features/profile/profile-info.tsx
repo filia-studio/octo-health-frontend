@@ -6,29 +6,39 @@ import { cn } from "@/lib/utils";
 import { BsArrowsAngleExpand } from "react-icons/bs";
 
 const ProfileInfo = ({
-  toggleSidebar,
+  onExpand,
   resizeOnMobile,
   onClick,
+  name,
+  subName,
+  badge,
+  profileImage,
+  showProgress = true,
 }: {
-  toggleSidebar?: () => void;
+  onExpand?: () => void;
   resizeOnMobile?: boolean;
   onClick?: () => void;
+  name: string;
+  subName: string;
+  profileImage?: string;
+  showProgress?: boolean;
+  badge?: string;
 }) => {
   return (
-    <div className="flex gap-3">
+    <div className="flex gap-3 w-full">
       <div className="w-fit relative">
         <Avatar
           onClick={onClick}
           className="size-[3.125rem] lg:size-[5.7rem] border border-primary"
         >
-          <AvatarImage src="https://github.com/shadcn.png" />
+          <AvatarImage src={profileImage ?? "https://github.com/shadcn.png"} />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
-        {toggleSidebar && (
+        {onExpand && (
           <Button
             size="icon"
             className="rounded-full size-5 bg-black absolute -top-1.5 right-0 lg:hidden"
-            onClick={toggleSidebar}
+            onClick={onExpand}
           >
             <BsArrowsAngleExpand className="size-2" />
           </Button>
@@ -39,33 +49,45 @@ const ProfileInfo = ({
           "hidden lg:block": resizeOnMobile,
         })}
       >
-        <h5 className="text-2xl font-bold">Yetunde Abokoku</h5>
+        <h5 className="text-2xl font-bold whitespace-nowrap w-full truncate">
+          {name}
+        </h5>
         <p>
-          AXA Mansard
-          <Badge
-            variant="secondary"
-            className="text-primary text-[0.625rem] ml-1"
-          >
-            Deluxe Pro II
-          </Badge>
+          {subName}
+          {badge && (
+            <Badge
+              variant="secondary"
+              className="text-primary text-[0.625rem] ml-1"
+            >
+              {badge}
+            </Badge>
+          )}
         </p>
-        <div className={cn("mt-1.5 flex gap-7 items-center", { "mt-4": !toggleSidebar })}>
-          {toggleSidebar && (
+        <div
+          className={cn("mt-1.5 flex gap-7 items-center", {
+            "mt-4": !onExpand,
+          })}
+        >
+          {onExpand && (
             <Button
               size="icon"
-              className="rounded-full size-7 bg-black"
-              onClick={toggleSidebar}
+              className="rounded-full size-7 bg-black hidden lg:inline-flex"
+              onClick={onExpand}
             >
               <BsArrowsAngleExpand className="size-3" />
             </Button>
           )}
-          <div className="w-full max-w-[8rem]">
-            <Progress value={40} className="h-[1px]" />
-            <div className="flex justify-between">
-              <p className="font-semibold text-[0.44rem] text-primary">400k</p>
-              <p className="font-semibold text-[0.44rem]">2M</p>
+          {showProgress && (
+            <div className="w-full max-w-[8rem]">
+              <Progress value={40} className="h-[1px]" />
+              <div className="flex justify-between">
+                <p className="font-semibold text-[0.44rem] text-primary">
+                  400k
+                </p>
+                <p className="font-semibold text-[0.44rem]">2M</p>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

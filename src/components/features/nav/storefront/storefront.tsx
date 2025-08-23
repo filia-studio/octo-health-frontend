@@ -1,7 +1,7 @@
-import Notifications from "../notifications";
-import ProfileInfo from "../profile/profile-info";
-import ProfileModal from "../modals/profile";
-import SearchProvider from "../search/provider";
+import Notifications from "../../notifications";
+import ProfileInfo from "../../profile/profile-info";
+import ProfileModal from "../../modals/profile";
+import SearchProvider from "../../search/provider";
 import { useState } from "react";
 
 const StorefrontNav = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
@@ -11,7 +11,10 @@ const StorefrontNav = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
     <div className="md:py-9 py-4 gap-2 flex justify-between items-center">
       <ProfileInfo
         resizeOnMobile
-        toggleSidebar={toggleSidebar}
+        name="Yetunde Abokoku"
+        subName="AXA Mansard"
+        badge="Deluxe Pro II"
+        onExpand={toggleSidebar}
         onClick={() => setShowProfile(true)}
       />
       <SearchProvider />

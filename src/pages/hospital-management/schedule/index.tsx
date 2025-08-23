@@ -8,7 +8,7 @@ import RecentSection from "@/components/features/pills/recent";
 const HMSchedule: React.FC = () => {
   const [activeTab, setActiveTab] = useState("Patients");
   return (
-    <div className="pl-[64px]">
+    <div className="px-4">
       <RecentSection items={recentItems} />
       <OverViewCard data={overview} />
       <ScheduleTabs
@@ -16,7 +16,7 @@ const HMSchedule: React.FC = () => {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
       />
-      <div className="pr-[64px]">
+      <div>
         {activeTab === "Patients" && <PatientsTable />}
       </div>
     </div>

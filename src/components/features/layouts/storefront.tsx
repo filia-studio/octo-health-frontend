@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import StorefrontNav from "../nav/storefront";
+import StorefrontNav from "../nav/storefront/storefront";
 import Sidebar from "../nav/sidebar";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -19,7 +19,7 @@ const StorefrontLayout = () => {
         })}
       >
         <StorefrontNav toggleSidebar={toggleSidebar} />
-        <section>
+        <section className="w-full">
           <Outlet />
         </section>
       <CartPopover wrapperClassName="fixed bottom-8 right-8 z-50 shadow-2xl" />
