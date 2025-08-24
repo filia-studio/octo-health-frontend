@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import AppointmentModal from "../modals/appointment";
+import BookAppointmentModal from "../modals/book-appointment";
 
 interface Event {
   id: string;
@@ -12,8 +13,10 @@ interface Event {
   title: string;
 }
 
-const Calendar = ({ isPatient }: { isPatient?: boolean  }) => {
+const Calendar = ({ isPatient }: { isPatient?: boolean }) => {
   const [openAppointmentDetailModal, setOpenAppointmentDetailModal] =
+    useState(false);
+  const [openBookAppointmentModal, setOpenBookAppointmentModal] =
     useState(false);
   const [currentDate, setCurrentDate] = useState(new Date(2025, 7, 17)); // Updated to August 2025 to match current date
   const [viewMode, setViewMode] = useState<"Month" | "Week" | "Day" | "List">(
@@ -45,8 +48,13 @@ const Calendar = ({ isPatient }: { isPatient?: boolean  }) => {
 
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-  const toggleAppointmentDetailModal = () => {
+  const toggleAppointmentDetailModal = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
     setOpenAppointmentDetailModal(!openAppointmentDetailModal);
+  };
+
+  const toggleBookAppointmentModal = () => {
+    setOpenBookAppointmentModal(!openBookAppointmentModal);
   };
 
   const getCurrentWeekDates = () => {
@@ -196,6 +204,7 @@ const Calendar = ({ isPatient }: { isPatient?: boolean  }) => {
       days.push(
         <div
           key={`prev-${daysInPrevMonth - i}`}
+          onClick={toggleBookAppointmentModal}
           className="h-24 p-2 text-gray-400 text-sm"
         >
           {daysInPrevMonth - i}
@@ -215,6 +224,7 @@ const Calendar = ({ isPatient }: { isPatient?: boolean  }) => {
       days.push(
         <div
           key={day}
+          onClick={toggleBookAppointmentModal}
           className="h-24 p-2 border-r border-b border-gray-200 bg-white"
         >
           <div className="text-sm font-medium text-gray-900 mb-1">{day}</div>
@@ -240,7 +250,11 @@ const Calendar = ({ isPatient }: { isPatient?: boolean  }) => {
 
     for (let day = 1; day <= remainingCells; day++) {
       days.push(
-        <div key={`next-${day}`} className="h-24 p-2 text-gray-400 text-sm">
+        <div
+          key={`next-${day}`}
+          onClick={toggleBookAppointmentModal}
+          className="h-24 p-2 text-gray-400 text-sm"
+        >
           {day}
         </div>
       );
@@ -314,6 +328,7 @@ const Calendar = ({ isPatient }: { isPatient?: boolean  }) => {
                 return (
                   <div
                     key={dateIndex}
+                    onClick={toggleBookAppointmentModal}
                     className="p-2 h-12 border-r border-gray-200 last:border-r-0 relative"
                   >
                     {timeEvents.map((event) => (
@@ -369,7 +384,10 @@ const Calendar = ({ isPatient }: { isPatient?: boolean  }) => {
                 <div className="p-3 text-xs text-gray-500 border-r border-gray-200 bg-gray-50">
                   {time}
                 </div>
-                <div className="p-3 h-16 relative">
+                <div
+                  className="p-3 h-16 relative"
+                  onClick={toggleBookAppointmentModal}
+                >
                   {timeEvents.map((event) => (
                     <div
                       key={event.id}
@@ -539,7 +557,12 @@ const Calendar = ({ isPatient }: { isPatient?: boolean  }) => {
       <AppointmentModal
         isPatientView={isPatient}
         open={openAppointmentDetailModal}
-        onOpenChange={toggleAppointmentDetailModal}
+        onOpenChange={() => toggleAppointmentDetailModal()}
+      />
+
+      <BookAppointmentModal
+        open={openBookAppointmentModal}
+        onOpenChange={() => toggleBookAppointmentModal()}
       />
     </div>
   );

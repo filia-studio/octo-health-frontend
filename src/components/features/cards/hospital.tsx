@@ -4,8 +4,12 @@ import { Card } from "@/components/ui/card";
 import { PiCalendarPlus } from "react-icons/pi";
 import { CiClock2 } from "react-icons/ci";
 import { MdVerified } from "react-icons/md";
+import CalendarModal from "../modals/calendar";
+import { useState } from "react";
 
 const HospitalCard = () => {
+  const [openCalendar, setOpenCalendar] = useState(false);
+
   return (
     <Card className="py-0 gap-0 lg:max-w-[17rem] h-[22.625rem] overflow-hidden">
       <div className="relative">
@@ -30,7 +34,11 @@ const HospitalCard = () => {
           <small className="text-[0.5rem]">5 mins away</small>
         </div>
         <h3 className="font-semibold line-clamp-2 max-w-[13.1825rem] my-2">
-          Chinook Memorial Baptist Regional Hospital <MdVerified fill="#C80740" className="w-3 h-3 inline relative -top-1.5" />
+          Chinook Memorial Baptist Regional Hospital{" "}
+          <MdVerified
+            fill="#C80740"
+            className="w-3 h-3 inline relative -top-1.5"
+          />
         </h3>
         <p className="text-dusty-gray">Plot 245, Wuse 2, Garki, Abuja</p>
         <div className="flex items-center justify-between mt-11">
@@ -46,7 +54,11 @@ const HospitalCard = () => {
                 className="w-3 h-3"
               />
             </Button>
-            <Button size="icon" className="rounded-full w-9 h-9">
+            <Button
+              onClick={() => setOpenCalendar(true)}
+              size="icon"
+              className="rounded-full w-9 h-9"
+            >
               <PiCalendarPlus className="w-3 h-3" />
             </Button>
           </div>
@@ -55,6 +67,11 @@ const HospitalCard = () => {
           </p>
         </div>
       </div>
+      <CalendarModal
+        open={openCalendar}
+        onOpenChange={setOpenCalendar}
+        isPatient
+      />
     </Card>
   );
 };
