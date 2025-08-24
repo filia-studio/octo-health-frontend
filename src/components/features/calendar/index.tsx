@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import AppointmentModal from "../modals/appointment";
 
 interface Event {
   id: string;
@@ -11,7 +12,9 @@ interface Event {
   title: string;
 }
 
-const Calendar = () => {
+const Calendar = ({ isPatient }: { isPatient?: boolean  }) => {
+  const [openAppointmentDetailModal, setOpenAppointmentDetailModal] =
+    useState(false);
   const [currentDate, setCurrentDate] = useState(new Date(2025, 7, 17)); // Updated to August 2025 to match current date
   const [viewMode, setViewMode] = useState<"Month" | "Week" | "Day" | "List">(
     "Month"
@@ -41,6 +44,10 @@ const Calendar = () => {
   ];
 
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  const toggleAppointmentDetailModal = () => {
+    setOpenAppointmentDetailModal(!openAppointmentDetailModal);
+  };
 
   const getCurrentWeekDates = () => {
     const today = new Date(currentDate);
@@ -214,7 +221,8 @@ const Calendar = () => {
           {dayEvents.map((event) => (
             <div
               key={event.id}
-              className="text-xs text-red-600 flex items-center"
+              onClick={toggleAppointmentDetailModal}
+              className="text-xs text-red-600 flex items-center cursor-pointer"
             >
               <div className="w-1.5 h-1.5 bg-red-500 rounded-full mr-1"></div>
               <span className="truncate">
@@ -311,7 +319,8 @@ const Calendar = () => {
                     {timeEvents.map((event) => (
                       <div
                         key={event.id}
-                        className="text-xs text-red-600 flex items-center"
+                        onClick={toggleAppointmentDetailModal}
+                        className="text-xs text-red-600 flex items-center cursor-pointer"
                       >
                         <div className="w-1.5 h-1.5 bg-red-500 rounded-full mr-1"></div>
                         <span className="truncate">{event.title}</span>
@@ -364,7 +373,8 @@ const Calendar = () => {
                   {timeEvents.map((event) => (
                     <div
                       key={event.id}
-                      className="text-sm text-red-600 flex items-center mb-1"
+                      onClick={toggleAppointmentDetailModal}
+                      className="text-sm text-red-600 flex items-center mb-1 cursor-pointer"
                     >
                       <div className="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
                       <span>{event.title}</span>
@@ -425,7 +435,8 @@ const Calendar = () => {
             {allEvents.map((event) => (
               <div
                 key={event.id}
-                className="flex items-center p-3 bg-gray-50 rounded-lg border border-gray-200"
+                onClick={toggleAppointmentDetailModal}
+                className="flex items-center p-3 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer"
               >
                 <div className="w-3 h-3 bg-red-500 rounded-full mr-3"></div>
                 <div className="flex-1">
@@ -524,6 +535,12 @@ const Calendar = () => {
 
       {/* Calendar Content */}
       {renderCalendarContent()}
+
+      <AppointmentModal
+        isPatientView={isPatient}
+        open={openAppointmentDetailModal}
+        onOpenChange={toggleAppointmentDetailModal}
+      />
     </div>
   );
 };

@@ -7,7 +7,7 @@ const CartItem = ({ isInsured }: { isInsured?: boolean }) => {
     <div className="flex items-center gap-2 pb-3 border-b border-[#B6B6B6]">
       <div className="size-11 overflow-hidden border rounded-xl border-primary">
         <img
-          src="/assets/images/hospital-sample.png"
+          src="/assets/images/drug-sample.png"
           alt=""
           className="size-full object-cover"
         />

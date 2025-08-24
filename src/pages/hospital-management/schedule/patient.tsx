@@ -18,7 +18,7 @@ const HMPatient: React.FC = () => {
           ))}
         </div>
         <div className="border-[0.3px] bg-white border-[#C4C4C4] rounded-[12px] p-4">
-          <Calendar />
+          <Calendar isPatient={false} />
         </div>
       </div>
     </div>

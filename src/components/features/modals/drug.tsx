@@ -9,8 +9,8 @@ import {
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { IoIosArrowRoundDown } from "react-icons/io";
 import { MdOutlineAddShoppingCart } from "react-icons/md";
+import PillDropdown from "../pills/dropdown";
 
 const DrugModal = ({
   open,
@@ -29,10 +29,14 @@ const DrugModal = ({
           <DialogDescription className="text-black">
             Artemether/Lumefantrine
           </DialogDescription>
-          <Badge variant="outline">
-            <span className="text-xs">200mg</span>
-            <IoIosArrowRoundDown className="size-1.5" />
-          </Badge>
+          <PillDropdown
+            value="200mg"
+            options={[
+              { label: "200mg", value: "200mg" },
+              { label: "400mg", value: "400mg" },
+            ]}
+            onValueChange={(value) => console.log(value)}
+          />
         </DialogHeader>
         <div className="mt-7">
           <div className="flex gap-8">

@@ -1,5 +1,6 @@
 import { ArrowIcon } from "@/components/icons";
 import React from "react";
+import PillDropdown from "../pills/dropdown";
 
 const ClaimCard: React.FC = () => {
   return (
@@ -12,10 +13,15 @@ const ClaimCard: React.FC = () => {
         </div>
       </div>
       <span className="text-4xl font-semibold text-black">$400000</span>
-      <button className="flex items-center justify-between border-[0.5px] rounded-[40px] border-black h-5 p-2.5 w-[88px]">
-        <span className="text-xs text-black font-medium">Monthly</span>
-        <ArrowIcon className="-rotate-180" fill="#000000" />
-      </button>
+      <PillDropdown
+        value="monthly"
+        className="border-black min-w-20 text-black px-2.5"
+        options={[
+          { label: "Monthly", value: "monthly" },
+          { label: "Yearly", value: "yearly" },
+        ]}
+        onValueChange={(value) => console.log(value)}
+      />
     </div>
   );
 };

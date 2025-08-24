@@ -1,8 +1,8 @@
 import Tabs from "@/components/ui/tabs";
 import React, { useState } from "react";
-import GridData from "../common/grid-data";
+import GridData, { type GridDataProps } from "../common/grid-data";
 
-const patientCardData = [
+const patientCardData: GridDataProps[] = [
   {
     title: "Email",
     value: "hi@octohealth.pro",
@@ -26,6 +26,33 @@ const patientCardData = [
   },
 ];
 
+const insuranceData: GridDataProps[] = [
+  {
+    title: "Provider",
+    value: "AXA Mansard",
+  },
+  {
+    title: "Code",
+    value: "90430439",
+  },
+  {
+    title: "Support",
+    value: "help@axa.com",
+  },
+  {
+    title: "Plan Status",
+    value: (
+      <span>
+        400K / <span className="text-primary">N2M</span>
+      </span>
+    ),
+  },
+  {
+    title: "Plan Tier",
+    value: "Deluxe Pro II",
+  },
+];
+
 const PatientCard: React.FC = () => {
   const [activeTab, setActiveTab] = useState("Overview");
   return (
@@ -37,6 +64,7 @@ const PatientCard: React.FC = () => {
       />
       <div className="my-[24px]">
         {activeTab === "Overview" && <GridData data={patientCardData} />}
+        {activeTab === "Insurance" && <GridData data={insuranceData} />}
       </div>
     </div>
   );
