@@ -1,14 +1,16 @@
+import { cn } from "@/lib/utils";
 import React from "react";
 
 interface TabsProps {
   tabs: string[];
   setActiveTab: (tab: string) => void;
   activeTab: string;
+  className?: string;
 }
 
-const Tabs: React.FC<TabsProps> = ({ tabs, setActiveTab, activeTab }) => {
+const Tabs: React.FC<TabsProps> = ({ tabs, setActiveTab, activeTab, className }) => {
   return (
-    <div className="flex items-center gap-[30px]">
+    <div className={cn("flex items-center gap-7", className)}>
       {tabs.map((tab: string) => (
         <button
           key={tab}

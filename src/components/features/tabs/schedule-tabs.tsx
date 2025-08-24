@@ -14,10 +14,10 @@ const ScheduleTabs: React.FC<ScheduleTabsProps> = ({
   activeTab,
 }) => {
   return (
-    <div className="mb-6 pr-16">
-      <div className="flex items-center gap-16 justify-between">
-        <Tabs tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
-        <SearchProvider />
+    <div className="mb-6 lg:pr-16">
+      <div className="flex items-center gap-8 flex-col lg:flex-row lg:gap-16 justify-between">
+        <Tabs tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} className="flex-wrap" />
+        <SearchProvider className="max-lg:max-w-full" />
       </div>
     </div>
   );

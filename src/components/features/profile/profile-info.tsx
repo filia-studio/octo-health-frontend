@@ -25,7 +25,10 @@ const ProfileInfo = ({
   badge?: string;
 }) => {
   return (
-    <div className="flex gap-3 w-full">
+    <div className={cn("flex gap-3", {
+      "lg:w-full": resizeOnMobile,
+      "w-full": !resizeOnMobile,
+    })}>
       <div className="w-fit relative">
         <Avatar
           onClick={onClick}

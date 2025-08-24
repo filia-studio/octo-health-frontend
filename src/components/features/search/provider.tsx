@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { IoFilter } from "react-icons/io5";
+import { cn } from "@/lib/utils";
 
-const SearchProvider = () => {
+const SearchProvider = ({ className }: { className?: string }) => {
   return (
-    <div className="flex items-center gap-2 w-full max-w-[36rem]">
+    <div className={cn("flex items-center gap-2 w-full max-w-[36rem]", className)}>
       <Input
         placeholder="Search for provider"
         className="w-full max-w-[32.2rem] h-11 rounded-[12.5rem] border-black bg-transparent"

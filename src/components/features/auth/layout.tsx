@@ -21,7 +21,7 @@ const AuthLayout = ({
         backgroundRepeat: "no-repeat",
       }}
     >
-      <div className="flex flex-col items-center justify-between w-full relative max-w-[80rem] mx-auto xl:flex-row">
+      <div className="flex flex-col gap-6 items-center justify-between w-full relative max-w-[80rem] mx-auto xl:flex-row">
         <img src={logo} alt="" className="w-[15.2rem] lg:w-[22rem]" />
         <AuthCard dashboardUrl={dashboardUrl} placeholder={placeholder} />
       </div>
