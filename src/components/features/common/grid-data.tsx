@@ -7,11 +7,26 @@ export type GridDataProps = {
   value2?: ReactNode;
 };
 
-export const GridDataItem = ({ title, value, value2 }: GridDataProps) => {
+type GridDataItemProps = GridDataProps & {
+  gridItemClassName?: string;
+  titleClassName?: string;
+  valueClassName?: string;
+};
+
+export const GridDataItem = ({
+  title,
+  value,
+  value2,
+  gridItemClassName,
+  titleClassName,
+  valueClassName,
+}: GridDataItemProps) => {
   return (
-    <div className="flex flex-col gap-1.5">
-      <p className="text-sm font-medium text-gray-400">{title}</p>
-      <p className="text-sm font-medium">{value}</p>
+    <div className={cn("flex flex-col gap-1.5", gridItemClassName)}>
+      <p className={cn("text-sm font-medium text-gray-400", titleClassName)}>
+        {title}
+      </p>
+      <p className={cn("text-sm font-medium", valueClassName)}>{value}</p>
       {value2 && <p className="text-sm font-medium">{value2}</p>}
     </div>
   );
@@ -20,14 +35,26 @@ export const GridDataItem = ({ title, value, value2 }: GridDataProps) => {
 const GridData = ({
   data,
   className,
+  gridItemClassName,
+  titleClassName,
+  valueClassName,
 }: {
   data: GridDataProps[];
   className?: string;
+  gridItemClassName?: string;
+  titleClassName?: string;
+  valueClassName?: string;
 }) => {
   return (
     <section className={cn("grid grid-cols-1 sm:grid-cols-2 gap-9", className)}>
       {data.map((item, index) => (
-        <GridDataItem key={index} {...item} />
+        <GridDataItem
+          gridItemClassName={gridItemClassName}
+          titleClassName={titleClassName}
+          valueClassName={valueClassName}
+          key={index}
+          {...item}
+        />
       ))}
     </section>
   );

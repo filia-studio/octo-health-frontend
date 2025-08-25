@@ -14,21 +14,29 @@ const ProfileInfo = ({
   badge,
   profileImage,
   showProgress = true,
+  className,
 }: {
   onExpand?: () => void;
   resizeOnMobile?: boolean;
   onClick?: () => void;
   name: string;
-  subName: string;
+  subName?: string;
   profileImage?: string;
   showProgress?: boolean;
   badge?: string;
+  className?: string;
 }) => {
   return (
-    <div className={cn("flex gap-3", {
-      "lg:w-full": resizeOnMobile,
-      "w-full": !resizeOnMobile,
-    })}>
+    <div
+      className={cn(
+        "flex gap-3",
+        {
+          "lg:w-full": resizeOnMobile,
+          "w-full": !resizeOnMobile,
+        },
+        className
+      )}
+    >
       <div className="w-fit relative">
         <Avatar
           onClick={onClick}
@@ -66,32 +74,36 @@ const ProfileInfo = ({
             </Badge>
           )}
         </p>
-        <div
-          className={cn("mt-1.5 flex gap-7 items-center", {
-            "mt-4": !onExpand,
-          })}
-        >
-          {onExpand && (
-            <Button
-              size="icon"
-              className="rounded-full size-7 bg-black hidden lg:inline-flex"
-              onClick={onExpand}
-            >
-              <BsArrowsAngleExpand className="size-3" />
-            </Button>
-          )}
-          {showProgress && (
-            <div className="w-full max-w-[8rem]">
-              <Progress value={40} className="h-[1px]" />
-              <div className="flex justify-between">
-                <p className="font-semibold text-[0.44rem] text-primary">
-                  400k
-                </p>
-                <p className="font-semibold text-[0.44rem]">2M</p>
+        {onExpand || showProgress ? (
+          <div
+            className={cn("mt-1.5 flex gap-7 items-center", {
+              "mt-4": !onExpand,
+            })}
+          >
+            {onExpand && (
+              <Button
+                size="icon"
+                className="rounded-full size-7 bg-black hidden lg:inline-flex"
+                onClick={onExpand}
+              >
+                <BsArrowsAngleExpand className="size-3" />
+              </Button>
+            )}
+            {showProgress && (
+              <div className="w-full max-w-[8rem]">
+                <Progress value={40} className="h-[1px]" />
+                <div className="flex justify-between">
+                  <p className="font-semibold text-[0.44rem] text-primary">
+                    400k
+                  </p>
+                  <p className="font-semibold text-[0.44rem]">2M</p>
+                </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );
