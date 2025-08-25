@@ -9,6 +9,8 @@ import HospitalMgmtLayout from "@/components/features/layouts/hospital-mgmt";
 import HMSchedule from "@/pages/hospital-management/schedule";
 import HMPatient from "@/pages/hospital-management/schedule/patient";
 import HospitalLogin from "@/pages/hospital-management/auth/login";
+import Nurse from "@/pages/hospital-management/schedule/nurse";
+import PharmacyInvoice from "@/pages/storefront/pharmacy/invoice";
 
 const AppRouter = () => {
   return (
@@ -22,6 +24,7 @@ const AppRouter = () => {
           <Route path="schedule" element={<StorefrontSchedule />} />
           <Route path="pharmacy" element={<StorefrontPharmacy />} />
           <Route path="insurance" element={<StorefrontInsurance />} />
+          <Route path="pharmacy/invoice" element={<PharmacyInvoice />} />
         </Route>
       </Route>
       <Route path="hospital-mgmt" element={<Outlet />}>
@@ -31,6 +34,7 @@ const AppRouter = () => {
         <Route element={<HospitalMgmtLayout />}>
           <Route path="schedule" element={<HMSchedule />} />
           <Route path="schedule/:id" element={<HMPatient />} />
+          <Route path="nurse" element={<Nurse />} />
         </Route>
       </Route>
     </Routes>
