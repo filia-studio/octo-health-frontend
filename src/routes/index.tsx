@@ -11,6 +11,7 @@ import HMPatient from "@/pages/hospital-management/schedule/patient";
 import HospitalLogin from "@/pages/hospital-management/auth/login";
 import Nurse from "@/pages/hospital-management/schedule/nurse";
 import PharmacyInvoice from "@/pages/storefront/pharmacy/invoice";
+import VerifyOTP from "@/pages/hospital-management/auth/verify-otp";
 
 const AppRouter = () => {
   return (
@@ -27,9 +28,10 @@ const AppRouter = () => {
           <Route path="pharmacy/invoice" element={<PharmacyInvoice />} />
         </Route>
       </Route>
-      <Route path="hospital-mgmt" element={<Outlet />}>
+      <Route path="healthcare" element={<Outlet />}>
         <Route path="auth" element={<Outlet />}>
           <Route index element={<HospitalLogin />} />
+          <Route path="login" element={<VerifyOTP />} />
         </Route>
         <Route element={<HospitalMgmtLayout />}>
           <Route path="schedule" element={<HMSchedule />} />

@@ -30,7 +30,7 @@ export const createApiClient = (params?: {
 
   client.interceptors.response.use(
     function (response) {
-      return response;
+      return response.config.method === "get" ? response.data : response;
     },
     function (error) {
       const status = error.response?.status;

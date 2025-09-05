@@ -8,9 +8,14 @@ interface TabsProps {
   className?: string;
 }
 
-const Tabs: React.FC<TabsProps> = ({ tabs, setActiveTab, activeTab, className }) => {
+const Tabs: React.FC<TabsProps> = ({
+  tabs,
+  setActiveTab,
+  activeTab,
+  className,
+}) => {
   return (
-    <div className={cn("flex items-center gap-7", className)}>
+    <div className={cn("flex items-center gap-4", className)}>
       {tabs.map((tab: string) => (
         <button
           key={tab}

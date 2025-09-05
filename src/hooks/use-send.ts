@@ -24,7 +24,7 @@ export const useSend = <Variables, T = unknown>(
   const {
     params,
     useAuth = true,
-    baseUrl,
+    baseUrl = "http://45.33.73.230:8000/api/",
     onSuccess,
     successMessage,
     errorMessage,
@@ -61,8 +61,7 @@ export const useSend = <Variables, T = unknown>(
       }>;
       const axiosError = error?.response?.data?.message;
       const axiosErrorMessage = errorMessage ?? axiosError;
-      if (!["error", "all"].includes(hideToast))
-        toast.error(axiosErrorMessage);
+      if (!["error", "all"].includes(hideToast)) toast.error(axiosErrorMessage);
     },
   });
 
