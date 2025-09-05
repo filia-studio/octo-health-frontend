@@ -1,9 +1,10 @@
+import type { HealthcareDetails } from "@/types/otp";
 import { type StateCreator } from "zustand";
 
 type IAuth = {
   token: string;
-  details: any;
-}
+  details: HealthcareDetails | null;
+};
 
 export type AuthSlice = {
   auth: IAuth;
@@ -15,11 +16,11 @@ const values = {
   auth: {
     token: "",
     details: null,
-  }
-}
+  },
+};
 
 export const authSlice: StateCreator<AuthSlice> = (set, get) => ({
   ...values,
   setAuth: (value) => set({ auth: { ...get().auth, ...value } }),
-  resetAuth: () => set(values)
+  resetAuth: () => set(values),
 });

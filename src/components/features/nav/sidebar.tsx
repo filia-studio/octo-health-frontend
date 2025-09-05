@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { clearLS, cn } from "@/lib/utils";
 import { hospitalSidebarRoutes, storefrontSidebarRoutes } from "@/routes/paths";
 import { BsArrowsAngleExpand } from "react-icons/bs";
 import { NavLink } from "react-router-dom";
 import { DashboardModule } from "@/types/common";
+import { useStore } from "@/store";
 
 const Sidebar = ({
   isOpen,
@@ -18,12 +19,30 @@ const Sidebar = ({
   logo?: React.ReactNode;
   module?: string;
 }) => {
+  const { resetAuth, auth } = useStore();
+
+  const healthcareServices = auth?.details?.healthcare_services?.map(
+    (service) => ({
+      label: service,
+      path: "",
+    })
+  );
+
+  const modifiedHospitalRoutes = [
+    ...hospitalSidebarRoutes,
+    ...(healthcareServices || []),
+  ];
+
   const routes: Record<
     string,
     typeof storefrontSidebarRoutes | typeof hospitalSidebarRoutes
   > = {
     [DashboardModule.Storefront]: storefrontSidebarRoutes,
-    [DashboardModule.Hospital]: hospitalSidebarRoutes,
+    [DashboardModule.Hospital]: modifiedHospitalRoutes,
+  };
+
+  const handleLogout = () => {
+    resetAuth();
   };
 
   return (
@@ -44,6 +63,9 @@ const Sidebar = ({
           {routes[module].map(({ label, path }) => (
             <NavLink to={path}>{label}</NavLink>
           ))}
+          <span className="cursor-pointer" onClick={handleLogout}>
+            Logout
+          </span>
         </div>
       </div>
       <Button

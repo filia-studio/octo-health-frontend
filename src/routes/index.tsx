@@ -10,6 +10,7 @@ import HMPatient from "@/pages/hospital-management/schedule/patient";
 import HospitalLogin from "@/pages/hospital-management/auth/login";
 import Nurse from "@/pages/hospital-management/schedule/nurse";
 import PharmacyInvoice from "@/pages/storefront/pharmacy/invoice";
+import VerifyOTP from "@/pages/hospital-management/auth/verify-otp";
 import { hospitalUrl, storefrontUrl } from "./paths";
 
 const AppRouter = () => {
@@ -29,13 +30,18 @@ const AppRouter = () => {
       <Route path={hospitalUrl} element={<Outlet />}>
         <Route path="auth" element={<Outlet />}>
           <Route index element={<HospitalLogin />} />
+          <Route path="login" element={<VerifyOTP />} />
         </Route>
         <Route element={<HospitalMgmtLayout />}>
           <Route path="schedule" element={<HMSchedule />} />
           <Route path="schedule/:id" element={<HMPatient />} />
           <Route path="nurse" element={<Nurse />} />
         </Route>
-        <Route index path="*" element={<Navigate to={`${hospitalUrl}/auth`} />} />
+        <Route
+          index
+          path="*"
+          element={<Navigate to={`${hospitalUrl}/auth`} />}
+        />
       </Route>
       <Route path="*" element={<Navigate to={`${storefrontUrl}/auth`} />} />
     </Routes>
