@@ -1,0 +1,21 @@
+export type Healthcare = {
+    id: string;
+    created_at: string;
+    updated_at: string;
+    name: string;
+    address: string;
+    contact_number: string;
+    email: string;
+    website: string;
+    owner_name: string;
+    license_number: string;
+    tax_id_number: string;
+    country: string;
+    city: string;
+    state: string;
+    longitude: string;
+    latitude: string;
+    zipcode: string;
+    healthcare_type: string;
+    healthcare_services: string[];
+  };

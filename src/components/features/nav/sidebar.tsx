@@ -1,10 +1,16 @@
 import { Button } from "@/components/ui/button";
-import { clearLS, cn } from "@/lib/utils";
-import { hospitalSidebarRoutes, storefrontSidebarRoutes } from "@/routes/paths";
+import { cn } from "@/lib/utils";
+import {
+  hospitalSidebarRoutes,
+  hospitalUrl,
+  storefrontSidebarRoutes,
+} from "@/routes/paths";
 import { BsArrowsAngleExpand } from "react-icons/bs";
 import { NavLink } from "react-router-dom";
-import { DashboardModule } from "@/types/common";
+import { DashboardModule, type Route } from "@/types/common";
 import { useStore } from "@/store";
+import { useState } from "react";
+import { FaArrowRight } from "react-icons/fa";
 
 const Sidebar = ({
   isOpen,
@@ -19,27 +25,35 @@ const Sidebar = ({
   logo?: React.ReactNode;
   module?: string;
 }) => {
+  const [subRoute, setSubRoute] = useState("");
   const { resetAuth, auth } = useStore();
 
   const healthcareServices = auth?.details?.healthcare_services?.map(
     (service) => ({
       label: service,
-      path: "",
+      path: `/${service}`,
     })
   );
 
-  const modifiedHospitalRoutes = [
-    ...hospitalSidebarRoutes,
-    ...(healthcareServices || []),
-  ];
+  const modifiedHospitalRoutes: Route[] = [...hospitalSidebarRoutes];
 
-  const routes: Record<
-    string,
-    typeof storefrontSidebarRoutes | typeof hospitalSidebarRoutes
-  > = {
+  if (healthcareServices?.length) {
+    modifiedHospitalRoutes.push({
+      label: "Healthcare Services",
+      path: `${hospitalUrl}/services${healthcareServices[0].path}`,
+      subRoutes: healthcareServices,
+    });
+  }
+
+  const routes: Record<string, Route[]> = {
     [DashboardModule.Storefront]: storefrontSidebarRoutes,
     [DashboardModule.Hospital]: modifiedHospitalRoutes,
   };
+
+  const paths = routes[module];
+
+  const subPaths =
+    paths?.find((path) => path.label === subRoute)?.subRoutes ?? [];
 
   const handleLogout = () => {
     resetAuth();
@@ -48,7 +62,7 @@ const Sidebar = ({
   return (
     <section
       className={cn(
-        "z-50 bg-white md:w-[30%] lg:w-[20%] w-full border-r border-[#E1E1E1] h-full sidebar",
+        "z-50 bg-white md:w-[30%] lg:w-[20%] w-full border-r border-[#E1E1E1] h-full sidebar overflow-x-auto",
         { "absolute -left-full": isOpen, "absolute lg:static": !isOpen }
       )}
     >
@@ -56,16 +70,46 @@ const Sidebar = ({
         {logo}
       </div>
       <div className="py-4 px-5">
-        <p className="text-[0.625rem] text-primary font-bold tracking-[19%]">
-          MENU
+        <p
+          onClick={() => setSubRoute("")}
+          className="text-[0.625rem] text-primary font-bold tracking-[19%] cursor-pointer"
+        >
+          MENU{" "}
+          {subRoute ? (
+            <>
+              <FaArrowRight className="inline text-black size-2 mx-2" />{" "}
+              {subRoute}
+            </>
+          ) : null}
         </p>
-        <div className="flex flex-col gap-10 mt-8">
-          {routes[module].map(({ label, path }) => (
-            <NavLink to={path}>{label}</NavLink>
-          ))}
-          <span className="cursor-pointer" onClick={handleLogout}>
-            Logout
-          </span>
+        <div className="w-full mt-8 relative">
+          <div
+            className={cn("w-[200%] flex transition-all duration-300", {
+              "translate-x-0": !subRoute,
+              "-translate-x-1/2": subRoute,
+            })}
+          >
+            <div className="flex flex-col gap-10 w-full">
+              {paths.map(({ label, path, subRoutes }) => (
+                <NavLink
+                  to={path}
+                  onClick={() =>
+                    subRoutes?.length ? setSubRoute(label) : setSubRoute("")
+                  }
+                >
+                  {label}
+                </NavLink>
+              ))}
+              <span className="cursor-pointer" onClick={handleLogout}>
+                Logout
+              </span>
+            </div>
+            <div className="flex flex-col gap-10 w-full">
+              {subPaths.map(({ label, path }) => (
+                <NavLink to={path}>{label}</NavLink>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
       <Button

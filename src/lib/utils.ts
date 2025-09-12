@@ -23,3 +23,17 @@ export const clearLS = () => {
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+export const getBadgeVarient = (status: string) => {
+    switch (status) {
+        case "pending":
+            return "bg-[#FFCDD2] text-[#C62828]";
+        case "approved":
+            return "bg-[#C8E6C9] text-[#2E7D32]";
+        case "rejected":
+            return "bg-[#FFCDD2] text-[#C62828]";
+        default:
+            return "bg-[#C8E6C9] text-[#2E7D32]";
+    }
+}
+

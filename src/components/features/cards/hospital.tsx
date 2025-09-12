@@ -7,7 +7,13 @@ import { MdVerified } from "react-icons/md";
 import CalendarModal from "../modals/calendar";
 import { useState } from "react";
 
-const HospitalCard = () => {
+const HospitalCard = ({
+  showDirection = true,
+  showCalendar = true,
+}: {
+  showDirection?: boolean;
+  showCalendar?: boolean;
+}) => {
   const [openCalendar, setOpenCalendar] = useState(false);
 
   return (
@@ -43,24 +49,28 @@ const HospitalCard = () => {
         <p className="text-dusty-gray">Plot 245, Wuse 2, Garki, Abuja</p>
         <div className="flex items-center justify-between mt-11">
           <div className="flex gap-1.5">
-            <Button
-              variant="outline"
-              size="icon"
-              className="rounded-full w-9 h-9"
-            >
-              <img
-                src="/assets/svgs/direction.svg"
-                alt=""
-                className="w-3 h-3"
-              />
-            </Button>
-            <Button
-              onClick={() => setOpenCalendar(true)}
-              size="icon"
-              className="rounded-full w-9 h-9"
-            >
-              <PiCalendarPlus className="w-3 h-3" />
-            </Button>
+            {showDirection && (
+              <Button
+                variant="outline"
+                size="icon"
+                className="rounded-full w-9 h-9"
+              >
+                <img
+                  src="/assets/svgs/direction.svg"
+                  alt=""
+                  className="w-3 h-3"
+                />
+              </Button>
+            )}
+            {showCalendar && (
+              <Button
+                onClick={() => setOpenCalendar(true)}
+                size="icon"
+                className="rounded-full w-9 h-9"
+              >
+                <PiCalendarPlus className="w-3 h-3" />
+              </Button>
+            )}
           </div>
           <p className="text-dusty-gray">
             <span className="text-primary">4.5</span> / 5.0
