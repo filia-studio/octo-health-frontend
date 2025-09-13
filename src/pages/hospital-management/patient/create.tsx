@@ -1,0 +1,544 @@
+// import DashboardDetailLayout from "@/components/features/layouts/dashboard-detail";
+// import {
+//   Form,
+//   FormControl,
+//   FormDescription,
+//   FormField,
+//   FormItem,
+//   FormLabel,
+//   FormMessage,
+// } from "@/components/ui/form";
+// import { Input } from "@/components/ui/input";
+// import { Button } from "@/components/ui/button";
+// import Select from "react-select";
+// import { useForm } from "react-hook-form";
+// import { z } from "zod";
+// import { zodResolver } from "@hookform/resolvers/zod";
+// import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+// import { useState } from "react";
+
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import { useFieldArray, useForm, type SubmitHandler } from "react-hook-form";
+import Select from "react-select";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useSend } from "@/hooks/use-send";
+
+const schema = z.object({
+  insurance: z
+    .array(
+      z.object({
+        name: z.string().min(1, "Insurance name is required"),
+        insurance_type: z.string().min(1, "Insurance type is required"),
+        insurance_plan: z.string().min(1, "Insurance plan is required"),
+      })
+    )
+    .min(1, "At least one insurance entry is required"),
+
+  user: z.object({
+    photo: z
+      .any()
+      .refine((file) => file instanceof File, "A valid photo file is required"),
+    email: z.string().email("Invalid email"),
+    first_name: z.string().min(1, "First name is required"),
+    last_name: z.string().min(1, "Last name is required"),
+    contact_number: z.string().min(1, "Contact number is required"),
+    address: z.string().min(1, "Address is required"),
+    gender: z.string().min(1, "Gender is required"),
+    user_type: z.enum(["admin", "doctor", "patient"]), // extend if needed
+    date_of_birth: z.string().min(1, "Date of birth is required"),
+  }),
+});
+
+type FormSchema = z.infer<typeof schema>;
+
+const PatientRegistration = () => {
+  const [insuranceDetails, setInsuranceDetails] = useState<
+    { provider: string; type: string; plan: string }[]
+  >([]);
+
+  const form = useForm<FormSchema>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      insurance: [{ name: "", insurance_type: "", insurance_plan: "" }],
+      user: {
+        photo: "",
+        email: "",
+        first_name: "",
+        last_name: "",
+        contact_number: "",
+        address: "",
+        gender: "",
+        user_type: "admin",
+        date_of_birth: "",
+      },
+    },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "insurance",
+  });
+
+  const { mutate } = useSend<FormData, { message: string }>("patient/", {
+    useAuth: false,
+    onSuccess: (data, variables) => {
+      // navigate(`${hospitalUrl}/auth/login`);
+    },
+  });
+
+  const onSubmit: SubmitHandler<FormSchema> = (data) => {
+    console.log({ data });
+
+    const formData = new FormData();
+
+    Object.entries(data.user).forEach(([key, value]) => {
+      if (key === "photo" && value instanceof File) {
+        formData.append("photo", value);
+      } else {
+        formData.append(key, value as string);
+      }
+    });
+
+    data.insurance.forEach((ins, index) => {
+      formData.append(`insurance[${index}][name]`, ins.name);
+      formData.append(
+        `insurance[${index}][insurance_type]`,
+        ins.insurance_type
+      );
+      formData.append(
+        `insurance[${index}][insurance_plan]`,
+        ins.insurance_plan
+      );
+    });
+
+    mutate(formData);
+  };
+
+  return (
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="max-w-[40rem] mx-auto space-y-6 py-12"
+      >
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold">Insurance</h2>
+          {fields.map((field, index) => (
+            <div
+              key={field.id}
+              className="border rounded-lg p-4 space-y-4 relative"
+            >
+              <FormField
+                control={form.control}
+                name={`insurance.${index}.name`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Insurance Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter insurance name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name={`insurance.${index}.insurance_type`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Insurance Type</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter insurance type" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name={`insurance.${index}.insurance_plan`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Insurance Plan</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter insurance plan" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {fields.length > 1 && (
+                <Button
+                  type="button"
+                  variant="destructive"
+                  className="mt-2"
+                  onClick={() => remove(index)}
+                >
+                  Remove
+                </Button>
+              )}
+            </div>
+          ))}
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() =>
+              append({ name: "", insurance_type: "", insurance_plan: "" })
+            }
+          >
+            + Add Insurance
+          </Button>
+        </div>
+
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold">User Details</h2>
+          <FormField
+            control={form.control}
+            name="user.photo"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Photo URL</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Enter photo URL"
+                    type="file"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      field.onChange(file);
+                    }}
+                    // accept="image/*"
+                    // {...form.register("user.photo")}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="user.email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input type="email" placeholder="Enter email" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField
+              control={form.control}
+              name="user.first_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>First Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter first name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="user.last_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Last Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter last name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <FormField
+            control={form.control}
+            name="user.contact_number"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Contact Number</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter contact number" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="user.address"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Address</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter address" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField
+              control={form.control}
+              name="user.gender"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Gender</FormLabel>
+                  <FormControl>
+                    <Select
+                      value={{ value: field.value, label: field.value }}
+                      onChange={(val: any) => field.onChange(val?.value)}
+                      options={[
+                        { value: "male", label: "Male" },
+                        { value: "female", label: "Female" },
+                        { value: "other", label: "Other" },
+                      ]}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="user.user_type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>User Type</FormLabel>
+                  <FormControl>
+                    <Select
+                      value={{ value: field.value, label: field.value }}
+                      onChange={(val: any) => field.onChange(val?.value)}
+                      options={[
+                        { value: "admin", label: "Admin" },
+                        { value: "doctor", label: "Doctor" },
+                        { value: "patient", label: "Patient" },
+                      ]}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <FormField
+            control={form.control}
+            name="user.date_of_birth"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date of Birth</FormLabel>
+                <FormControl>
+                  <Input type="date" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="flex justify-end mt-12">
+          <Button
+            //   disabled={isCreating}
+            type="submit"
+            className="rounded-[12.5rem] bg-black w-full max-w-[6.5rem] lg:max-w-[11.8rem] h-10 lg:h-12 text-sm lg:text-lg font-semibold"
+          >
+            Submit
+          </Button>
+        </div>
+      </form>
+      {/* <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="max-w-[40rem] mx-auto space-y-6 py-12"
+      >
+        <FormField
+          control={form.control}
+          name="fullName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Full Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter full name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input type="email" placeholder="Enter email" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="phone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Phone Number</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter phone number" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="address"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Address</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter address" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="gender"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Gender</FormLabel>
+              <FormControl>
+                <Select
+                  value={{ value: field.value, label: field.value }}
+                  onChange={(val: any) => field.onChange(val?.value)}
+                  options={[
+                    { value: "male", label: "Male" },
+                    { value: "female", label: "Female" },
+                    { value: "other", label: "Other" },
+                  ]}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="insuranceProviders"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Insurance Providers</FormLabel>
+              <FormControl>
+                <Select
+                  isMulti
+                  value={field.value}
+                  onChange={(val) => {
+                    field.onChange(val);
+                    setInsuranceDetails(
+                      val.map((p: any) => ({
+                        provider: p.value,
+                        type: "",
+                        plan: "",
+                      }))
+                    );
+                  }}
+                  options={providers}
+                />
+              </FormControl>
+              <FormDescription>
+                Select all insurance providers you’re registered with.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {insuranceDetails.map((detail, index) => (
+          <div
+            key={detail.provider}
+            className="border rounded-md p-4 space-y-4"
+          >
+            <h4 className="font-medium">
+              Insurance Details -{" "}
+              {providers.find((p) => p.value === detail.provider)?.label}
+            </h4>
+
+            <FormField
+              control={form.control}
+              name={`insuranceDetails.${index}.type`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Insurance Type
+                  
+                  </FormLabel>
+                  <FormControl>
+                    <Select
+                      value={
+                        field.value
+                          ? { value: field.value, label: field.value }
+                          : null
+                      }
+                      onChange={(val: any) => field.onChange(val?.value)}
+                      options={[
+                        { value: "group", label: "Group" },
+                        { value: "private", label: "Private" },
+                      ]}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name={`insuranceDetails.${index}.plan`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Insurance Plan</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter plan name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        ))}
+
+        <div className="flex justify-end mt-12">
+          <Button
+            type="submit"
+            className="rounded-[12.5rem] bg-black w-full max-w-[6.5rem] lg:max-w-[11.8rem] h-10 lg:h-12 text-sm lg:text-lg font-semibold"
+          >
+            Submit
+          </Button>
+        </div>
+      </form> */}
+    </Form>
+  );
+};
+
+export default PatientRegistration;
