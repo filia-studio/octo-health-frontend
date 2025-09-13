@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -16,6 +17,7 @@ import { useSend } from "@/hooks/use-send";
 import { useNavigate } from "react-router-dom";
 import { hospitalUrl } from "@/routes/paths";
 import { toast } from "sonner";
+import { removeEmptyFields } from "@/lib/utils";
 
 const schema = z.object({
   insurance: z
@@ -29,9 +31,7 @@ const schema = z.object({
     .min(1, "At least one insurance entry is required"),
 
   user: z.object({
-    photo: z
-      .any()
-      .refine((file) => file instanceof File, "A valid photo file is required"),
+    photo: z.string(),
     email: z.string().email("Invalid email"),
     first_name: z.string().min(1, "First name is required"),
     last_name: z.string().min(1, "Last name is required"),
@@ -71,12 +71,32 @@ const PatientRegistration = () => {
     name: "insurance",
   });
 
-  const { mutate } = useSend<FormData, { message: string }>("patient/", {
+  const { mutate } = useSend<
+    {
+      insurance: {
+        name: string;
+        insurance_type: string;
+        insurance_plan: string;
+      }[];
+
+      user: {
+        photo: string;
+        email: string;
+        first_name: string;
+        last_name: string;
+        contact_number: string;
+        address: string;
+        gender: string;
+        user_type: string;
+        date_of_birth: string;
+      };
+    },
+    { message: string }
+  >("patient/", {
     useAuth: false,
     onSuccess: (data, variables) => {
       navigate(`${hospitalUrl}/patient-management`);
     },
-    successMessage: "Patient created successfully",
     onError: (error: any, variables) => {
       const errorMessage = error?.response?.data?.user?.[0];
       toast.error(errorMessage || "Failed to create patient");
@@ -84,29 +104,8 @@ const PatientRegistration = () => {
   });
 
   const onSubmit: SubmitHandler<FormSchema> = (data) => {
-    const formData = new FormData();
-
-    Object.entries(data.user).forEach(([key, value]) => {
-      if (key === "photo" && value instanceof File) {
-        formData.append("photo", value);
-      } else {
-        formData.append(key, value as string);
-      }
-    });
-
-    data.insurance.forEach((ins, index) => {
-      formData.append(`insurance[${index}][name]`, ins.name);
-      formData.append(
-        `insurance[${index}][insurance_type]`,
-        ins.insurance_type
-      );
-      formData.append(
-        `insurance[${index}][insurance_plan]`,
-        ins.insurance_plan
-      );
-    });
-
-    mutate(formData);
+    const cleanedData = removeEmptyFields(data);
+    mutate(cleanedData);
   };
 
   return (
