@@ -101,7 +101,7 @@
   position: absolute;
   top: 0.625rem;
   left: -0.625rem;
-  width: 0.125rem;
-  height: 0.125rem;
+  width: 0.25rem;
+  height: 0.25rem;
   background-color: var(--primary);
 }

@@ -20,8 +20,8 @@ const AuthCard = ({
   placeholder?: string;
   btnText?: string;
   showResendOtp?: boolean;
-  onSubmit: SubmitHandler<any>;
-  defaultValues?: any;
+  onSubmit: SubmitHandler<Record<string, string>>;
+  defaultValues?: Record<string, string>;
   registerKey?: string;
 }) => {
   const form = useForm({
@@ -36,9 +36,10 @@ const AuthCard = ({
     if (storedEmail) {
       form.setValue("email", storedEmail);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { mutate } = useSend<{ email: string }, { message: string }>(
+  const { mutate, isPending } = useSend<{ email: string }, { message: string }>(
     "healthcare/login/",
     {
       useAuth: false,
@@ -101,7 +102,10 @@ const AuthCard = ({
               </Label>
             </div>
           )}
-          <Button className="rounded-[12.5rem] bg-black w-full max-w-[6.5rem] lg:max-w-[11.8rem] h-10 lg:h-[4.1875rem] text-sm lg:text-xl font-semibold">
+          <Button
+            disabled={isPending}
+            className="rounded-[12.5rem] bg-black w-full max-w-[6.5rem] lg:max-w-[11.8rem] h-10 lg:h-[4.1875rem] text-sm lg:text-xl font-semibold"
+          >
             {btnText}
           </Button>
         </div>

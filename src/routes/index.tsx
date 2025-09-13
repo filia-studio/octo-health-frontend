@@ -14,6 +14,12 @@ import VerifyOTP from "@/pages/hospital-management/auth/verify-otp";
 import { hospitalUrl, storefrontUrl } from "./paths";
 import PatientRegistration from "@/pages/hospital-management/patient/create";
 import PatientManagement from "@/pages/hospital-management/patient";
+import StorefrontClaims from "@/pages/storefront/claims";
+import StorefrontFileClaim from "@/pages/storefront/claims/file";
+import StorefrontProviders from "@/pages/storefront/providers";
+import StorefrontAccountInformation from "@/pages/storefront/accounts/account-info";
+import StorefrontPaymentInformation from "@/pages/storefront/accounts/payment-info";
+import StorefrontProfileInformation from "@/pages/storefront/accounts/profile-info";
 
 const AppRouter = () => {
   return (
@@ -24,9 +30,27 @@ const AppRouter = () => {
         </Route>
         <Route element={<StorefrontLayout />}>
           <Route path="schedule" element={<StorefrontSchedule />} />
-          <Route path="pharmacy" element={<StorefrontPharmacy />} />
+          <Route path="claims" element={<Outlet />}>
+            <Route index element={<StorefrontClaims />} />
+            <Route path="file" element={<StorefrontFileClaim />} />
+          </Route>
+          <Route path="pharmacy" element={<Outlet />}>
+            <Route index element={<StorefrontPharmacy />} />
+            <Route path="invoice" element={<PharmacyInvoice />} />
+          </Route>
+          <Route path="providers" element={<Outlet />}>
+            <Route index element={<StorefrontProviders />} />
+          </Route>
+          <Route path="accounts" element={<Outlet />}>
+            <Route path="info" element={<StorefrontAccountInformation />} />
+            <Route path="payment" element={<StorefrontPaymentInformation />} />
+            <Route path="profile" element={<StorefrontProfileInformation />} />
+            <Route
+              path="*"
+              element={<Navigate to={`${storefrontUrl}/accounts/profile`} />}
+            />
+          </Route>
           <Route path="insurance" element={<StorefrontInsurance />} />
-          <Route path="pharmacy/invoice" element={<PharmacyInvoice />} />
         </Route>
       </Route>
       <Route path={hospitalUrl} element={<Outlet />}>
@@ -35,14 +59,17 @@ const AppRouter = () => {
           <Route path="login" element={<VerifyOTP />} />
         </Route>
         <Route element={<HospitalMgmtLayout />}>
-          <Route path="schedule" element={<HMSchedule />} />
-          <Route path="schedule/:id" element={<HMPatient />} />
+          <Route path="schedule" element={<Outlet />}>
+            <Route index element={<HMSchedule />} />
+            <Route path=":id" element={<HMPatient />} />
+          </Route>
           <Route path="nurse" element={<Nurse />} />
           <Route path="patient-management" element={<PatientManagement />} />
           <Route
             path="patient-management/create-patient"
             element={<PatientRegistration />}
           />
+          <Route path="services/:id" element={<div>Services</div>} />
         </Route>
         <Route
           index

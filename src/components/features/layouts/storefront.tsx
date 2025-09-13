@@ -19,7 +19,7 @@ const StorefrontLayout = () => {
         })}
       >
         <StorefrontNav toggleSidebar={toggleSidebar} />
-        <section className="w-full">
+        <section className="w-full pb-6">
           <Outlet />
         </section>
       <CartPopover wrapperClassName="fixed bottom-8 right-8 z-50 shadow-2xl" />

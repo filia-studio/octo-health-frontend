@@ -1,19 +1,32 @@
+import type { Route } from "@/types/common";
+
 export const hospitalUrl = "/healthcare";
 export const storefrontUrl = "/storefront";
 
-export const hospitalSidebarRoutes = [
+export const hospitalSidebarRoutes: Route[] = [
   { label: "Appointments", path: `${hospitalUrl}/schedule` },
   { label: "Patients", path: `${hospitalUrl}/patient-management` },
-  // {
-  //   label: "Healthcare Providers",
-  //   path: `${hospitalUrl}/healthcare-providers`,
-  // },
-  // { label: "Accounts", path: `${hospitalUrl}/accounts` },
 ];
 
-export const storefrontSidebarRoutes = [
-  { label: "Schedule", path: `${storefrontUrl}/schedule` },
-  { label: "Pharmacy", path: `${storefrontUrl}/pharmacy` },
-  { label: "Insurance", path: `${storefrontUrl}/insurance` },
-  { label: "Logout", path: `${storefrontUrl}/auth` },
+export const storefrontSidebarRoutes: Route[] = [
+  { label: "Appointments", path: `${storefrontUrl}/schedule` },
+  { label: "Claims", path: `${storefrontUrl}/claims` },
+  { label: "Providers", path: `${storefrontUrl}/providers` },
+  {
+    label: "Accounts",
+    path: `${storefrontUrl}/accounts/profile`,
+    subRoutes: [
+      {
+        label: "Profile Information",
+        path: `${storefrontUrl}/accounts/profile`,
+      },
+      {
+        label: "Payment Information",
+        path: `${storefrontUrl}/accounts/payment`,
+      },
+      { label: "Account Information", path: `${storefrontUrl}/accounts/info` },
+    ],
+  },
+  // { label: "Pharmacy", path: `${storefrontUrl}/pharmacy` },
+  // { label: "Insurance", path: `${storefrontUrl}/insurance` },
 ];

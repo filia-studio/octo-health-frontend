@@ -31,7 +31,7 @@ const ProfileInfo = ({
       className={cn(
         "flex gap-3",
         {
-          "lg:w-full": resizeOnMobile,
+          "lg:w-fit": resizeOnMobile,
           "w-full": !resizeOnMobile,
         },
         className
