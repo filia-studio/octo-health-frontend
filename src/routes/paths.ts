@@ -3,12 +3,12 @@ export const storefrontUrl = "/storefront";
 
 export const hospitalSidebarRoutes = [
   { label: "Appointments", path: `${hospitalUrl}/schedule` },
-  { label: "Claims", path: `${hospitalUrl}/claims` },
-  {
-    label: "Healthcare Providers",
-    path: `${hospitalUrl}/healthcare-providers`,
-  },
-  { label: "Accounts", path: `${hospitalUrl}/accounts` },
+  { label: "Patients", path: `${hospitalUrl}/patient-management` },
+  // {
+  //   label: "Healthcare Providers",
+  //   path: `${hospitalUrl}/healthcare-providers`,
+  // },
+  // { label: "Accounts", path: `${hospitalUrl}/accounts` },
 ];
 
 export const storefrontSidebarRoutes = [

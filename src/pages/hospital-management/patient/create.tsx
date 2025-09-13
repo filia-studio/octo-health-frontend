@@ -1,39 +1,21 @@
-// import DashboardDetailLayout from "@/components/features/layouts/dashboard-detail";
-// import {
-//   Form,
-//   FormControl,
-//   FormDescription,
-//   FormField,
-//   FormItem,
-//   FormLabel,
-//   FormMessage,
-// } from "@/components/ui/form";
-// import { Input } from "@/components/ui/input";
-// import { Button } from "@/components/ui/button";
-// import Select from "react-select";
-// import { useForm } from "react-hook-form";
-// import { z } from "zod";
-// import { zodResolver } from "@hookform/resolvers/zod";
-// import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-// import { useState } from "react";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
 import { useFieldArray, useForm, type SubmitHandler } from "react-hook-form";
 import Select from "react-select";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSend } from "@/hooks/use-send";
+import { useNavigate } from "react-router-dom";
+import { hospitalUrl } from "@/routes/paths";
+import { toast } from "sonner";
 
 const schema = z.object({
   insurance: z
@@ -64,9 +46,7 @@ const schema = z.object({
 type FormSchema = z.infer<typeof schema>;
 
 const PatientRegistration = () => {
-  const [insuranceDetails, setInsuranceDetails] = useState<
-    { provider: string; type: string; plan: string }[]
-  >([]);
+  const navigate = useNavigate();
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(schema),
@@ -94,13 +74,16 @@ const PatientRegistration = () => {
   const { mutate } = useSend<FormData, { message: string }>("patient/", {
     useAuth: false,
     onSuccess: (data, variables) => {
-      // navigate(`${hospitalUrl}/auth/login`);
+      navigate(`${hospitalUrl}/patient-management`);
+    },
+    successMessage: "Patient created successfully",
+    onError: (error: any, variables) => {
+      const errorMessage = error?.response?.data?.user?.[0];
+      toast.error(errorMessage || "Failed to create patient");
     },
   });
 
   const onSubmit: SubmitHandler<FormSchema> = (data) => {
-    console.log({ data });
-
     const formData = new FormData();
 
     Object.entries(data.user).forEach(([key, value]) => {
@@ -361,182 +344,6 @@ const PatientRegistration = () => {
           </Button>
         </div>
       </form>
-      {/* <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="max-w-[40rem] mx-auto space-y-6 py-12"
-      >
-        <FormField
-          control={form.control}
-          name="fullName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Full Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter full name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input type="email" placeholder="Enter email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="phone"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Phone Number</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter phone number" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="address"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Address</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter address" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="gender"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Gender</FormLabel>
-              <FormControl>
-                <Select
-                  value={{ value: field.value, label: field.value }}
-                  onChange={(val: any) => field.onChange(val?.value)}
-                  options={[
-                    { value: "male", label: "Male" },
-                    { value: "female", label: "Female" },
-                    { value: "other", label: "Other" },
-                  ]}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="insuranceProviders"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Insurance Providers</FormLabel>
-              <FormControl>
-                <Select
-                  isMulti
-                  value={field.value}
-                  onChange={(val) => {
-                    field.onChange(val);
-                    setInsuranceDetails(
-                      val.map((p: any) => ({
-                        provider: p.value,
-                        type: "",
-                        plan: "",
-                      }))
-                    );
-                  }}
-                  options={providers}
-                />
-              </FormControl>
-              <FormDescription>
-                Select all insurance providers you’re registered with.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {insuranceDetails.map((detail, index) => (
-          <div
-            key={detail.provider}
-            className="border rounded-md p-4 space-y-4"
-          >
-            <h4 className="font-medium">
-              Insurance Details -{" "}
-              {providers.find((p) => p.value === detail.provider)?.label}
-            </h4>
-
-            <FormField
-              control={form.control}
-              name={`insuranceDetails.${index}.type`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Insurance Type
-                  
-                  </FormLabel>
-                  <FormControl>
-                    <Select
-                      value={
-                        field.value
-                          ? { value: field.value, label: field.value }
-                          : null
-                      }
-                      onChange={(val: any) => field.onChange(val?.value)}
-                      options={[
-                        { value: "group", label: "Group" },
-                        { value: "private", label: "Private" },
-                      ]}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name={`insuranceDetails.${index}.plan`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Insurance Plan</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter plan name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        ))}
-
-        <div className="flex justify-end mt-12">
-          <Button
-            type="submit"
-            className="rounded-[12.5rem] bg-black w-full max-w-[6.5rem] lg:max-w-[11.8rem] h-10 lg:h-12 text-sm lg:text-lg font-semibold"
-          >
-            Submit
-          </Button>
-        </div>
-      </form> */}
     </Form>
   );
 };
