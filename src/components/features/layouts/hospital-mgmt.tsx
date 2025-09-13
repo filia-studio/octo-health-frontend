@@ -13,9 +13,9 @@ const HospitalMgmtLayout: React.FC = () => {
   const toggleSidebar = () => setIsOpen(!isOpen);
   const { auth } = useStore();
 
-  // if (!auth.token) {
-  //   return <Navigate to={`${hospitalUrl}/auth`} replace />;
-  // }
+  if (!auth.token) {
+    return <Navigate to={`${hospitalUrl}/auth`} replace />;
+  }
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">

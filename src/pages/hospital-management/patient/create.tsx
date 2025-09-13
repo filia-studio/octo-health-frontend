@@ -93,7 +93,7 @@ const PatientRegistration = () => {
     },
     { message: string }
   >("patient/", {
-    useAuth: false,
+    useAuth: true,
     onSuccess: (data, variables) => {
       navigate(`${hospitalUrl}/patient-management`);
     },
