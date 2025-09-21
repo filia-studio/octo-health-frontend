@@ -12,6 +12,8 @@ import Nurse from "@/pages/hospital-management/schedule/nurse";
 import PharmacyInvoice from "@/pages/storefront/pharmacy/invoice";
 import VerifyOTP from "@/pages/hospital-management/auth/verify-otp";
 import { hospitalUrl, storefrontUrl } from "./paths";
+import PatientRegistration from "@/pages/hospital-management/patient/create";
+import PatientManagement from "@/pages/hospital-management/patient";
 import StorefrontClaims from "@/pages/storefront/claims";
 import StorefrontFileClaim from "@/pages/storefront/claims/file";
 import StorefrontProviders from "@/pages/storefront/providers";
@@ -62,6 +64,12 @@ const AppRouter = () => {
             <Route path=":id" element={<HMPatient />} />
           </Route>
           <Route path="nurse" element={<Nurse />} />
+          <Route path="patient-management" element={<PatientManagement />} />
+          <Route
+            path="patient-management/create-patient"
+            element={<PatientRegistration />}
+          />
+          <Route path="patient-management/:id" element={<HMPatient />} />
           <Route path="services/:id" element={<div>Services</div>} />
         </Route>
         <Route

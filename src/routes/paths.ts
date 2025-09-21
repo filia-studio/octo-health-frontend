@@ -5,6 +5,7 @@ export const storefrontUrl = "/storefront";
 
 export const hospitalSidebarRoutes: Route[] = [
   { label: "Appointments", path: `${hospitalUrl}/schedule` },
+  { label: "Patients", path: `${hospitalUrl}/patient-management` },
 ];
 
 export const storefrontSidebarRoutes: Route[] = [
@@ -15,8 +16,14 @@ export const storefrontSidebarRoutes: Route[] = [
     label: "Accounts",
     path: `${storefrontUrl}/accounts/profile`,
     subRoutes: [
-      { label: "Profile Information", path: `${storefrontUrl}/accounts/profile` },
-      { label: "Payment Information", path: `${storefrontUrl}/accounts/payment` },
+      {
+        label: "Profile Information",
+        path: `${storefrontUrl}/accounts/profile`,
+      },
+      {
+        label: "Payment Information",
+        path: `${storefrontUrl}/accounts/payment`,
+      },
       { label: "Account Information", path: `${storefrontUrl}/accounts/info` },
     ],
   },

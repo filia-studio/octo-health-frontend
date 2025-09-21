@@ -24,7 +24,7 @@ export const useSend = <Variables, T = unknown>(
   const {
     params,
     useAuth = true,
-    baseUrl = "http://45.33.73.230:8000/api/",
+    baseUrl,
     onSuccess,
     successMessage,
     errorMessage,
