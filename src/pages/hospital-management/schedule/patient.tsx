@@ -2,14 +2,36 @@ import Calendar from "@/components/features/calendar";
 import ClaimCard from "@/components/features/cards/claim-card";
 import PatientCard from "@/components/features/cards/patient-card";
 import ProfileCard from "@/components/features/cards/profile-card";
+import type { IPatient } from "@/types/patient";
 import React from "react";
+import { useLocation } from "react-router-dom";
 
 const HMPatient: React.FC = () => {
+  const { state } = useLocation();
+  const patientData: IPatient = state?.patient || {};
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-full px-4">
       <div className="col-span-1 flex flex-col gap-4">
-        <ProfileCard />
-        <PatientCard />
+        <ProfileCard
+          patientName={`${patientData?.user?.last_name ?? ""} ${
+            patientData?.user?.first_name ?? ""
+          }`}
+          insuranceProvider={
+            patientData?.insurance_details?.length > 1
+              ? `${patientData.insurance_details[0]?.insurance_type} +${
+                  patientData.insurance_details.length - 1
+                }`
+              : patientData?.insurance_details?.[0]?.insurance_type ?? ""
+          }
+          insurancePlan={
+            patientData?.insurance_details?.length > 1
+              ? `${patientData.insurance_details[0]?.insurance_plan} +${
+                  patientData.insurance_details.length - 1
+                }`
+              : patientData?.insurance_details?.[0]?.insurance_plan ?? ""
+          }
+        />
+        <PatientCard patientData={patientData} />
       </div>
       <div className="col-span-2 flex flex-col gap-4">
         <div className="flex flex-wrap sm:flex-nowrap item-center gap-4">

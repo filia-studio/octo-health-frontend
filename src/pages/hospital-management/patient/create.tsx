@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -16,19 +15,20 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useSend } from "@/hooks/use-send";
 import { useNavigate } from "react-router-dom";
 import { hospitalUrl } from "@/routes/paths";
-import { toast } from "sonner";
 import { removeEmptyFields } from "@/lib/utils";
 
 const schema = z.object({
-  insurance: z
-    .array(
-      z.object({
-        name: z.string().min(1, "Insurance name is required"),
-        insurance_type: z.string().min(1, "Insurance type is required"),
-        insurance_plan: z.string().min(1, "Insurance plan is required"),
-      })
-    )
-    .min(1, "At least one insurance entry is required"),
+  insurance: z.array(
+    z.object({
+      name: z.string(),
+      // .min(1, "Insurance name is required"),
+      insurance_type: z.string(),
+      // .min(1, "Insurance type is required"),
+      insurance_plan: z.string(),
+      // .min(1, "Insurance plan is required"),
+    })
+  ),
+  // .min(1, "At least one insurance entry is required"),
 
   user: z.object({
     photo: z.string(),
@@ -93,19 +93,22 @@ const PatientRegistration = () => {
     },
     { message: string }
   >("patient/", {
-    useAuth: true,
+    useAuth: false,
     onSuccess: (data, variables) => {
       navigate(`${hospitalUrl}/patient-management`);
     },
-    onError: (error: any, variables) => {
-      const errorMessage = error?.response?.data?.user?.[0];
-      toast.error(errorMessage || "Failed to create patient");
-    },
+    errorMessage: "An error occurred!",
+    successMessage: "Patient record created successfully",
   });
 
   const onSubmit: SubmitHandler<FormSchema> = (data) => {
     const cleanedData = removeEmptyFields(data);
     mutate(cleanedData);
+  };
+
+  const handleCancel = () => {
+    form.reset();
+    navigate(-1);
   };
 
   return (
@@ -333,7 +336,15 @@ const PatientRegistration = () => {
           />
         </div>
 
-        <div className="flex justify-end mt-12">
+        <div className="flex justify-between mt-12">
+          <Button
+            onClick={handleCancel}
+            //   disabled={isCreating}
+            type="button"
+            className="rounded-[12.5rem] w-full max-w-[6.5rem] lg:max-w-[11.8rem] h-10 lg:h-12 text-sm lg:text-lg font-semibold"
+          >
+            Cancel
+          </Button>
           <Button
             //   disabled={isCreating}
             type="submit"

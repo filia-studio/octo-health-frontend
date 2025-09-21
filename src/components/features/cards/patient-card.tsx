@@ -1,60 +1,69 @@
 import Tabs from "@/components/ui/tabs";
 import React, { useState } from "react";
 import GridData, { type GridDataProps } from "../common/grid-data";
+import type { IPatient } from "@/types/patient";
+import { calculateAge } from "@/pages/hospital-management/patient/utils";
 
-const patientCardData: GridDataProps[] = [
-  {
-    title: "Email",
-    value: "hi@octohealth.pro",
-  },
-  {
-    title: "Gender",
-    value: "Female",
-  },
-  {
-    title: "Member Since",
-    value: "02 July 2025",
-  },
-  { title: "Phone", value: "+1 234 567 8900" },
-  {
-    title: "Age",
-    value: "30 Years Old",
-  },
-  {
-    title: "Recent Consultancy",
-    value: "123 Main St, Springfield, USA",
-  },
-];
+interface PatientCardProps {
+  patientData: IPatient;
+}
 
-const insuranceData: GridDataProps[] = [
-  {
-    title: "Provider",
-    value: "AXA Mansard",
-  },
-  {
-    title: "Code",
-    value: "90430439",
-  },
-  {
-    title: "Support",
-    value: "help@axa.com",
-  },
-  {
-    title: "Plan Status",
-    value: (
-      <span>
-        400K / <span className="text-primary">N2M</span>
-      </span>
-    ),
-  },
-  {
-    title: "Plan Tier",
-    value: "Deluxe Pro II",
-  },
-];
-
-const PatientCard: React.FC = () => {
+const PatientCard: React.FC<PatientCardProps> = ({ patientData }) => {
   const [activeTab, setActiveTab] = useState("Overview");
+
+  const patientCardData: GridDataProps[] = [
+    {
+      title: "Email",
+      value: patientData?.user?.email ?? "N/A",
+    },
+    {
+      title: "Gender",
+      value: patientData?.user?.gender ?? "N/A",
+    },
+    {
+      title: "Member Since",
+      value: new Date(patientData?.user?.date_joined).toLocaleDateString(
+        "en-US",
+        { year: "numeric", month: "long", day: "numeric" }
+      ),
+    },
+    {
+      title: "Phone",
+      value: patientData?.user?.contact_number ?? "N/A",
+    },
+    {
+      title: "Age",
+      value: `${calculateAge(patientData?.user?.date_of_birth)} Years Old`,
+    },
+    {
+      title: "Address",
+      value: patientData?.user?.address ?? "N/A",
+    },
+  ];
+
+  const insurance = patientData?.insurance_details?.[0];
+
+  const insuranceData: GridDataProps[] = insurance
+    ? [
+        {
+          title: "Provider",
+          value: insurance?.name ?? "N/A",
+        },
+        {
+          title: "Type",
+          value: insurance?.insurance_type ?? "N/A",
+        },
+        {
+          title: "Plan Tier",
+          value: insurance?.insurance_plan ?? "N/A",
+        },
+        {
+          title: "Patient ID",
+          value: insurance?.patient ?? "N/A",
+        },
+      ]
+    : [{ title: "No Insurance", value: "N/A" }];
+
   return (
     <div className="border border-[#DBD9D9] rounded-[12px] bg-white p-[24px] h-full">
       <Tabs
@@ -63,7 +72,9 @@ const PatientCard: React.FC = () => {
         setActiveTab={setActiveTab}
       />
       <div className="my-[24px]">
-        {activeTab === "Overview" && <GridData data={patientCardData} />}
+        {activeTab === "Overview" && (
+          <GridData data={patientCardData} className="w-max" />
+        )}
         {activeTab === "Insurance" && <GridData data={insuranceData} />}
       </div>
     </div>

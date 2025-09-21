@@ -17,7 +17,7 @@ const HMSchedule: React.FC = () => {
         setActiveTab={setActiveTab}
       />
       <div>
-        {activeTab === "Patients" && <PatientsTable />}
+        {activeTab === "Patients" && <PatientsTable patientData={[]} />}
       </div>
     </div>
   );

@@ -1,28 +1,28 @@
 import React from "react";
 import { ArrowIcon, ChevronIcon } from "@/components/icons";
 
-interface OverviewCardProps {
+export interface OverviewCardProps {
   data: {
     label: string;
     value: string;
-    change: string;
-    changeColor: string;
+    change?: string;
+    changeColor?: string;
   }[];
 }
 
 const OverViewCard: React.FC<OverviewCardProps> = ({ data }) => {
   return (
-    <div className="mb-6">
+    <div className="py-3">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-bold text-black">Overview</h3>
-        <div className="flex gap-2 pr-12">
+        {/* <div className="flex gap-2 pr-12">
           <ChevronIcon />
           <ChevronIcon
             circleFill="#000000"
             fill="#ffffff"
             className="rotate-180"
           />
-        </div>
+        </div> */}
       </div>
       <div className="w-full overflow-x-auto">
         <div className="flex items-center gap-4 pb-2">
@@ -36,12 +36,20 @@ const OverViewCard: React.FC<OverviewCardProps> = ({ data }) => {
                 <div className="text-6xl font-semibold text-black mb-2">
                   {stat.value}
                 </div>
-                <div className="flex items-center">
-                  <ArrowIcon />
-                  <span className={`font-semibold ${stat.changeColor}`}>
-                    {stat.change}
-                  </span>
-                </div>
+                {stat?.change && (
+                  <div className="flex items-center">
+                    <ArrowIcon
+                      fill={
+                        stat?.changeColor === "text-green-500"
+                          ? "#22C55E"
+                          : "#EF4444"
+                      }
+                    />
+                    <span className={`font-semibold ${stat.changeColor}`}>
+                      {stat.change}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           ))}
