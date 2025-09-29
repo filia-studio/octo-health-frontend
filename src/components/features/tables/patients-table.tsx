@@ -5,7 +5,7 @@ import DataTable, {
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { IPatient } from "@/types/patient";
-import { calculateAge } from "@/pages/hospital-management/patient/utils";
+import { calculateAge } from "@/pages/healthcare/patient/utils";
 import { useSend } from "@/hooks/use-send";
 
 const PatientsTable: React.FC<{

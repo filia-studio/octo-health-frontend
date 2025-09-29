@@ -94,7 +94,7 @@ const PatientRegistration = () => {
     { message: string }
   >("patient/", {
     useAuth: false,
-    onSuccess: (data, variables) => {
+    onSuccess: () => {
       navigate(`${hospitalUrl}/patient-management`);
     },
     errorMessage: "An error occurred!",
@@ -115,77 +115,8 @@ const PatientRegistration = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="max-w-[40rem] mx-auto space-y-6 py-12"
+        className="max-w-[40rem] mx-auto space-y-6 pb-12"
       >
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold">Insurance</h2>
-          {fields.map((field, index) => (
-            <div
-              key={field.id}
-              className="border rounded-lg p-4 space-y-4 relative"
-            >
-              <FormField
-                control={form.control}
-                name={`insurance.${index}.name`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Insurance Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter insurance name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name={`insurance.${index}.insurance_type`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Insurance Type</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter insurance type" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name={`insurance.${index}.insurance_plan`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Insurance Plan</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter insurance plan" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {fields.length > 1 && (
-                <Button
-                  type="button"
-                  variant="destructive"
-                  className="mt-2"
-                  onClick={() => remove(index)}
-                >
-                  Remove
-                </Button>
-              )}
-            </div>
-          ))}
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() =>
-              append({ name: "", insurance_type: "", insurance_plan: "" })
-            }
-          >
-            + Add Insurance
-          </Button>
-        </div>
-
         <div className="space-y-4">
           <h2 className="text-lg font-semibold">User Details</h2>
           <FormField
@@ -287,7 +218,7 @@ const PatientRegistration = () => {
                   <FormControl>
                     <Select
                       value={{ value: field.value, label: field.value }}
-                      onChange={(val: any) => field.onChange(val?.value)}
+                      onChange={(val) => field.onChange(val?.value)}
                       options={[
                         { value: "male", label: "Male" },
                         { value: "female", label: "Female" },
@@ -306,9 +237,9 @@ const PatientRegistration = () => {
                 <FormItem>
                   <FormLabel>User Type</FormLabel>
                   <FormControl>
-                    <Select
+                    <Select<{ value: string; label: string }>
                       value={{ value: field.value, label: field.value }}
-                      onChange={(val: any) => field.onChange(val?.value)}
+                      onChange={(val) => field.onChange(val?.value)}
                       options={[
                         { value: "admin", label: "Admin" },
                         { value: "doctor", label: "Doctor" },
@@ -334,6 +265,76 @@ const PatientRegistration = () => {
               </FormItem>
             )}
           />
+        </div>
+
+
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold">Insurance</h2>
+          {fields.map((field, index) => (
+            <div
+              key={field.id}
+              className="border rounded-lg p-4 space-y-4 relative"
+            >
+              <FormField
+                control={form.control}
+                name={`insurance.${index}.name`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Insurance Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter insurance name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name={`insurance.${index}.insurance_type`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Insurance Type</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter insurance type" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name={`insurance.${index}.insurance_plan`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Insurance Plan</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter insurance plan" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {fields.length > 1 && (
+                <Button
+                  type="button"
+                  variant="destructive"
+                  className="mt-2"
+                  onClick={() => remove(index)}
+                >
+                  Remove
+                </Button>
+              )}
+            </div>
+          ))}
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() =>
+              append({ name: "", insurance_type: "", insurance_plan: "" })
+            }
+          >
+            + Add Insurance
+          </Button>
         </div>
 
         <div className="flex justify-between mt-12">
