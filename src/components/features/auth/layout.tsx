@@ -1,25 +1,28 @@
 import type { SubmitHandler } from "react-hook-form";
 import AuthCard from "../cards/auth";
+import { Outlet } from "react-router-dom";
 
 const AuthLayout = ({
-  placeholder,
+  // placeholder,
   bgImage = "/assets/images/family.png",
-  logo = "/assets/images/octo-health-white.png",
-  btnText,
-  showResendOtp,
-  onSubmit,
-  defaultValues,
-  registerKey,
-}: {
+  children,
+}: // logo = "/assets/images/octo-health-white.png",
+// btnText,
+// showResendOtp,
+// onSubmit,
+// defaultValues,
+// registerKey,
+{
   bgImage?: string;
   dashboardUrl?: string;
   placeholder?: string;
-  logo?: string;
-  btnText?: string;
-  showResendOtp?: boolean;
-  onSubmit: SubmitHandler<any>;
-  defaultValues?: any;
-  registerKey?: string;
+  // logo?: string;
+  // btnText?: string;
+  // showResendOtp?: boolean;
+  // onSubmit: SubmitHandler<any>;
+  // defaultValues?: any;
+  // registerKey?: string;
+  children: React.ReactNode;
 }) => {
   return (
     <main
@@ -31,17 +34,7 @@ const AuthLayout = ({
         backgroundRepeat: "no-repeat",
       }}
     >
-      <div className="flex flex-col gap-6 items-center justify-between w-full relative max-w-[80rem] mx-auto xl:flex-row">
-        <img src={logo} alt="" className="w-[15.2rem] lg:w-[22rem]" />
-        <AuthCard
-          placeholder={placeholder}
-          btnText={btnText}
-          showResendOtp={showResendOtp}
-          onSubmit={onSubmit}
-          defaultValues={defaultValues}
-          registerKey={registerKey}
-        />
-      </div>
+      {children}
     </main>
   );
 };

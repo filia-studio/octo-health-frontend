@@ -20,6 +20,8 @@ import StorefrontProviders from "@/pages/storefront/providers";
 import StorefrontAccountInformation from "@/pages/storefront/accounts/account-info";
 import StorefrontPaymentInformation from "@/pages/storefront/accounts/payment-info";
 import StorefrontProfileInformation from "@/pages/storefront/accounts/profile-info";
+import CreatePatient from "@/pages/hospital-management/patient/create";
+import PatientSignup from "@/pages/hospital-management/auth/patient-signup";
 
 const AppRouter = () => {
   return (
@@ -27,6 +29,7 @@ const AppRouter = () => {
       <Route path={storefrontUrl} element={<Outlet />}>
         <Route path="auth" element={<Outlet />}>
           <Route index element={<StorefrontLogin />} />
+          <Route path="patient-registration" element={<PatientSignup />} />
         </Route>
         <Route element={<StorefrontLayout />}>
           <Route path="schedule" element={<StorefrontSchedule />} />
@@ -65,10 +68,7 @@ const AppRouter = () => {
           </Route>
           <Route path="nurse" element={<Nurse />} />
           <Route path="patient-management" element={<PatientManagement />} />
-          <Route
-            path="patient-management/create-patient"
-            element={<PatientRegistration />}
-          />
+          <Route path="patient-management/create" element={<CreatePatient />} />
           <Route path="patient-management/:id" element={<HMPatient />} />
           <Route path="services/:id" element={<div>Services</div>} />
         </Route>
