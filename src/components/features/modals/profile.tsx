@@ -4,36 +4,46 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import GridData, { type GridDataProps } from "../common/grid-data";
+import type { Patient, User } from "@/types/otp";
+import dayjs from "dayjs";
+import { calculateAge } from "@/pages/healthcare/patient/utils";
 
 const ProfileModal = ({
   open,
   onOpenChange,
+  patient,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  patient?: Patient | null;
 }) => {
   const [tab, setTab] = useState("overview");
+
+  const user: User | null = patient?.user || null;
 
   const overviewData: GridDataProps[] = [
     {
       title: "Email",
-      value: "yetundeabokoku@gmail.com",
+      value: user?.email || "",
     },
     {
       title: "Gender",
-      value: "Male",
+      value: user?.gender || "",
     },
     {
       title: "Member since",
-      value: "02 July 2025",
+      value:
+        dayjs(user?.date_joined || patient?.created_at).format(
+          "DD MMMM YYYY"
+        ) || "",
     },
     {
       title: "Phone",
-      value: "+234 812 345 6789",
+      value: user?.contact_number || "",
     },
     {
       title: "Age",
-      value: "60 Years Old",
+      value: calculateAge(user?.date_of_birth || "") || "",
     },
     {
       title: "Recent consultancy",
@@ -71,15 +81,15 @@ const ProfileModal = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <div className="max-h-[35rem] md:max-h-full overflow-y-auto">
+      <DialogContent className="sm:w-max lg:w-max md:w-max">
+        <div className="max-h-[35rem] md:max-h-full w-max">
           <ProfileInfo
-            name="Yetunde Abokoku"
+            name={`${user?.last_name} ${user?.first_name}`}
             subName="AXA Mansard"
             badge="Deluxe Pro II"
           />
-          <div className="mt-7">
-            <div className="flex gap-8">
+          <div className="mt-7 w-max">
+            <div className="flex gap-8 w-max">
               <Button
                 type="button"
                 variant="link"
@@ -103,7 +113,7 @@ const ProfileModal = ({
             </div>
             <div>
               {tab === "overview" && (
-                <GridData className="my-7" data={overviewData} />
+                <GridData className="my-7 w-max" data={overviewData} />
               )}
               {tab === "insurance" && (
                 <>
