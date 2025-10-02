@@ -3,19 +3,20 @@ import AuthCard from "@/components/features/cards/auth";
 import { useSend } from "@/hooks/use-send";
 import { storefrontUrl } from "@/routes/paths";
 import { useStore } from "@/store";
-import type { OtpVerificationResponse } from "@/types/otp";
+import type { PatientOtpVerificationResponse } from "@/types/otp";
 import { useNavigate } from "react-router-dom";
 
 const VerifyPatientOTP = () => {
   const navigate = useNavigate();
-  const { setAuth } = useStore();
-  const { mutate } = useSend<{ otp: string }, OtpVerificationResponse>(
+  const { setAuth, setPatient } = useStore();
+  const { mutate } = useSend<{ otp: string }, PatientOtpVerificationResponse>(
     "patient/verify_otp/",
     {
       useAuth: false,
       onSuccess: (data) => {
         navigate(`${storefrontUrl}/schedule`);
-        setAuth({ token: data?.data?.access, details: data?.data?.healthcare });
+        setAuth({ token: data?.data?.access });
+        setPatient(data?.data?.patient);
       },
     }
   );
