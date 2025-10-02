@@ -1,13 +1,20 @@
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import StorefrontNav from "../nav/storefront/storefront";
 import Sidebar from "../nav/sidebar";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import CartPopover from "../popovers/cart";
+import { useStore } from "@/store";
+import { storefrontUrl } from "@/routes/paths";
 
 const StorefrontLayout = () => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleSidebar = () => setIsOpen(!isOpen);
+  const { auth } = useStore();
+
+  if (!auth.token) {
+    return <Navigate to={`${storefrontUrl}/auth`} replace />;
+  }
 
   return (
     <main className="flex h-dvh overflow-hidden">
