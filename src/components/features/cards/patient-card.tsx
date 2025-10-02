@@ -2,7 +2,7 @@ import Tabs from "@/components/ui/tabs";
 import React, { useState } from "react";
 import GridData, { type GridDataProps } from "../common/grid-data";
 import type { IPatient } from "@/types/patient";
-import { calculateAge } from "@/pages/hospital-management/patient/utils";
+import { calculateAge } from "@/pages/healthcare/patient/utils";
 
 interface PatientCardProps {
   patientData: IPatient;

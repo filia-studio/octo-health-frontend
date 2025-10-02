@@ -5,23 +5,23 @@ import StorefrontPharmacy from "@/pages/storefront/pharmacy";
 import StorefrontSchedule from "@/pages/storefront/schedule";
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import HospitalMgmtLayout from "@/components/features/layouts/hospital-mgmt";
-import HMSchedule from "@/pages/hospital-management/schedule";
-import HMPatient from "@/pages/hospital-management/schedule/patient";
-import HospitalLogin from "@/pages/hospital-management/auth/login";
-import Nurse from "@/pages/hospital-management/schedule/nurse";
+import HMSchedule from "@/pages/healthcare/schedule";
+import HMPatient from "@/pages/healthcare/schedule/patient";
+import HospitalLogin from "@/pages/healthcare/auth/login";
+import Nurse from "@/pages/healthcare/schedule/nurse";
 import PharmacyInvoice from "@/pages/storefront/pharmacy/invoice";
-import VerifyOTP from "@/pages/hospital-management/auth/verify-otp";
+import VerifyOTP from "@/pages/healthcare/auth/verify-otp";
 import { hospitalUrl, storefrontUrl } from "./paths";
-import PatientRegistration from "@/pages/hospital-management/patient/create";
-import PatientManagement from "@/pages/hospital-management/patient";
+import PatientManagement from "@/pages/healthcare/patient";
 import StorefrontClaims from "@/pages/storefront/claims";
 import StorefrontFileClaim from "@/pages/storefront/claims/file";
 import StorefrontProviders from "@/pages/storefront/providers";
 import StorefrontAccountInformation from "@/pages/storefront/accounts/account-info";
 import StorefrontPaymentInformation from "@/pages/storefront/accounts/payment-info";
 import StorefrontProfileInformation from "@/pages/storefront/accounts/profile-info";
-import CreatePatient from "@/pages/hospital-management/patient/create";
-import PatientSignup from "@/pages/hospital-management/auth/patient-signup";
+import CreatePatient from "@/pages/healthcare/patient/create";
+import PatientSignup from "@/pages/storefront/patient/signup";
+import VerifyPatientOTP from "@/pages/storefront/auth/verify-otp";
 
 const AppRouter = () => {
   return (
@@ -29,7 +29,12 @@ const AppRouter = () => {
       <Route path={storefrontUrl} element={<Outlet />}>
         <Route path="auth" element={<Outlet />}>
           <Route index element={<StorefrontLogin />} />
-          <Route path="patient-registration" element={<PatientSignup />} />
+        </Route>
+        <Route path="signup" element={<Outlet />}>
+          <Route index element={<PatientSignup />} />
+        </Route>
+        <Route path="verify-otp" element={<Outlet />}>
+          <Route index element={<VerifyPatientOTP />} />
         </Route>
         <Route element={<StorefrontLayout />}>
           <Route path="schedule" element={<StorefrontSchedule />} />

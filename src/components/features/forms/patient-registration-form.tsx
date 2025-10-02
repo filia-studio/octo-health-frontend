@@ -12,12 +12,11 @@ import { useFieldArray, useForm, type SubmitHandler } from "react-hook-form";
 import Select from "react-select";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSend } from "@/hooks/use-send";
-import { useNavigate } from "react-router-dom";
-import { hospitalUrl } from "@/routes/paths";
 import { removeEmptyFields } from "@/lib/utils";
 import { useState } from "react";
 import { X } from "lucide-react";
+import { StandaloneSearchBox } from "@react-google-maps/api";
+import { useGetLocation } from "@/hooks/use-get-location";
 
 const schema = z.object({
   insurance: z.array(
@@ -39,14 +38,24 @@ const schema = z.object({
     user_type: z.enum(["admin", "doctor", "patient"]),
     date_of_birth: z.string().min(1, "Date of birth is required"),
   }),
+  longitude: z.string(),
+  latitude: z.string(),
+  zipcode: z.string(),
 });
 
 type FormSchema = z.infer<typeof schema>;
 
-const PatientRegistrationForm = ({ isAuth = false }: { isAuth?: boolean }) => {
-  const navigate = useNavigate();
+const PatientRegistrationForm = ({
+  isAuth = false,
+  handleSubmit,
+}: {
+  isAuth?: boolean;
+  handleSubmit: (data: any) => void;
+}) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [step, setStep] = useState<1 | 2>(1);
+
+  const { inputRef, isLoaded, getLocation } = useGetLocation();
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(schema),
@@ -65,24 +74,30 @@ const PatientRegistrationForm = ({ isAuth = false }: { isAuth?: boolean }) => {
         user_type: "patient",
         date_of_birth: "",
       },
+      longitude: "",
+      latitude: "",
+      zipcode: "",
     },
   });
+
+  const { longitude, latitude, zipcode } = getLocation(
+    form.watch("user.address")
+  );
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "insurance",
   });
 
-  const { mutate } = useSend<any, { message: string }>("patient/", {
-    useAuth: false,
-    onSuccess: () => navigate(`${hospitalUrl}/patient-management`),
-    errorMessage: "An error occurred!",
-    successMessage: "Patient record created successfully",
-  });
-
   const onSubmit: SubmitHandler<FormSchema> = (data) => {
-    const cleanedData = removeEmptyFields(data);
-    mutate(cleanedData);
+    const payload = {
+      ...data,
+      longitude: longitude,
+      latitude: latitude,
+      zipcode: zipcode,
+    };
+    const cleanedData = removeEmptyFields(payload);
+    handleSubmit(cleanedData);
   };
 
   return (
@@ -220,7 +235,23 @@ const PatientRegistrationForm = ({ isAuth = false }: { isAuth?: boolean }) => {
                 <FormItem>
                   <FormLabel>Address</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter address" {...field} />
+                    {isLoaded ? (
+                      <StandaloneSearchBox
+                        onPlacesChanged={() => {
+                          form.setValue(
+                            field.name,
+                            inputRef?.current?.getPlaces()?.[0]
+                              ?.formatted_address ?? ""
+                          );
+                        }}
+                        onLoad={(ref) => (inputRef.current = ref)}
+                      >
+                        <Input placeholder="Enter Address" {...field} />
+                      </StandaloneSearchBox>
+                    ) : (
+                      <Input placeholder="Enter Address" {...field} />
+                    )}
+                    {/* <Input placeholder="Enter address" {...field} /> */}
                   </FormControl>
                   <FormMessage />
                 </FormItem>
