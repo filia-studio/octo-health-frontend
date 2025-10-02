@@ -1,23 +1,26 @@
 import AuthLayout from "@/components/features/auth/layout";
 import AuthCard from "@/components/features/cards/auth";
 import { useSend } from "@/hooks/use-send";
-import { hospitalUrl } from "@/routes/paths";
-import type { SubmitHandler } from "react-hook-form";
+import { storefrontUrl } from "@/routes/paths";
+import { useStore } from "@/store";
+import type { OtpVerificationResponse } from "@/types/otp";
 import { useNavigate } from "react-router-dom";
 
-const HospitalLogin = () => {
+const VerifyPatientOTP = () => {
   const navigate = useNavigate();
-  const { mutate } = useSend<{ email: string }, { message: string }>(
-    "healthcare/login/",
+  const { setAuth } = useStore();
+  const { mutate } = useSend<{ otp: string }, OtpVerificationResponse>(
+    "patient/verify_otp/",
     {
       useAuth: false,
-      onSuccess: (data, variables) => {
-        navigate(`${hospitalUrl}/auth/login`);
+      onSuccess: (data) => {
+        navigate(`${storefrontUrl}/schedule`);
+        setAuth({ token: data?.data?.access, details: data?.data?.healthcare });
       },
     }
   );
 
-  const onSubmit = (data: { email: string }) => {
+  const onSubmit = (data: { otp: string }) => {
     mutate(data);
   };
   return (
@@ -29,13 +32,16 @@ const HospitalLogin = () => {
           className="w-[15.2rem] lg:w-[22rem]"
         />
         <AuthCard
-          placeholder="hi@octohealth.pro"
+          placeholder="Enter OTP"
+          btnText="Verify OTP"
+          showResendOtp={true}
           onSubmit={(data: any) => onSubmit(data)}
-          defaultValues={{ email: "" }}
+          defaultValues={{ otp: "" }}
+          registerKey="otp"
         />
       </div>
     </AuthLayout>
   );
 };
 
-export default HospitalLogin;
+export default VerifyPatientOTP;

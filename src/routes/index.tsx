@@ -12,7 +12,6 @@ import Nurse from "@/pages/healthcare/schedule/nurse";
 import PharmacyInvoice from "@/pages/storefront/pharmacy/invoice";
 import VerifyOTP from "@/pages/healthcare/auth/verify-otp";
 import { hospitalUrl, storefrontUrl } from "./paths";
-import PatientRegistration from "@/pages/healthcare/patient/create";
 import PatientManagement from "@/pages/healthcare/patient";
 import StorefrontClaims from "@/pages/storefront/claims";
 import StorefrontFileClaim from "@/pages/storefront/claims/file";
@@ -20,6 +19,9 @@ import StorefrontProviders from "@/pages/storefront/providers";
 import StorefrontAccountInformation from "@/pages/storefront/accounts/account-info";
 import StorefrontPaymentInformation from "@/pages/storefront/accounts/payment-info";
 import StorefrontProfileInformation from "@/pages/storefront/accounts/profile-info";
+import CreatePatient from "@/pages/healthcare/patient/create";
+import PatientSignup from "@/pages/storefront/patient/signup";
+import VerifyPatientOTP from "@/pages/storefront/auth/verify-otp";
 
 const AppRouter = () => {
   return (
@@ -27,6 +29,12 @@ const AppRouter = () => {
       <Route path={storefrontUrl} element={<Outlet />}>
         <Route path="auth" element={<Outlet />}>
           <Route index element={<StorefrontLogin />} />
+        </Route>
+        <Route path="signup" element={<Outlet />}>
+          <Route index element={<PatientSignup />} />
+        </Route>
+        <Route path="verify-otp" element={<Outlet />}>
+          <Route index element={<VerifyPatientOTP />} />
         </Route>
         <Route element={<StorefrontLayout />}>
           <Route path="schedule" element={<StorefrontSchedule />} />
@@ -65,10 +73,7 @@ const AppRouter = () => {
           </Route>
           <Route path="nurse" element={<Nurse />} />
           <Route path="patient-management" element={<PatientManagement />} />
-          <Route
-            path="patient-management/create-patient"
-            element={<PatientRegistration />}
-          />
+          <Route path="patient-management/create" element={<CreatePatient />} />
           <Route path="patient-management/:id" element={<HMPatient />} />
           <Route path="services/:id" element={<div>Services</div>} />
         </Route>
