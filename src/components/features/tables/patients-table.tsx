@@ -10,7 +10,7 @@ import { useSend } from "@/hooks/use-send";
 
 const PatientsTable: React.FC<{
   patientData: IPatient[] | null;
-  refetch?: any;
+  refetch?: () => void;
 }> = ({ patientData, refetch }) => {
   const navigate = useNavigate();
   const [selectedId, setSelectedId] = useState("");
@@ -20,8 +20,8 @@ const PatientsTable: React.FC<{
     {
       method: "delete",
       useAuth: false,
-      onSuccess: (_, variables) => {
-        refetch();
+      onSuccess: () => {
+        refetch?.();
       },
       errorMessage: "Failed to delete patient",
       successMessage: "Patient record deleted successfully",

@@ -50,7 +50,7 @@ const PatientRegistrationForm = ({
   handleSubmit,
 }: {
   isAuth?: boolean;
-  handleSubmit: (data: any) => void;
+  handleSubmit: (data: FormSchema) => void;
 }) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [step, setStep] = useState<1 | 2>(1);
@@ -97,7 +97,7 @@ const PatientRegistrationForm = ({
       zipcode: zipcode,
     };
     const cleanedData = removeEmptyFields(payload);
-    handleSubmit(cleanedData);
+    handleSubmit(cleanedData as FormSchema);
   };
 
   return (
@@ -244,14 +244,13 @@ const PatientRegistrationForm = ({
                               ?.formatted_address ?? ""
                           );
                         }}
-                        onLoad={(ref) => (inputRef.current = ref)}
+                        onLoad={(ref: google.maps.places.SearchBox) => (inputRef.current = ref)}
                       >
                         <Input placeholder="Enter Address" {...field} />
                       </StandaloneSearchBox>
                     ) : (
                       <Input placeholder="Enter Address" {...field} />
                     )}
-                    {/* <Input placeholder="Enter address" {...field} /> */}
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -269,7 +268,7 @@ const PatientRegistrationForm = ({
                       <Select
                         classNamePrefix="react-select"
                         value={{ value: field.value, label: field.value }}
-                        onChange={(val: any) => field.onChange(val?.value)}
+                        onChange={(val) => field.onChange(val?.value)}
                         options={[
                           { value: "male", label: "Male" },
                           { value: "female", label: "Female" },
@@ -338,7 +337,7 @@ const PatientRegistrationForm = ({
                             classNamePrefix="react-select"
                             placeholder="Select insurance provider"
                             value={{ value: field.value, label: field.value }}
-                            onChange={(val: any) => field.onChange(val?.value)}
+                            onChange={(val) => field.onChange(val?.value)}
                             options={[
                               { value: "Reliance", label: "Reliance" },
                               { value: "AXA Mansard", label: "AXA Mansard" },
@@ -384,7 +383,7 @@ const PatientRegistrationForm = ({
                               classNamePrefix="react-select"
                               placeholder="Select insurance type"
                               value={{ value: field.value, label: field.value }}
-                              onChange={(val: any) =>
+                              onChange={(val) =>
                                 field.onChange(val?.value)
                               }
                               options={[
@@ -419,7 +418,7 @@ const PatientRegistrationForm = ({
                             classNamePrefix="react-select"
                             placeholder="Select insurance plan"
                             value={{ value: field.value, label: field.value }}
-                            onChange={(val: any) => field.onChange(val?.value)}
+                            onChange={(val) => field.onChange(val?.value)}
                             options={[
                               { value: "Gold", label: "Gold" },
                               { value: "Platinum", label: "Platinum" },

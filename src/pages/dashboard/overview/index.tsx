@@ -3,6 +3,7 @@ import HospitalCard from "@/components/features/cards/hospital";
 import InsuranceCard from "@/components/features/cards/insurance";
 import InsurancePlanCard from "@/components/features/cards/insurance-plan";
 import ProfileInfo from "@/components/features/profile/profile-info";
+import type { IHealthcare } from "@/types/healthcare";
 
 const DashboardOverview = () => {
   return (
@@ -13,7 +14,7 @@ const DashboardOverview = () => {
         subName="AXA Mansard"
         badge="Deluxe Pro II"
       />
-      <HospitalCard />
+      <HospitalCard healthcare={{} as IHealthcare} />
       <InsuranceCard />
       <PharmacyDrugCard />
       <InsurancePlanCard />

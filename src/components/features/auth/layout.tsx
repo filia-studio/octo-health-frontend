@@ -1,7 +1,3 @@
-import type { SubmitHandler } from "react-hook-form";
-import AuthCard from "../cards/auth";
-import { Outlet } from "react-router-dom";
-
 const AuthLayout = ({
   // placeholder,
   bgImage = "/assets/images/family.png",

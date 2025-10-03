@@ -2,7 +2,6 @@ import AuthLayout from "@/components/features/auth/layout";
 import AuthCard from "@/components/features/cards/auth";
 import { useSend } from "@/hooks/use-send";
 import { hospitalUrl } from "@/routes/paths";
-import type { SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 const HospitalLogin = () => {
@@ -11,7 +10,7 @@ const HospitalLogin = () => {
     "healthcare/login/",
     {
       useAuth: false,
-      onSuccess: (data, variables) => {
+      onSuccess: () => {
         navigate(`${hospitalUrl}/auth/login`);
       },
     }
@@ -30,7 +29,7 @@ const HospitalLogin = () => {
         />
         <AuthCard
           placeholder="hi@octohealth.pro"
-          onSubmit={(data: any) => onSubmit(data)}
+          onSubmit={(data) => onSubmit(data as { email: string })}
           defaultValues={{ email: "" }}
         />
       </div>
