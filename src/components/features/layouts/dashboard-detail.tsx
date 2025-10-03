@@ -14,7 +14,7 @@ const DashboardDetailLayout = ({
   const navigate = useNavigate();
 
   return (
-    <section>
+    <section className="px-4">
       <div className="bg-white rounded-2xl rounded-b-none border border-[#E1E1E1] min-h-dvh">
         <div className="flex items-center gap-2 p-3 border-b border-[#E1E1E1]">
           {showBack && (

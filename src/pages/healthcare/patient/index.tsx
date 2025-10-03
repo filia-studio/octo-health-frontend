@@ -8,9 +8,9 @@ import { FaPlusCircle } from "react-icons/fa";
 import { hospitalUrl } from "@/routes/paths";
 
 const PatientManagement: React.FC = () => {
-  const { data, refetch } = useFetch<IPatient[]>("patient/", {
+  const { data, refetch, isLoading } = useFetch<IPatient[]>("patient/", {
     useAuth: false,
-
+    hideToast: "success",
     errorMessage: "Failed to load patients",
   });
 
@@ -25,7 +25,11 @@ const PatientManagement: React.FC = () => {
         </Button>
       </div>
 
-      <PatientsTable patientData={data ?? []} refetch={refetch} />
+      <PatientsTable
+        isLoading={isLoading}
+        patientData={data ?? []}
+        refetch={refetch}
+      />
     </div>
   );
 };

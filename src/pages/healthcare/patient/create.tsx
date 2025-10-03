@@ -7,14 +7,14 @@ import { useNavigate } from "react-router-dom";
 
 const CreatePatient: React.FC = () => {
   const navigate = useNavigate();
-  const { mutate } = useSend<any, { message: string }>("patient/", {
+  const { mutate } = useSend<unknown, { message: string }>("patient/", {
     useAuth: false,
     onSuccess: () => navigate(`${hospitalUrl}/patient-management`),
     errorMessage: "An error occurred!",
     successMessage: "Patient record created successfully",
   });
 
-  const handleSubmit = (data: any) => {
+  const handleSubmit = (data: unknown) => {
     mutate(data);
   };
   return (
