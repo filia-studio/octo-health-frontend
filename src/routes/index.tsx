@@ -59,6 +59,11 @@ const AppRouter = () => {
             />
           </Route>
           <Route path="insurance" element={<StorefrontInsurance />} />
+          <Route
+            index
+            path="*"
+            element={<Navigate to={`${storefrontUrl}/auth`} />}
+          />
         </Route>
       </Route>
       <Route path={hospitalUrl} element={<Outlet />}>
