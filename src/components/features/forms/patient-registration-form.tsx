@@ -97,7 +97,6 @@ const PatientRegistrationForm = ({
   });
 
   const onSubmit: SubmitHandler<FormSchema> = (data) => {
-    console.log(data)
     const payload = {
       ...data,
       longitude: longitude,
@@ -105,7 +104,15 @@ const PatientRegistrationForm = ({
       zipcode: zipcode,
     };
     const cleanedData = removeEmptyFields(payload);
-    handleSubmit(cleanedData as FormSchema);
+    const { insurance, ...rest } = cleanedData;
+    let insuranceProviders = insurance;
+    if (!isAuth) {
+      insuranceProviders = insurance.map((provider, index) => ({
+        ...data.insurance[index],
+        ...provider,
+      }));
+    }
+    handleSubmit({ ...rest, insurance: insuranceProviders } as FormSchema);
   };
 
   return (
@@ -145,6 +152,7 @@ const PatientRegistrationForm = ({
                           <Input
                             type="file"
                             accept="image/*"
+                            className="h-auto"
                             onChange={(e) => {
                               const file = e.target.files?.[0];
                               if (file) {
@@ -400,17 +408,16 @@ const PatientRegistrationForm = ({
                                   </span>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                    <p>
-                                      - Group Insurance: Coverage purchased by
-                                      an employer, association, or organization
-                                      for its members or employees.
-                                    </p>
-                                    <p>
-                                      - Private (Individual) Insurance: Coverage
-                                      that a person buys for themselves (and
-                                      their family) directly from an insurance
-                                      company.
-                                    </p>
+                                  <p>
+                                    - Group Insurance: Coverage purchased by an
+                                    employer, association, or organization for
+                                    its members or employees.
+                                  </p>
+                                  <p>
+                                    - Private (Individual) Insurance: Coverage
+                                    that a person buys for themselves (and their
+                                    family) directly from an insurance company.
+                                  </p>
                                 </TooltipContent>
                               </Tooltip>
                             </FormLabel>
