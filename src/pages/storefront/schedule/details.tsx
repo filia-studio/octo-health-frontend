@@ -1,8 +1,7 @@
 import HospitalDetails from "@/components/features/details-component";
 import RatingsList from "@/components/features/ratings/rating-list";
 import { useFetch } from "@/hooks/use-fetch";
-import type { IHealthcare } from "@/types/healthcare";
-import React, { useState } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
 
 const ratings: any = [
