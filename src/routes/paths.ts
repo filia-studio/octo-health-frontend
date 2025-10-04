@@ -2,10 +2,16 @@ import type { Route } from "@/types/common";
 
 export const hospitalUrl = "/healthcare";
 export const storefrontUrl = "/storefront";
+export const insuranceUrl = "/insurance";
 
 export const hospitalSidebarRoutes: Route[] = [
   { label: "Appointments", path: `${hospitalUrl}/schedule` },
   { label: "Patients", path: `${hospitalUrl}/patient-management` },
+];
+
+export const insuranceSidebarRoutes: Route[] = [
+  { label: "Schedule", path: `${insuranceUrl}/schedule` },
+  // { label: "Patients", path: `${hospitalUrl}/patient-management` },
 ];
 
 export const storefrontSidebarRoutes: Route[] = [

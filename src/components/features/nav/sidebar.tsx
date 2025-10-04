@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import {
   hospitalSidebarRoutes,
   hospitalUrl,
+  insuranceSidebarRoutes,
   storefrontSidebarRoutes,
 } from "@/routes/paths";
 import { BsArrowsAngleExpand } from "react-icons/bs";
@@ -37,6 +38,8 @@ const Sidebar = ({
 
   const modifiedHospitalRoutes: Route[] = [...hospitalSidebarRoutes];
 
+  const modifiedInsuranceRoutes: Route[] = [...insuranceSidebarRoutes];
+
   if (healthcareServices?.length) {
     modifiedHospitalRoutes.push({
       label: "Healthcare Services",
@@ -48,6 +51,7 @@ const Sidebar = ({
   const routes: Record<string, Route[]> = {
     [DashboardModule.Storefront]: storefrontSidebarRoutes,
     [DashboardModule.Hospital]: modifiedHospitalRoutes,
+    [DashboardModule.Insurance]: modifiedInsuranceRoutes,
   };
 
   const paths = routes[module];

@@ -106,7 +106,7 @@ const HospitalDetails: React.FC<Props> = ({ hospital }) => {
         </div>
       )}
 
-      <div className="grid grid-cols-2">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-[16px]">
         <div>
           <h3 className="text-[#7A7A7A] text-sm">Contact</h3>
           <p className="text-sm">{hospital?.contact_number}</p>
