@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const CreatePatient: React.FC = () => {
   const navigate = useNavigate();
-  const { mutate } = useSend<unknown, { message: string }>("healthcare/create_patient/", {
+  const { mutate } = useSend<unknown, { message: string }>("patient/", { //change back to healthcare patient endpoint
     useAuth: false,
     onSuccess: () => navigate(`${hospitalUrl}/patient-management`),
     errorMessage: "An error occurred!",
