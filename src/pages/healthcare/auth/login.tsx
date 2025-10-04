@@ -12,7 +12,7 @@ const HospitalLogin = () => {
       useAuth: false,
       onSuccess: (_, variables) => {
         sessionStorage.setItem("email", variables.email);
-        navigate(`${hospitalUrl}/auth/login`);
+        navigate(`${hospitalUrl}/auth/verify-otp`);
       },
     }
   );

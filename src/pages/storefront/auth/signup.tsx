@@ -1,5 +1,5 @@
-import AuthLayout from "@/components/features/auth/layout";
 import PatientRegistrationForm from "@/components/features/forms/patient-registration-form";
+import RegisterLayout from "@/components/features/layouts/register";
 import { useSend } from "@/hooks/use-send";
 import { storefrontUrl } from "@/routes/paths";
 import React from "react";
@@ -22,25 +22,13 @@ const PatientSignup: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden">
-      <div className="hidden md:flex md:w-fit">
-        <AuthLayout>
-          <div className="flex flex-col gap-6 items-center justify-between w-full relative mx-auto xl:flex-row">
-            <img
-              src="/assets/svgs/arrow-eye-octo.svg"
-              alt=""
-              className="w-[15.2rem] lg:w-[22rem]"
-            />
-          </div>
-        </AuthLayout>
-      </div>
-      <div className="flex-1 h-screen overflow-y-auto">
-        <div className="h-10 bg-primary"></div>
-        <div className="max-w-x mx-auto w-full">
-          <PatientRegistrationForm isAuth={true} loading={isPending} handleSubmit={handleSubmit} />
-        </div>
-      </div>
-    </div>
+    <RegisterLayout>
+      <PatientRegistrationForm
+        isAuth
+        loading={isPending}
+        handleSubmit={handleSubmit}
+      />
+    </RegisterLayout>
   );
 };
 

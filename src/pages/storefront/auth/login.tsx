@@ -16,7 +16,7 @@ const PatientLogin = () => {
           "patient_code",
           (variables as { patient_code: string }).patient_code
         );
-        navigate(`${storefrontUrl}/verify-otp`);
+        navigate(`${storefrontUrl}/auth/verify-otp`);
       },
       errorMessage: "An error occurred!",
       successMessage: "Success!",
