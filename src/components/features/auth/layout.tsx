@@ -1,23 +1,8 @@
 const AuthLayout = ({
-  // placeholder,
   bgImage = "/assets/images/family.png",
   children,
-}: // logo = "/assets/images/octo-health-white.png",
-// btnText,
-// showResendOtp,
-// onSubmit,
-// defaultValues,
-// registerKey,
-{
+}: {
   bgImage?: string;
-  dashboardUrl?: string;
-  placeholder?: string;
-  // logo?: string;
-  // btnText?: string;
-  // showResendOtp?: boolean;
-  // onSubmit: SubmitHandler<any>;
-  // defaultValues?: any;
-  // registerKey?: string;
   children: React.ReactNode;
 }) => {
   return (

@@ -4,17 +4,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useSend } from "@/hooks/use-send";
+import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { FaInfoCircle } from "react-icons/fa";
 import { IoReload } from "react-icons/io5";
 
 const AuthCard = ({
+  type = "healthcare",
   placeholder = "Enter ID",
   btnText = "Send OTP",
   showResendOtp = false,
   onSubmit,
   defaultValues,
+  loading,
   registerKey = "email",
 }: {
   placeholder?: string;
@@ -23,34 +26,46 @@ const AuthCard = ({
   onSubmit: SubmitHandler<Record<string, string>>;
   defaultValues?: Record<string, string>;
   registerKey?: string;
+  loading?: boolean;
+  type?: "healthcare" | "patient" | "insurance";
 }) => {
   const form = useForm({
     defaultValues,
   });
 
-  const [storedEmail, setStoredEmail] = useState<string | null>(
-    localStorage.getItem("email")
+  const key = type === "patient" ? "patient_code" : "email";
+
+  const [storedKey, setStoredKey] = useState<string | null>(
+    localStorage.getItem(key)
   );
 
   useEffect(() => {
-    if (storedEmail) {
-      form.setValue("email", storedEmail);
+    if (storedKey) {
+      form.setValue(key, storedKey);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { mutate, isPending } = useSend<{ email: string }, { message: string }>(
-    "healthcare/login/",
-    {
+  const { mutate: logHeathcare, isPending: logingHealthcare } =
+    useSend<{ email: string }, { message: string }>("healthcare/login/", {
       useAuth: false,
-      // onSuccess: (data, variables) => {
-      //   navigate(`${hospitalUrl}/auth/login`);
-      // },
-    }
-  );
+    });
 
-  const onResendOtp = (data: { email: string }) => {
-    mutate(data);
+  const { mutate: logPatient, isPending: loggingPatient } = useSend<
+    unknown,
+    { message: string }
+  >("patient/patient_login/", {
+    useAuth: false,
+  });
+
+  const isPending = logingHealthcare || loggingPatient;
+
+  const onResendOtp = (data: { key: string }) => {
+    if (key === "patient_code") {
+      logPatient({ patient_code: data.key });
+      return;
+    }
+    logHeathcare({ email: data.key });
   };
 
   return (
@@ -74,10 +89,17 @@ const AuthCard = ({
           {showResendOtp ? (
             <div
               className="flex items-center space-x-2 cursor-pointer"
-              onClick={() => onResendOtp({ email: "" })}
+              onClick={
+                !isPending
+                  ? () => onResendOtp({ key: sessionStorage.getItem(key) ?? "" })
+                  : undefined
+              }
             >
-              <IoReload color="#000" />
-              <Label htmlFor="switch-mode" className="text-sm lg:text-xl">
+              <IoReload
+                color="#000"
+                className={cn({ "animate-spin": isPending })}
+              />
+              <Label htmlFor="switch-mode" className="text-sm lg:text-xl cursor-pointer">
                 Resend OTP
               </Label>
             </div>
@@ -86,14 +108,14 @@ const AuthCard = ({
               <Switch
                 id="switch-mode"
                 className="w-8 lg:w-[5.5625rem] h-4 lg:h-11 lg:p-1"
-                checked={!!storedEmail}
+                checked={!!storedKey}
                 onCheckedChange={() => {
-                  if (storedEmail) {
-                    localStorage.removeItem("email");
-                    setStoredEmail(null);
+                  if (storedKey) {
+                    localStorage.removeItem(key);
+                    setStoredKey(null);
                   } else {
-                    localStorage.setItem("email", form.getValues("email"));
-                    setStoredEmail(form.getValues("email"));
+                    localStorage.setItem(key, form.getValues(key));
+                    setStoredKey(form.getValues(key));
                   }
                 }}
               />
@@ -104,6 +126,7 @@ const AuthCard = ({
           )}
           <Button
             disabled={isPending}
+            isLoading={loading}
             className="rounded-[12.5rem] bg-black w-full max-w-[6.5rem] lg:max-w-[11.8rem] h-10 lg:h-[4.1875rem] text-sm lg:text-xl font-semibold"
           >
             {btnText}

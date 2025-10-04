@@ -8,7 +8,7 @@ import { FaPlusCircle } from "react-icons/fa";
 import { hospitalUrl } from "@/routes/paths";
 
 const PatientManagement: React.FC = () => {
-  const { data, refetch, isLoading } = useFetch<IPatient[]>("patient/", {
+  const { data, refetch, isLoading } = useFetch<IPatient[]>("healthcare/create_patient/", {
     useAuth: false,
     hideToast: "success",
     errorMessage: "Failed to load patients",

@@ -20,7 +20,7 @@ import StorefrontAccountInformation from "@/pages/storefront/accounts/account-in
 import StorefrontPaymentInformation from "@/pages/storefront/accounts/payment-info";
 import StorefrontProfileInformation from "@/pages/storefront/accounts/profile-info";
 import CreatePatient from "@/pages/healthcare/patient/create";
-import PatientSignup from "@/pages/storefront/patient/signup";
+import PatientSignup from "@/pages/storefront/auth/signup";
 import VerifyPatientOTP from "@/pages/storefront/auth/verify-otp";
 
 const AppRouter = () => {
