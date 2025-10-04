@@ -13,11 +13,10 @@ import z from "zod";
 import Select, { type SingleValue } from "react-select";
 import { useState } from "react";
 import { useFetch } from "@/hooks/use-fetch";
-import type { HealthcareService } from "@/types/healthcare";
 import { Button } from "@/components/ui/button";
 import { useSend } from "@/hooks/use-send";
 import { useNavigate } from "react-router-dom";
-import { hospitalUrl, insuranceUrl } from "@/routes/paths";
+import { insuranceUrl } from "@/routes/paths";
 
 const schema = z.object({
   email: z.email("Invalid email"),
