@@ -9,6 +9,7 @@ import { useState } from "react";
 import type { IHealthcare } from "@/types/healthcare";
 import { haversineDistance } from "@/lib/utils";
 import { useStore } from "@/store";
+import { useNavigate } from "react-router-dom";
 
 const HospitalCard = ({
   healthcare,
@@ -20,7 +21,7 @@ const HospitalCard = ({
   showCalendar?: boolean;
 }) => {
   const [openCalendar, setOpenCalendar] = useState(false);
-
+  const navigate = useNavigate();
   const { patient } = useStore();
 
   const userLat = patient?.latitude ?? null;
@@ -75,7 +76,10 @@ const HospitalCard = ({
           </small>
         </div>
 
-        <h3 className="font-semibold line-clamp-2 max-w-[13.1825rem] my-2">
+        <h3
+          onClick={() => navigate(healthcare?.id)}
+          className="font-semibold line-clamp-2 max-w-[13.1825rem] my-2"
+        >
           {healthcare?.name}
           <MdVerified
             fill="#C80740"
