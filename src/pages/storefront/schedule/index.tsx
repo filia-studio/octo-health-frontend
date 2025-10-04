@@ -11,7 +11,7 @@ const StorefrontSchedule = () => {
     onSuccess: (data) => {
       setHealthcare(data?.data);
     },
-    errorMessage: "Failed to load patients",
+    errorMessage: "Failed to load healthcare providers",
   });
 
   const healthcareList: IHealthcare[] | null = data?.data || [];

@@ -22,6 +22,7 @@ import StorefrontProfileInformation from "@/pages/storefront/accounts/profile-in
 import CreatePatient from "@/pages/healthcare/patient/create";
 import PatientSignup from "@/pages/storefront/auth/signup";
 import VerifyPatientOTP from "@/pages/storefront/auth/verify-otp";
+import HospitalPage from "@/pages/storefront/schedule/details";
 import HealthcareSignup from "@/pages/healthcare/auth/signup";
 
 const AppRouter = () => {
@@ -34,7 +35,11 @@ const AppRouter = () => {
           <Route path="verify-otp" element={<VerifyPatientOTP />} />
         </Route>
         <Route element={<StorefrontLayout />}>
-          <Route path="schedule" element={<StorefrontSchedule />} />
+          <Route path="schedule" element={<Outlet />}>
+            <Route index element={<StorefrontSchedule />} />
+            <Route path=":id" element={<HospitalPage />} />
+          </Route>
+
           <Route path="claims" element={<Outlet />}>
             <Route index element={<StorefrontClaims />} />
             <Route path="file" element={<StorefrontFileClaim />} />
