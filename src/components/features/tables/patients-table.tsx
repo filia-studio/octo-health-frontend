@@ -10,8 +10,9 @@ import { useSend } from "@/hooks/use-send";
 
 const PatientsTable: React.FC<{
   patientData: IPatient[] | null;
-  refetch?: any;
-}> = ({ patientData, refetch }) => {
+  refetch?: () => void;
+  isLoading?: boolean;
+}> = ({ patientData, refetch, isLoading }) => {
   const navigate = useNavigate();
   const [selectedId, setSelectedId] = useState("");
 
@@ -20,8 +21,8 @@ const PatientsTable: React.FC<{
     {
       method: "delete",
       useAuth: false,
-      onSuccess: (_, variables) => {
-        refetch();
+      onSuccess: () => {
+        refetch?.();
       },
       errorMessage: "Failed to delete patient",
       successMessage: "Patient record deleted successfully",
@@ -54,12 +55,12 @@ const PatientsTable: React.FC<{
     {
       header: "Email",
       key: "email",
-      render: (row) => <div>{row?.user?.email}</div>,
+      render: (row) => <div className="break-all">{row?.user?.email}</div>,
     },
     {
       header: "Address",
       key: "address",
-      render: (row) => <div>{row?.user?.address}</div>,
+      render: (row) => <div className="break-all">{row?.user?.address}</div>,
     },
     {
       header: "Phone Number",
@@ -85,7 +86,11 @@ const PatientsTable: React.FC<{
 
   return (
     <div>
-      <DataTable columns={columns} data={patientData || []} />
+      <DataTable
+        loading={isLoading}
+        columns={columns}
+        data={patientData || []}
+      />
     </div>
   );
 };

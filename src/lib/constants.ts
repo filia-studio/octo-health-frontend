@@ -75,3 +75,12 @@ export const insuranceCoverages = [
   "Worker’s Compensation Insurance",
   "Motor Vehicle Medical Coverage",
 ];
+
+export const healthcareProviders = [
+  "Hospital",
+  "Pharmacy",
+  "Lab",
+  "Ultrasound center",
+  "Physiotherapy clinic",
+  "Dental clinic",
+];

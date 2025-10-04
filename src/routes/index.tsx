@@ -20,9 +20,10 @@ import StorefrontAccountInformation from "@/pages/storefront/accounts/account-in
 import StorefrontPaymentInformation from "@/pages/storefront/accounts/payment-info";
 import StorefrontProfileInformation from "@/pages/storefront/accounts/profile-info";
 import CreatePatient from "@/pages/healthcare/patient/create";
-import PatientSignup from "@/pages/storefront/patient/signup";
+import PatientSignup from "@/pages/storefront/auth/signup";
 import VerifyPatientOTP from "@/pages/storefront/auth/verify-otp";
 import HospitalPage from "@/pages/storefront/schedule/details";
+import HealthcareSignup from "@/pages/healthcare/auth/signup";
 
 const AppRouter = () => {
   return (
@@ -30,12 +31,8 @@ const AppRouter = () => {
       <Route path={storefrontUrl} element={<Outlet />}>
         <Route path="auth" element={<Outlet />}>
           <Route index element={<StorefrontLogin />} />
-        </Route>
-        <Route path="signup" element={<Outlet />}>
-          <Route index element={<PatientSignup />} />
-        </Route>
-        <Route path="verify-otp" element={<Outlet />}>
-          <Route index element={<VerifyPatientOTP />} />
+          <Route path="signup" element={<PatientSignup />} />
+          <Route path="verify-otp" element={<VerifyPatientOTP />} />
         </Route>
         <Route element={<StorefrontLayout />}>
           <Route path="schedule" element={<Outlet />}>
@@ -64,12 +61,18 @@ const AppRouter = () => {
             />
           </Route>
           <Route path="insurance" element={<StorefrontInsurance />} />
+          <Route
+            index
+            path="*"
+            element={<Navigate to={`${storefrontUrl}/auth`} />}
+          />
         </Route>
       </Route>
       <Route path={hospitalUrl} element={<Outlet />}>
         <Route path="auth" element={<Outlet />}>
           <Route index element={<HospitalLogin />} />
-          <Route path="login" element={<VerifyOTP />} />
+          <Route path="verify-otp" element={<VerifyOTP />} />
+          <Route path="signup" element={<HealthcareSignup />} />
         </Route>
         <Route element={<HospitalMgmtLayout />}>
           <Route path="schedule" element={<Outlet />}>

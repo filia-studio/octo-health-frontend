@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowIcon, ChevronIcon } from "@/components/icons";
+import { ArrowIcon } from "@/components/icons";
 
 export interface OverviewCardProps {
   data: {

@@ -51,3 +51,11 @@ export interface IHealthcare {
   photo_2: string;
   photo_3: string;
 }
+
+export type HealthcareService = {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  name: string;
+  description: string;
+};

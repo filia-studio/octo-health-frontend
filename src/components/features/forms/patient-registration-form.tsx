@@ -17,6 +17,11 @@ import { useState } from "react";
 import { X } from "lucide-react";
 import { StandaloneSearchBox } from "@react-google-maps/api";
 import { useGetLocation } from "@/hooks/use-get-location";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const schema = z.object({
   insurance: z.array(
@@ -29,7 +34,7 @@ const schema = z.object({
   ),
   user: z.object({
     photo: z.string(),
-    email: z.string().email("Invalid email"),
+    email: z.email("Invalid email"),
     first_name: z.string().min(1, "First name is required"),
     last_name: z.string().min(1, "Last name is required"),
     contact_number: z.string().min(1, "Contact number is required"),
@@ -47,10 +52,12 @@ type FormSchema = z.infer<typeof schema>;
 
 const PatientRegistrationForm = ({
   isAuth = false,
+  loading,
   handleSubmit,
 }: {
   isAuth?: boolean;
-  handleSubmit: (data: any) => void;
+  loading?: boolean;
+  handleSubmit: (data: FormSchema) => void;
 }) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [step, setStep] = useState<1 | 2>(1);
@@ -90,6 +97,7 @@ const PatientRegistrationForm = ({
   });
 
   const onSubmit: SubmitHandler<FormSchema> = (data) => {
+    console.log(data)
     const payload = {
       ...data,
       longitude: longitude,
@@ -97,299 +105,257 @@ const PatientRegistrationForm = ({
       zipcode: zipcode,
     };
     const cleanedData = removeEmptyFields(payload);
-    handleSubmit(cleanedData);
+    handleSubmit(cleanedData as FormSchema);
   };
 
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="max-w-3xl mx-auto min-h-screen py-10 px-6 space-y-8"
+        className="max-w-3xl mx-auto min-h-screen"
       >
-        <div className="flex justify-center space-x-4">
-          <div
-            className={`h-3 w-3 rounded-full ${
-              step === 1 ? "bg-black" : "bg-gray-300"
-            }`}
-          />
-          <div
-            className={`h-3 w-3 rounded-full ${
-              step === 2 ? "bg-black" : "bg-gray-300"
-            }`}
-          />
-        </div>
-
-        {step === 1 && (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-800">
-              User Information
-            </h2>
-            {!isAuth && (
-              <FormField
-                control={form.control}
-                name="user.photo"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Profile Picture</FormLabel>
-                    <FormControl>
-                      <div className="flex flex-col items-start space-y-3">
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              const url = URL.createObjectURL(file);
-                              setPreview(url);
-                              field.onChange(file);
-                            }
-                          }}
-                        />
-                        {preview && (
-                          <div className="relative w-32 h-32">
-                            <img
-                              src={preview}
-                              alt="Profile Preview"
-                              className="w-32 h-32 rounded-full object-cover border shadow-md"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setPreview(null);
-                                field.onChange("");
-                              }}
-                              className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 shadow"
-                            >
-                              <X size={16} />
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
-
-            <FormField
-              control={form.control}
-              name="user.email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input type="email" placeholder="Enter email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+        <section className="py-10 px-6 space-y-8">
+          <div className="flex justify-center space-x-4">
+            <div
+              className={`h-3 w-3 rounded-full ${
+                step === 1 ? "bg-black" : "bg-gray-300"
+              }`}
             />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <FormField
-                control={form.control}
-                name="user.first_name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>First Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter first name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="user.last_name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Last Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter last name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <FormField
-              control={form.control}
-              name="user.contact_number"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Contact Number</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter contact number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+            <div
+              className={`h-3 w-3 rounded-full ${
+                step === 2 ? "bg-black" : "bg-gray-300"
+              }`}
             />
-            <FormField
-              control={form.control}
-              name="user.address"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Address</FormLabel>
-                  <FormControl>
-                    {isLoaded ? (
-                      <StandaloneSearchBox
-                        onPlacesChanged={() => {
-                          form.setValue(
-                            field.name,
-                            inputRef?.current?.getPlaces()?.[0]
-                              ?.formatted_address ?? ""
-                          );
-                        }}
-                        onLoad={(ref) => (inputRef.current = ref)}
-                      >
-                        <Input placeholder="Enter Address" {...field} />
-                      </StandaloneSearchBox>
-                    ) : (
-                      <Input placeholder="Enter Address" {...field} />
-                    )}
-                    {/* <Input placeholder="Enter address" {...field} /> */}
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {step === 1 && (
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold text-gray-800">
+                User Information
+              </h2>
+              {!isAuth && (
+                <FormField
+                  control={form.control}
+                  name="user.photo"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Profile Picture</FormLabel>
+                      <FormControl>
+                        <div className="flex flex-col items-start space-y-3">
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                const url = URL.createObjectURL(file);
+                                setPreview(url);
+                                field.onChange(file);
+                              }
+                            }}
+                          />
+                          {preview && (
+                            <div className="relative w-32 h-32">
+                              <img
+                                src={preview}
+                                alt="Profile Preview"
+                                className="w-32 h-32 rounded-full object-cover border shadow-md"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setPreview(null);
+                                  field.onChange("");
+                                }}
+                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 shadow"
+                              >
+                                <X size={16} />
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+
               <FormField
                 control={form.control}
-                name="user.gender"
+                name="user.email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Gender</FormLabel>
+                    <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Select
-                        classNamePrefix="react-select"
-                        value={{ value: field.value, label: field.value }}
-                        onChange={(val: any) => field.onChange(val?.value)}
-                        options={[
-                          { value: "male", label: "Male" },
-                          { value: "female", label: "Female" },
-                        ]}
-                        classNames={{
-                          control: (state) =>
-                            `border !border-input !rounded-full !min-h-[3.125rem] px-3 !shadow-none ${
-                              state.isFocused
-                                ? "!border-ring ring-ring/50 ring-[3px]"
-                                : ""
-                            }`,
-                        }}
+                      <Input
+                        type="email"
+                        placeholder="Enter email"
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="user.first_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>First Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter first name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="user.last_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Last Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter last name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
               <FormField
                 control={form.control}
-                name="user.date_of_birth"
+                name="user.contact_number"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Date of Birth</FormLabel>
+                    <FormLabel>Contact Number</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <Input placeholder="Enter contact number" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            </div>
-
-            <div className="flex justify-end mt-10">
-              <Button
-                type="button"
-                onClick={() => setStep(2)}
-                className="rounded-full bg-black text-white px-8 py-2"
-              >
-                Next
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {step === 2 && (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-800">
-              Insurance Information
-            </h2>
-
-            {fields.map((field, index) => (
-              <div
-                key={field.id}
-                className="border rounded-lg p-6 space-y-6 shadow-sm"
-              >
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <FormField
-                    control={form.control}
-                    name={`insurance.${index}.name`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Insurance Name</FormLabel>
-                        <FormControl>
-                          <Select
-                            classNamePrefix="react-select"
-                            placeholder="Select insurance provider"
-                            value={{ value: field.value, label: field.value }}
-                            onChange={(val: any) => field.onChange(val?.value)}
-                            options={[
-                              { value: "Reliance", label: "Reliance" },
-                              { value: "AXA Mansard", label: "AXA Mansard" },
-                            ]}
-                            classNames={{
-                              control: (state) =>
-                                `border !border-input !rounded-full !min-h-[3.125rem] px-3 !shadow-none ${
-                                  state.isFocused
-                                    ? "!border-ring ring-ring/50 ring-[3px]"
-                                    : ""
-                                }`,
-                            }}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  {isAuth && (
-                    <FormField
-                      control={form.control}
-                      name={`insurance.${index}.hmo_id`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>HMO ID</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Enter HMO ID" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
+              <FormField
+                control={form.control}
+                name="user.address"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Address</FormLabel>
+                    <FormControl>
+                      {isLoaded ? (
+                        <StandaloneSearchBox
+                          onPlacesChanged={() => {
+                            form.setValue(
+                              field.name,
+                              inputRef?.current?.getPlaces()?.[0]
+                                ?.formatted_address ?? ""
+                            );
+                          }}
+                          onLoad={(ref: google.maps.places.SearchBox) =>
+                            (inputRef.current = ref)
+                          }
+                        >
+                          <Input placeholder="Enter Address" {...field} />
+                        </StandaloneSearchBox>
+                      ) : (
+                        <Input placeholder="Enter Address" {...field} />
                       )}
-                    />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name="user.gender"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Gender</FormLabel>
+                      <FormControl>
+                        <Select
+                          classNamePrefix="react-select"
+                          value={{ value: field.value, label: field.value }}
+                          onChange={(val) => field.onChange(val?.value)}
+                          options={[
+                            { value: "male", label: "Male" },
+                            { value: "female", label: "Female" },
+                          ]}
+                          classNames={{
+                            control: (state) =>
+                              `border !border-input !rounded-full !min-h-[3.125rem] px-3 !shadow-none ${
+                                state.isFocused
+                                  ? "!border-ring ring-ring/50 ring-[3px]"
+                                  : ""
+                              }`,
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )}
-                  {!isAuth && (
+                />
+                <FormField
+                  control={form.control}
+                  name="user.date_of_birth"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date of Birth</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="flex justify-end mt-10">
+                <Button
+                  type="button"
+                  onClick={() => setStep(2)}
+                  className="rounded-[12.5rem] bg-black w-full max-w-[6.5rem] lg:max-w-[11.8rem] h-10 lg:h-[4.1875rem] text-sm lg:text-xl font-semibold"
+                >
+                  Next
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {step === 2 && (
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold text-gray-800">
+                Insurance Information
+              </h2>
+
+              {fields.map((field, index) => (
+                <div
+                  key={field.id}
+                  className="border rounded-lg p-6 space-y-6 shadow-sm"
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormField
                       control={form.control}
-                      name={`insurance.${index}.insurance_type`}
+                      name={`insurance.${index}.name`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Insurance Type</FormLabel>
+                          <FormLabel>Insurance Name</FormLabel>
                           <FormControl>
                             <Select
                               classNamePrefix="react-select"
-                              placeholder="Select insurance type"
+                              placeholder="Select insurance provider"
                               value={{ value: field.value, label: field.value }}
-                              onChange={(val: any) =>
-                                field.onChange(val?.value)
-                              }
+                              onChange={(val) => field.onChange(val?.value)}
                               options={[
-                                { value: "Private", label: "Private" },
-                                { value: "Group", label: "Group" },
+                                { value: "Reliance", label: "Reliance" },
+                                { value: "AXA Mansard", label: "AXA Mansard" },
                               ]}
                               classNames={{
                                 control: (state) =>
@@ -405,86 +371,162 @@ const PatientRegistrationForm = ({
                         </FormItem>
                       )}
                     />
+
+                    <FormField
+                      control={form.control}
+                      name={`insurance.${index}.hmo_id`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>HMO ID</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter HMO ID" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    {isAuth && (
+                      <FormField
+                        control={form.control}
+                        name={`insurance.${index}.insurance_type`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Insurance Type
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="inline-flex justify-center items-center w-4 h-4 rounded-full text-xs text-white bg-black cursor-pointer">
+                                    ?
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>
+                                      - Group Insurance: Coverage purchased by
+                                      an employer, association, or organization
+                                      for its members or employees.
+                                    </p>
+                                    <p>
+                                      - Private (Individual) Insurance: Coverage
+                                      that a person buys for themselves (and
+                                      their family) directly from an insurance
+                                      company.
+                                    </p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </FormLabel>
+                            <FormControl>
+                              <Select
+                                classNamePrefix="react-select"
+                                placeholder="Select insurance type"
+                                value={{
+                                  value: field.value,
+                                  label: field.value,
+                                }}
+                                onChange={(val) => field.onChange(val?.value)}
+                                options={[
+                                  { value: "Private", label: "Private" },
+                                  { value: "Group", label: "Group" },
+                                ]}
+                                classNames={{
+                                  control: (state) =>
+                                    `border !border-input !rounded-full !min-h-[3.125rem] px-3 !shadow-none ${
+                                      state.isFocused
+                                        ? "!border-ring ring-ring/50 ring-[3px]"
+                                        : ""
+                                    }`,
+                                }}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    )}
+                    {isAuth && (
+                      <FormField
+                        control={form.control}
+                        name={`insurance.${index}.insurance_plan`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Insurance Plan</FormLabel>
+                            <FormControl>
+                              <Select
+                                classNamePrefix="react-select"
+                                placeholder="Select insurance plan"
+                                value={{
+                                  value: field.value,
+                                  label: field.value,
+                                }}
+                                onChange={(val) => field.onChange(val?.value)}
+                                options={[
+                                  { value: "Gold", label: "Gold" },
+                                  { value: "Platinum", label: "Platinum" },
+                                ]}
+                                classNames={{
+                                  control: (state) =>
+                                    `border !border-input !rounded-full !min-h-[3.125rem] px-3 !shadow-none ${
+                                      state.isFocused
+                                        ? "!border-ring ring-ring/50 ring-[3px]"
+                                        : ""
+                                    }`,
+                                }}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    )}
+                  </div>
+
+                  {fields.length > 1 && (
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      onClick={() => remove(index)}
+                      className="mt-2"
+                    >
+                      Remove Insurance
+                    </Button>
                   )}
                 </div>
-                {!isAuth && (
-                  <FormField
-                    control={form.control}
-                    name={`insurance.${index}.insurance_plan`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Insurance Plan</FormLabel>
-                        <FormControl>
-                          <Select
-                            classNamePrefix="react-select"
-                            placeholder="Select insurance plan"
-                            value={{ value: field.value, label: field.value }}
-                            onChange={(val: any) => field.onChange(val?.value)}
-                            options={[
-                              { value: "Gold", label: "Gold" },
-                              { value: "Platinum", label: "Platinum" },
-                            ]}
-                            classNames={{
-                              control: (state) =>
-                                `border !border-input !rounded-full !min-h-[3.125rem] px-3 !shadow-none ${
-                                  state.isFocused
-                                    ? "!border-ring ring-ring/50 ring-[3px]"
-                                    : ""
-                                }`,
-                            }}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )}
+              ))}
 
-                {fields.length > 1 && (
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    onClick={() => remove(index)}
-                    className="mt-2"
-                  >
-                    Remove Insurance
-                  </Button>
-                )}
-              </div>
-            ))}
-
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() =>
-                append({
-                  name: "",
-                  insurance_type: "",
-                  insurance_plan: "",
-                  hmo_id: "",
-                })
-              }
-            >
-              + Add Insurance
-            </Button>
-
-            <div className="flex justify-between mt-10">
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setStep(1)}
+                onClick={() =>
+                  append({
+                    name: "",
+                    insurance_type: "",
+                    insurance_plan: "",
+                    hmo_id: "",
+                  })
+                }
               >
-                Back
+                + Add Insurance
               </Button>
-              <Button
-                type="submit"
-                className="rounded-full bg-black text-white px-8 py-2"
-              >
-                Submit
-              </Button>
+
+              <div className="flex justify-between mt-10">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setStep(1)}
+                  className="rounded-[12.5rem] w-full max-w-[6.5rem] lg:max-w-[11.8rem] h-10 lg:h-[4.1875rem] text-sm lg:text-xl font-semibold"
+                >
+                  Back
+                </Button>
+                <Button
+                  type="submit"
+                  isLoading={loading}
+                  className="rounded-[12.5rem] bg-black w-full max-w-[6.5rem] lg:max-w-[11.8rem] h-10 lg:h-[4.1875rem] text-sm lg:text-xl font-semibold"
+                >
+                  Submit
+                </Button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </section>
       </form>
     </Form>
   );

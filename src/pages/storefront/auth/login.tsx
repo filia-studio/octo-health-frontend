@@ -4,20 +4,26 @@ import { useSend } from "@/hooks/use-send";
 import { storefrontUrl } from "@/routes/paths";
 import { useNavigate } from "react-router-dom";
 
-const StorefrontLogin = () => {
+const PatientLogin = () => {
   const navigate = useNavigate();
 
-  const { mutate } = useSend<any, { message: string }>(
+  const { mutate, isPending } = useSend<unknown, { message: string }>(
     "patient/patient_login/",
     {
       useAuth: false,
-      onSuccess: () => navigate(`${storefrontUrl}/verify-otp`),
+      onSuccess: (_, variables) => {
+        sessionStorage.setItem(
+          "patient_code",
+          (variables as { patient_code: string }).patient_code
+        );
+        navigate(`${storefrontUrl}/auth/verify-otp`);
+      },
       errorMessage: "An error occurred!",
       successMessage: "Success!",
     }
   );
 
-  const handleSubmit = (data: any) => {
+  const handleSubmit = (data: unknown) => {
     mutate(data);
   };
 
@@ -29,13 +35,15 @@ const StorefrontLogin = () => {
           className="w-[15.2rem] lg:w-[22rem]"
         />
         <AuthCard
+          type="patient"
           onSubmit={handleSubmit}
           registerKey="patient_code"
           defaultValues={{ patient_code: "" }}
+          loading={isPending}
         />
       </div>
     </AuthLayout>
   );
 };
 
-export default StorefrontLogin;
+export default PatientLogin;

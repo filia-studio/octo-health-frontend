@@ -1,4 +1,5 @@
 import HospitalCard from "@/components/features/cards/hospital";
+import type { IHealthcare } from "@/types/healthcare";
 
 const StorefrontProviders = () => {
   return (
@@ -10,6 +11,7 @@ const StorefrontProviders = () => {
             <HospitalCard
               showCalendar={false}
               key={index}
+              healthcare={{} as IHealthcare}
             />
           ))}
         </div>
@@ -21,6 +23,7 @@ const StorefrontProviders = () => {
             <HospitalCard
               showCalendar={false}
               key={index}
+              healthcare={{} as IHealthcare}
             />
           ))}
         </div>
@@ -32,6 +35,7 @@ const StorefrontProviders = () => {
             <HospitalCard
               showCalendar={false}
               key={index}
+              healthcare={{} as IHealthcare}
             />
           ))}
         </div>

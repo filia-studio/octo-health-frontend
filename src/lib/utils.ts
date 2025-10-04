@@ -45,7 +45,7 @@ export function removeEmptyFields<T>(obj: T): T {
   }
 
   if (typeof obj === "object" && obj !== null) {
-    const cleaned: any = {};
+    const cleaned: Record<string, unknown> = {};
     Object.entries(obj).forEach(([key, value]) => {
       if (
         value !== "" &&

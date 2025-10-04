@@ -2,17 +2,17 @@ import AuthLayout from "@/components/features/auth/layout";
 import AuthCard from "@/components/features/cards/auth";
 import { useSend } from "@/hooks/use-send";
 import { hospitalUrl } from "@/routes/paths";
-import type { SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 const HospitalLogin = () => {
   const navigate = useNavigate();
-  const { mutate } = useSend<{ email: string }, { message: string }>(
+  const { mutate, isPending } = useSend<{ email: string }, { message: string }>(
     "healthcare/login/",
     {
       useAuth: false,
-      onSuccess: (data, variables) => {
-        navigate(`${hospitalUrl}/auth/login`);
+      onSuccess: (_, variables) => {
+        sessionStorage.setItem("email", variables.email);
+        navigate(`${hospitalUrl}/auth/verify-otp`);
       },
     }
   );
@@ -30,8 +30,9 @@ const HospitalLogin = () => {
         />
         <AuthCard
           placeholder="hi@octohealth.pro"
-          onSubmit={(data: any) => onSubmit(data)}
+          onSubmit={(data) => onSubmit(data as { email: string })}
           defaultValues={{ email: "" }}
+          loading={isPending}
         />
       </div>
     </AuthLayout>
