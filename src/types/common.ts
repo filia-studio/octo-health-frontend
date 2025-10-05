@@ -1,6 +1,7 @@
 export const DashboardModule = {
   Hospital: "hospital",
   Storefront: "storefront",
+  Insurance: "insurance",
 } as const;
 
 export type Route = {

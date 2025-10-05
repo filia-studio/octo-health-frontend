@@ -11,7 +11,7 @@ import HospitalLogin from "@/pages/healthcare/auth/login";
 import Nurse from "@/pages/healthcare/schedule/nurse";
 import PharmacyInvoice from "@/pages/storefront/pharmacy/invoice";
 import VerifyOTP from "@/pages/healthcare/auth/verify-otp";
-import { hospitalUrl, storefrontUrl } from "./paths";
+import { hospitalUrl, insuranceUrl, storefrontUrl } from "./paths";
 import PatientManagement from "@/pages/healthcare/patient";
 import StorefrontClaims from "@/pages/storefront/claims";
 import StorefrontFileClaim from "@/pages/storefront/claims/file";
@@ -24,6 +24,11 @@ import PatientSignup from "@/pages/storefront/auth/signup";
 import VerifyPatientOTP from "@/pages/storefront/auth/verify-otp";
 import HospitalPage from "@/pages/storefront/schedule/details";
 import HealthcareSignup from "@/pages/healthcare/auth/signup";
+import InsuranceSignup from "@/pages/insurance/auth/signup";
+import InsuranceDashboard from "@/pages/insurance/schedule";
+import InsuranceLogin from "@/pages/insurance/auth/login";
+import VerifyInsuranceOTP from "@/pages/insurance/auth/verify-otp";
+import InsuranceProviderLayout from "@/components/features/layouts/insurance-provider";
 
 const AppRouter = () => {
   return (
@@ -84,6 +89,29 @@ const AppRouter = () => {
           <Route path="patient-management/create" element={<CreatePatient />} />
           <Route path="patient-management/:id" element={<HMPatient />} />
           <Route path="services/:id" element={<div>Services</div>} />
+        </Route>
+        <Route
+          index
+          path="*"
+          element={<Navigate to={`${hospitalUrl}/auth`} />}
+        />
+      </Route>
+      <Route path={insuranceUrl} element={<Outlet />}>
+        <Route path="auth" element={<Outlet />}>
+          <Route index element={<InsuranceLogin />} />
+          <Route path="verify-otp" element={<VerifyInsuranceOTP />} />
+          <Route path="signup" element={<InsuranceSignup />} />
+        </Route>
+        <Route element={<InsuranceProviderLayout />}>
+          <Route path="schedule" element={<Outlet />}>
+            <Route index element={<InsuranceDashboard />} />
+            {/* <Route path=":id" element={<HMPatient />} /> */}
+          </Route>
+          {/* <Route path="nurse" element={<Nurse />} />
+          <Route path="patient-management" element={<PatientManagement />} />
+          <Route path="patient-management/create" element={<CreatePatient />} />
+          <Route path="patient-management/:id" element={<HMPatient />} />
+          <Route path="services/:id" element={<div>Services</div>} /> */}
         </Route>
         <Route
           index
