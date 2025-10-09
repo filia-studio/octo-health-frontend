@@ -11,7 +11,7 @@ const PatientSignup: React.FC = () => {
     "patient/",
     {
       useAuth: false,
-      onSuccess: () => navigate(`${storefrontUrl}/schedule`),
+      onSuccess: () => navigate(`${storefrontUrl}/auth/login`),
       errorMessage: "An error occurred!",
       successMessage: "Patient record created successfully",
     }
