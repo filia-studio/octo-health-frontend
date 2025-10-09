@@ -1,7 +1,7 @@
 import type { Route } from "@/types/common";
 
 export const hospitalUrl = "/healthcare";
-export const storefrontUrl = "/storefront";
+export const storefrontUrl = "/patient";
 export const insuranceUrl = "/insurance";
 
 export const hospitalSidebarRoutes: Route[] = [
