@@ -10,6 +10,7 @@ import type { IHealthcare } from "@/types/healthcare";
 import { haversineDistance } from "@/lib/utils";
 import { useStore } from "@/store";
 import { useNavigate } from "react-router-dom";
+import type { Patient } from "@/types/otp";
 
 const HospitalCard = ({
   healthcare,
@@ -22,7 +23,7 @@ const HospitalCard = ({
 }) => {
   const [openCalendar, setOpenCalendar] = useState(false);
   const navigate = useNavigate();
-  const { patient } = useStore();
+  const { patient } = useStore() as { patient: Patient | null };
 
   const userLat = patient?.latitude ?? null;
   const userLon = patient?.longitude ?? null;

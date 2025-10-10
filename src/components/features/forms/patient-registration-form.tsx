@@ -22,6 +22,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useFetch } from "@/hooks/use-fetch";
+import type { InsuranceProviderListResponse } from "@/types/insurance";
 
 const schema = z.object({
   insurance: z.array(
@@ -62,6 +64,13 @@ const PatientRegistrationForm = ({
   const [preview, setPreview] = useState<string | null>(null);
   const [step, setStep] = useState<1 | 2>(1);
 
+  const { data: insuranceProviderResponse } = useFetch<
+    InsuranceProviderListResponse[]
+  >("insurance_provider/", {
+    useAuth: false,
+    errorMessage: "Failed to load insurance providers",
+  });
+
   const { inputRef, isLoaded, getLocation } = useGetLocation();
 
   const form = useForm<FormSchema>({
@@ -95,6 +104,12 @@ const PatientRegistrationForm = ({
     control: form.control,
     name: "insurance",
   });
+
+  const insuranceProvider =
+    insuranceProviderResponse?.map((provider) => ({
+      label: provider.insurance.name,
+      value: provider.insurance.id,
+    })) || [];
 
   const onSubmit: SubmitHandler<FormSchema> = (data) => {
     const payload = {
@@ -359,12 +374,13 @@ const PatientRegistrationForm = ({
                             <Select
                               classNamePrefix="react-select"
                               placeholder="Select insurance provider"
-                              value={{ value: field.value, label: field.value }}
-                              onChange={(val) => field.onChange(val?.value)}
-                              options={[
-                                { value: "Reliance", label: "Reliance" },
-                                { value: "AXA Mansard", label: "AXA Mansard" },
-                              ]}
+                              value={insuranceProvider?.find(
+                                (option) => option.value === field.value
+                              )}
+                              onChange={(val) => {
+                                field.onChange(val?.value);
+                              }}
+                              options={insuranceProvider}
                               classNames={{
                                 control: (state) =>
                                   `border !border-input !rounded-full !min-h-[3.125rem] px-3 !shadow-none ${

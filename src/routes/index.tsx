@@ -29,6 +29,7 @@ import InsuranceDashboard from "@/pages/insurance/schedule";
 import InsuranceLogin from "@/pages/insurance/auth/login";
 import VerifyInsuranceOTP from "@/pages/insurance/auth/verify-otp";
 import InsuranceProviderLayout from "@/components/features/layouts/insurance-provider";
+import ClaimDetails from "@/pages/storefront/claims/view";
 
 const AppRouter = () => {
   return (
@@ -48,6 +49,7 @@ const AppRouter = () => {
           <Route path="claims" element={<Outlet />}>
             <Route index element={<StorefrontClaims />} />
             <Route path="file" element={<StorefrontFileClaim />} />
+            <Route path=":id" element={<ClaimDetails />} />
           </Route>
           <Route path="pharmacy" element={<Outlet />}>
             <Route index element={<StorefrontPharmacy />} />
