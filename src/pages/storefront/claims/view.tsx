@@ -43,8 +43,6 @@ const ClaimDetails: React.FC = () => {
     );
   }
 
-  console.log("claim", claim);
-
   const {
     claim_type,
     diagnosis,

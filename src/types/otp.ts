@@ -1,3 +1,5 @@
+import type { IInsuranceDetail } from "./patient";
+
 export type HealthcareDetails = {
   id: string;
   healthcare_services: string[];
@@ -61,7 +63,7 @@ export interface PatientOtpVerificationResponse {
 
 export interface Patient {
   id: string;
-  insurance_details: InsuranceDetail[];
+  insurance_details: IInsuranceDetail[];
   user: User;
   created_at: string;
   updated_at: string;
@@ -70,8 +72,6 @@ export interface Patient {
   latitude: string | null;
   zipcode: string | null;
 }
-
-export interface InsuranceDetail {}
 
 export interface User {
   id: number;
