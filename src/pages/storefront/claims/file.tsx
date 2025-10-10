@@ -10,33 +10,47 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { insuranceCoverages, providers } from "@/lib/constants";
 import { useForm } from "react-hook-form";
 import Select from "react-select";
-import { Switch } from "@/components/ui/switch";
 import type { HealthcareListResponse } from "@/types/healthcare";
 import { useFetch } from "@/hooks/use-fetch";
 import type { InsuranceProviderListResponse } from "@/types/insurance";
+import { useStore } from "@/store";
+import { useSend } from "@/hooks/use-send";
+import { useNavigate } from "react-router-dom";
+import { storefrontUrl } from "@/routes/paths";
+
+interface FileClaimFormValues {
+  insurance_provider_id: string;
+  supporting_documents: FileList | string;
+  invoice: FileList | string;
+  payment_receipt: FileList | string;
+  claim_type: string;
+  healthcare_provider: string;
+  total_charges: string;
+  treatment_date: string;
+  diagnosis: string;
+  payment_reciept: FileList | string;
+}
 
 const StorefrontFileClaim = () => {
-  const form = useForm({
+  const navigate = useNavigate();
+  const form = useForm<FileClaimFormValues>({
     defaultValues: {
-      type: "",
-      otherType: "",
-      isEmergency: false,
-      isIncidentRelated: false,
-      provider: "",
-      coverage: "",
-      from: "",
-      to: "",
+      insurance_provider_id: "",
+      supporting_documents: "",
+      invoice: "",
+      payment_receipt: "",
+      claim_type: "",
+      healthcare_provider: "",
+      total_charges: "",
+      treatment_date: "",
       diagnosis: "",
-      totalCharges: "",
-      paidOutOfPocket: false,
-      supportingDocuments: [],
-      invoice: [],
-      receipts: [],
+      payment_reciept: "",
     },
   });
+
+  const { patient } = useStore();
 
   const { data: insuranceProviderResponse } = useFetch<
     InsuranceProviderListResponse[]
@@ -53,17 +67,41 @@ const StorefrontFileClaim = () => {
     }
   );
 
+  const { mutate, isPending } = useSend<unknown, { message: string }>(
+    "patient-claims/create/",
+    {
+      useAuth: true,
+      onSuccess: () => navigate(`${storefrontUrl}/patient/claims`),
+      errorMessage: "An error occurred!",
+      successMessage: "Patient claims record created successfully",
+    }
+  );
+
   const healthcareProvider =
     healthcareProviderResponse?.data?.map((provider) => ({
       label: provider.name,
       value: provider.id,
     })) || [];
 
+  const patientInsuranceArray =
+    patient?.insurance_details?.map((ins) => {
+      const match = insuranceProviderResponse?.find(
+        (prov) => prov?.insurance?.id === ins?.name
+      );
+
+      return {
+        ...ins,
+        insurance: match ? { ...match.insurance, id: match?.id } : null,
+      };
+    }) || [];
+
   const insuranceProvider =
-    insuranceProviderResponse?.map((provider) => ({
-      label: provider.insurance.name,
-      value: provider.insurance.id,
-    })) || [];
+    patientInsuranceArray
+      .filter((provider) => provider?.insurance)
+      .map((provider) => ({
+        label: provider?.insurance?.name || "",
+        value: provider?.insurance?.id || "",
+      })) || [];
 
   const typeOptions = [
     "Consultation",
@@ -74,14 +112,28 @@ const StorefrontFileClaim = () => {
     "Other",
   ].map((type) => ({ label: type, value: type.toLowerCase() }));
 
+  const onSubmit = (values: FileClaimFormValues) => {
+    const formData = new FormData();
+    console.log({ values });
+
+    Object.entries(values).forEach(([key, value]) => {
+      if (value instanceof FileList) {
+        Array.from(value).forEach((file) => formData.append(key, file));
+      } else {
+        formData.append(key, value ?? "");
+      }
+    });
+
+    mutate(formData);
+  };
+
   return (
     <DashboardDetailLayout title="File a Claim">
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(console.log)}
+          onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-6 max-w-sm mx-auto pt-8"
         >
-          {/* SECTION 1 — CLAIM DETAILS */}
           <div className="space-y-6">
             <h3 className="text-lg font-semibold text-neutral-800">
               Claim Details
@@ -89,7 +141,7 @@ const StorefrontFileClaim = () => {
 
             <FormField
               control={form.control}
-              name="type"
+              name="claim_type"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Type of Claim</FormLabel>
@@ -107,50 +159,19 @@ const StorefrontFileClaim = () => {
               )}
             />
 
-            {form.watch("type") === "other" && (
-              <FormField
-                control={form.control}
-                name="otherType"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input placeholder="Enter claim type" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
-
-            <div className="flex items-center gap-3">
-              <FormField
-                control={form.control}
-                name="from"
-                render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormLabel>Treatment Start Date</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="to"
-                render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormLabel>Treatment End Date</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            <FormField
+              control={form.control}
+              name="treatment_date"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Date(s) of Treatment or Admission</FormLabel>
+                  <FormControl>
+                    <Input type="date" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <FormField
               control={form.control}
@@ -171,7 +192,6 @@ const StorefrontFileClaim = () => {
             />
           </div>
 
-          {/* SECTION 2 — PROVIDER & INSURANCE */}
           <div className="space-y-6">
             <h3 className="text-lg font-semibold text-neutral-800">
               Provider & Insurance
@@ -179,14 +199,14 @@ const StorefrontFileClaim = () => {
 
             <FormField
               control={form.control}
-              name="provider"
+              name="healthcare_provider"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Healthcare Provider</FormLabel>
                   <FormControl>
                     <Select
                       isMulti={false}
-                      value={healthcareProvider?.find(
+                      value={healthcareProvider.find(
                         (option) => option.value === field.value
                       )}
                       onChange={(option) => field.onChange(option?.value)}
@@ -208,17 +228,17 @@ const StorefrontFileClaim = () => {
 
             <FormField
               control={form.control}
-              name="coverage"
+              name="insurance_provider_id"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Insurance Provider</FormLabel>
                   <FormControl>
                     <Select
-                      isMulti={true}
-                      value={insuranceProvider?.find(
+                      isMulti={false}
+                      value={insuranceProvider.find(
                         (option) => option.value === field.value
                       )}
-                      onChange={(option) => field.onChange(option)}
+                      onChange={(option) => field.onChange(option?.value)}
                       options={insuranceProvider}
                       classNames={{
                         control: (state) =>
@@ -243,7 +263,7 @@ const StorefrontFileClaim = () => {
 
             <FormField
               control={form.control}
-              name="totalCharges"
+              name="total_charges"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Total Charges</FormLabel>
@@ -258,46 +278,8 @@ const StorefrontFileClaim = () => {
                 </FormItem>
               )}
             />
-
-            <FormField
-              control={form.control}
-              name="paidOutOfPocket"
-              render={({ field }) => (
-                <FormItem className="flex items-center gap-3">
-                  <FormLabel>Did you pay out-of-pocket?</FormLabel>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
-            {form.watch("paidOutOfPocket") && (
-              <FormField
-                control={form.control}
-                name="receipts"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Payment Receipts</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="file"
-                        multiple
-                        className="h-auto"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
           </div>
 
-          {/* SECTION 4 — ATTACHMENTS */}
           <div className="space-y-6">
             <h3 className="text-lg font-semibold text-neutral-800">
               Attachments
@@ -310,7 +292,14 @@ const StorefrontFileClaim = () => {
                 <FormItem>
                   <FormLabel>Hospital/Clinic Invoice (Itemized)</FormLabel>
                   <FormControl>
-                    <Input type="file" multiple className="h-auto" {...field} />
+                    <Input
+                      type="file"
+                      multiple
+                      className="h-auto"
+                      onChange={(e) =>
+                        field.onChange(e.target.files as FileList)
+                      }
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -319,12 +308,40 @@ const StorefrontFileClaim = () => {
 
             <FormField
               control={form.control}
-              name="supportingDocuments"
+              name="supporting_documents"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Supporting Documents</FormLabel>
                   <FormControl>
-                    <Input type="file" multiple className="h-auto" {...field} />
+                    <Input
+                      type="file"
+                      multiple
+                      className="h-auto"
+                      onChange={(e) =>
+                        field.onChange(e.target.files as FileList)
+                      }
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="payment_reciept"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Payment Receipts</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="file"
+                      multiple
+                      className="h-auto"
+                      onChange={(e) =>
+                        field.onChange(e.target.files as FileList)
+                      }
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -333,7 +350,9 @@ const StorefrontFileClaim = () => {
           </div>
 
           <div className="flex justify-end pt-4">
-            <Button>Submit Claim</Button>
+            <Button type="submit" isLoading={isPending}>
+              Submit Claim
+            </Button>
           </div>
         </form>
       </Form>

@@ -10,62 +10,48 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useFetch } from "@/hooks/use-fetch";
 import { insuranceCoverages, providers } from "@/lib/constants";
 import { cn, getBadgeVarient } from "@/lib/utils";
 import { storefrontUrl } from "@/routes/paths";
+import type {
+  InsuranceClaim,
+  InsuranceClaimsResponse,
+} from "@/types/insurance";
 import { FaPlusCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const StorefrontClaims = () => {
-  const data = [
+  const { data } = useFetch<InsuranceClaimsResponse>(
+    "patient-claims/my-claims/",
     {
-      id: 1,
-      provider: "Doren Hospital",
-      code: "0000000",
-      coverage: "Outpatient / Ambulatory Care",
-      premium: "N450000",
-      deductible: "N450000",
-      usage: "2M/4M",
-      status: "pending",
-      date_filed: "2022-01-01",
-    },
-    {
-      id: 2,
-      provider: "Maxima Hospital",
-      code: "0000000",
-      coverage: "Hospitalization / Inpatient Care",
-      premium: "N90000",
-      deductible: "N90000",
-      usage: "1M/10M",
-      status: "approved",
-      date_filed: "2022-01-01",
-    },
-  ];
+      useAuth: true,
+      errorMessage: "Failed to load claims record",
+    }
+  );
 
-  const columns: Column<(typeof data)[0]>[] = [
+  const columns: Column<InsuranceClaim>[] = [
     {
-      header: "Provider",
-      key: "provider",
+      header: "Claim Type",
+      key: "claim_type",
     },
     {
-      header: "Code",
-      key: "code",
+      header: "Diagnosis",
+      key: "diagnosis",
     },
     {
-      header: "Coverage",
-      key: "coverage",
+      header: "Treatment Date",
+      key: "treatment_date",
+      render(row) {
+        return new Date(row.treatment_date).toLocaleDateString();
+      },
     },
     {
-      header: "Premium",
-      key: "premium",
-    },
-    {
-      header: "Deductible",
-      key: "deductible",
-    },
-    {
-      header: "Usage",
-      key: "usage",
+      header: "Total Charges",
+      key: "total_charges",
+      render(row) {
+        return `₦${Number(row.total_charges).toLocaleString()}`;
+      },
     },
     {
       header: "Status",
@@ -79,8 +65,28 @@ const StorefrontClaims = () => {
       },
     },
     {
-      header: "Date Filed",
-      key: "date_filed",
+      header: "Submitted On",
+      key: "created_at",
+      render(row) {
+        return new Date(row.created_at).toLocaleString();
+      },
+    },
+    {
+      header: "",
+      key: "",
+      render(row) {
+        return (
+          <div className="flex justify-end">
+            <Link
+              to={`${storefrontUrl}/claims/${row.id}`}
+              state={{ claim: row }}
+              className="text-sm text-blue-600 hover:underline"
+            >
+              View Details
+            </Link>
+          </div>
+        );
+      },
     },
   ];
 
@@ -134,7 +140,7 @@ const StorefrontClaims = () => {
           </Link>
         </Button>
       </div>
-      <DataTable columns={columns} data={data} />
+      <DataTable columns={columns} data={data?.data || []} />
     </section>
   );
 };
