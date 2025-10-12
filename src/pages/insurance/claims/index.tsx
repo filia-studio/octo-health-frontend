@@ -13,17 +13,16 @@ import {
 import { useFetch } from "@/hooks/use-fetch";
 import { insuranceCoverages, providers } from "@/lib/constants";
 import { cn, getBadgeVarient } from "@/lib/utils";
-import { storefrontUrl } from "@/routes/paths";
+import { insuranceUrl } from "@/routes/paths";
 import type {
   InsuranceClaim,
   InsuranceClaimsResponse,
 } from "@/types/insurance";
-import { FaPlusCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-const StorefrontClaims = () => {
+const InsuranceClaims = () => {
   const { data } = useFetch<InsuranceClaimsResponse>(
-    "patient-claims/my-claims/",
+    "/patient-claims/get_patient_claims_by_insurance_provider/",
     {
       useAuth: true,
       errorMessage: "Failed to load claims record",
@@ -79,7 +78,7 @@ const StorefrontClaims = () => {
         return (
           <div className="flex justify-end">
             <Link
-              to={`${storefrontUrl}/claims/${row.id}`}
+              to={`${insuranceUrl}/claims/${row.id}`}
               state={{ claim: row }}
               className="text-sm text-blue-600 hover:underline"
             >
@@ -92,7 +91,7 @@ const StorefrontClaims = () => {
   ];
 
   return (
-    <section>
+    <section className="px-6">
       <div className="flex justify-between mb-6">
         <div className="flex gap-1">
           <Select>
@@ -134,16 +133,10 @@ const StorefrontClaims = () => {
           <Button>Search</Button>
           <Button variant="outline">Reset</Button>
         </div>
-        <Button asChild>
-          <Link to={`${storefrontUrl}/claims/file`}>
-            <FaPlusCircle />
-            File a claim
-          </Link>
-        </Button>
       </div>
       <DataTable columns={columns} data={data?.data || []} />
     </section>
   );
 };
 
-export default StorefrontClaims;
+export default InsuranceClaims;

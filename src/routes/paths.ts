@@ -11,6 +11,7 @@ export const hospitalSidebarRoutes: Route[] = [
 
 export const insuranceSidebarRoutes: Route[] = [
   { label: "Schedule", path: `${insuranceUrl}/schedule` },
+  { label: "Claims", path: `${insuranceUrl}/claims` },
   // { label: "Patients", path: `${hospitalUrl}/patient-management` },
 ];
 

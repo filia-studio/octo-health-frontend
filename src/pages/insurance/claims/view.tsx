@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { cn, getBadgeVarient } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import type { InsuranceProviderListResponse } from "@/types/insurance";
 import { useFetch } from "@/hooks/use-fetch";
 import type { HealthcareDetails } from "@/types/otp";
+import { FaArrowLeft } from "react-icons/fa";
+import { useSend } from "@/hooks/use-send";
+import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 interface PatientDetails {
   id: number;
@@ -36,9 +39,11 @@ interface Claim {
   healthcare_provider: string;
 }
 
-const ClaimDetails: React.FC = () => {
+const InsuranceClaimDetails: React.FC = () => {
   const navigate = useNavigate();
   const claim = useLocation()?.state?.claim as Claim;
+  const [open, setOpen] = useState(false);
+  const [reason_text, setReason] = useState("");
 
   const {
     claim_type,
@@ -52,20 +57,8 @@ const ClaimDetails: React.FC = () => {
     invoice,
     payment_receipt,
     supporting_documents,
-    insurance_provider,
     healthcare_provider,
   } = claim || {};
-
-  const { data: insuranceProviderResponse } =
-    useFetch<InsuranceProviderListResponse>(
-      `insurance_provider/${insurance_provider}`,
-      {
-        useAuth: true,
-        errorMessage: "Failed to load insurance provider",
-        hideToast: "success",
-        enabled: Boolean(insurance_provider),
-      }
-    );
 
   const { data: healthcareProviderResponse } = useFetch<HealthcareDetails>(
     `healthcare/${healthcare_provider}`,
@@ -77,7 +70,7 @@ const ClaimDetails: React.FC = () => {
     }
   );
 
-  console.log({ healthcareProviderResponse });
+  const { mutate, isPending } = useSend("/patient-claims/update_claim_status/");
 
   if (!claim) {
     return (
@@ -92,9 +85,6 @@ const ClaimDetails: React.FC = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-semibold">Claim Details</h1>
-        <Button variant="ghost" onClick={() => navigate(-1)}>
-          Back
-        </Button>
       </div>
 
       {/* Claim Info */}
@@ -168,35 +158,6 @@ const ClaimDetails: React.FC = () => {
           <div>
             <p className="text-sm text-gray-500">Address</p>
             <p className="font-medium">{patient_details?.address}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Insurance Info */}
-      <div className="bg-white p-4 rounded-xl shadow-sm">
-        <h2 className="text-lg font-semibold mb-3">
-          Insurance Provider Information
-        </h2>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <p className="text-sm text-gray-500">Name</p>
-            <p className="font-medium">
-              {insuranceProviderResponse?.insurance?.name}
-            </p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-500">Email</p>
-            <p className="font-medium">{insuranceProviderResponse?.email}</p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-500">Contact Number</p>
-            <p className="font-medium">
-              {insuranceProviderResponse?.phone_number}
-            </p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-500">Address</p>
-            <p className="font-medium">{insuranceProviderResponse?.address}</p>
           </div>
         </div>
       </div>
@@ -334,8 +295,62 @@ const ClaimDetails: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <div className="flex items-center justify-between">
+        <Button variant="ghost" onClick={() => navigate(-1)}>
+          <FaArrowLeft className="size-2.5" /> Back
+        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={() => setOpen(true)}>
+            Reject
+          </Button>
+          <Button
+            isLoading={isPending}
+            onClick={() =>
+              mutate({
+                status: "approve",
+                claim_id: claim.id,
+                reason: "",
+              })
+            }
+          >
+            Approve
+          </Button>
+        </div>
+      </div>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <div>
+            <Label className="mb-2">Enter reason for rejection</Label>
+            <textarea
+              className="w-full p-2"
+              value={reason_text}
+              onChange={({ target: { value } }) => setReason(value)}
+            />
+            <div className="flex items-center gap-2 mt-6">
+              <Button variant="outline" onClick={() => setOpen(false)}>
+                Cancel
+              </Button>
+              <Button
+                isLoading={isPending}
+                disabled={!reason_text}
+                onClick={() =>
+                  mutate({
+                    status: "reject",
+                    claim_id: claim.id,
+                    reason: reason_text,
+                  })
+                }
+              >
+                Reject
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
 
-export default ClaimDetails;
+export default InsuranceClaimDetails;
