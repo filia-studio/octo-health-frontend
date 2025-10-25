@@ -15,6 +15,7 @@ const ProfileInfo = ({
   profileImage,
   showProgress = true,
   className,
+  fallback,
 }: {
   onExpand?: () => void;
   resizeOnMobile?: boolean;
@@ -25,6 +26,7 @@ const ProfileInfo = ({
   showProgress?: boolean;
   badge?: string;
   className?: string;
+  fallback?: string;
 }) => {
   return (
     <div
@@ -42,8 +44,8 @@ const ProfileInfo = ({
           onClick={onClick}
           className="size-[3.125rem] lg:size-[5.7rem] border border-primary"
         >
-          <AvatarImage src={profileImage ?? "https://github.com/shadcn.png"} />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarImage src={profileImage} />
+          <AvatarFallback>{fallback}</AvatarFallback>
         </Avatar>
         {onExpand && (
           <Button

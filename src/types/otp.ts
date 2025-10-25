@@ -3,6 +3,9 @@ import type { IInsuranceDetail } from "./patient";
 export type HealthcareDetails = {
   id: string;
   healthcare_services: string[];
+  account_name?: string | null;
+  account_number?: string | null;
+  bank?: string | null;
   created_at: string;
   updated_at: string;
   name: string;
@@ -20,6 +23,11 @@ export type HealthcareDetails = {
   latitude: string | null;
   zipcode: string | null;
   healthcare_type: string;
+  license_verified?: boolean;
+  logo?: string;
+  photo_1?: string;
+  photo_2?: string;
+  photo_3?: string;
 };
 
 export type OtpVerificationResponse = {

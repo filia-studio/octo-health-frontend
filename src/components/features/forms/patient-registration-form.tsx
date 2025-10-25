@@ -50,7 +50,7 @@ const schema = z.object({
   zipcode: z.string(),
 });
 
-type FormSchema = z.infer<typeof schema>;
+export type FormSchema = z.infer<typeof schema>;
 
 const PatientRegistrationForm = ({
   isAuth = false,
@@ -108,7 +108,7 @@ const PatientRegistrationForm = ({
   const insuranceProvider =
     insuranceProviderResponse?.map((provider) => ({
       label: provider.insurance.name,
-      value: provider.insurance.id,
+      value: provider.insurance.name,
     })) || [];
 
   const onSubmit: SubmitHandler<FormSchema> = (data) => {

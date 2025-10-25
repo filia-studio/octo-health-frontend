@@ -63,7 +63,7 @@ const DataTable = <T extends object>({
             </td>
           </tr>
         ) : (
-          data.map((row, i) => (
+          data?.map((row, i) => (
             <tr key={i} className="odd:bg-transparent even:bg-white">
               {columns.map(
                 ({ key, render, cellClassName, className }, colIndex) => (
