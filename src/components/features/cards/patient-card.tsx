@@ -73,7 +73,7 @@ const PatientCard: React.FC<PatientCardProps> = ({ patientData }) => {
       />
       <div className="my-[24px]">
         {activeTab === "Overview" && (
-          <GridData data={patientCardData} className="w-max" />
+          <GridData data={patientCardData} className="w-full" />
         )}
         {activeTab === "Insurance" && <GridData data={insuranceData} />}
       </div>

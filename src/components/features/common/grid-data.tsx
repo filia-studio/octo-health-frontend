@@ -26,8 +26,8 @@ export const GridDataItem = ({
       <p className={cn("text-sm font-medium text-gray-400", titleClassName)}>
         {title}
       </p>
-      <p className={cn("text-sm font-medium", valueClassName)}>{value}</p>
-      {value2 && <p className="text-sm font-medium">{value2}</p>}
+      <p className={cn("text-sm font-medium break-all", valueClassName)}>{value}</p>
+      {value2 && <p className="text-sm font-medium break-all">{value2}</p>}
     </div>
   );
 };

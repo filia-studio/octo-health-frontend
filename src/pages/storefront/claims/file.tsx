@@ -71,7 +71,7 @@ const StorefrontFileClaim = () => {
     "patient-claims/create/",
     {
       useAuth: true,
-      onSuccess: () => navigate(`${storefrontUrl}/patient/claims`),
+      onSuccess: () => navigate(`${storefrontUrl}/claims`),
       errorMessage: "An error occurred!",
       successMessage: "Patient claims record created successfully",
     }

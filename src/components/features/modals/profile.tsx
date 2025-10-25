@@ -81,15 +81,15 @@ const ProfileModal = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:w-max lg:w-max md:w-max">
-        <div className="max-h-[35rem] md:max-h-full w-max">
+      <DialogContent>
+        <div className="max-h-[35rem] md:max-h-full">
           <ProfileInfo
             name={`${user?.last_name} ${user?.first_name}`}
             subName="AXA Mansard"
             badge="Deluxe Pro II"
           />
-          <div className="mt-7 w-max">
-            <div className="flex gap-8 w-max">
+          <div className="mt-7">
+            <div className="flex gap-8">
               <Button
                 type="button"
                 variant="link"
@@ -113,7 +113,7 @@ const ProfileModal = ({
             </div>
             <div>
               {tab === "overview" && (
-                <GridData className="my-7 w-max" data={overviewData} />
+                <GridData className="my-7" data={overviewData} />
               )}
               {tab === "insurance" && (
                 <>

@@ -68,6 +68,7 @@ const StorefrontClaims = () => {
     {
       header: "Claim Type",
       key: "claim_type",
+      cellClassName: 'capitalize'
     },
     {
       header: "Diagnosis",
