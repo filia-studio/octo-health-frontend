@@ -30,6 +30,9 @@ import InsuranceLogin from "@/pages/insurance/auth/login";
 import VerifyInsuranceOTP from "@/pages/insurance/auth/verify-otp";
 import InsuranceProviderLayout from "@/components/features/layouts/insurance-provider";
 import ClaimDetails from "@/pages/storefront/claims/view";
+import HealthcareClaims from "@/pages/healthcare/claims";
+import HealthcareFileClaim from "@/pages/healthcare/claims/healthcare-file-claim";
+import HealthcareClaimDetails from "@/pages/healthcare/claims/view";
 
 const AppRouter = () => {
   return (
@@ -86,6 +89,13 @@ const AppRouter = () => {
             <Route index element={<HMSchedule />} />
             <Route path=":id" element={<HMPatient />} />
           </Route>
+
+          <Route path="claims" element={<Outlet />}>
+            <Route index element={<HealthcareClaims />} />
+            <Route path="file" element={<HealthcareFileClaim />} />
+            <Route path=":id" element={<HealthcareClaimDetails />} />
+          </Route>
+
           <Route path="nurse" element={<Nurse />} />
           <Route path="patient-management" element={<PatientManagement />} />
           <Route path="patient-management/create" element={<CreatePatient />} />

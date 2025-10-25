@@ -59,3 +59,26 @@ export type HealthcareService = {
   name: string;
   description: string;
 };
+
+export interface HealthcareClaimResponse {
+  message: string;
+  success: boolean;
+  data: HealthcareClaim[];
+}
+
+export interface HealthcareClaim {
+  id: string;
+  claim_patient: string; // UUID of the patient filing the claim
+  insurance_provider: string; // UUID of the insurance company
+  diagnosis_icd_code: string; // e.g. "Malaria"
+  consultation_date: string; // ISO or date string
+  medical_report: string; // Free text summary
+  treatment_procedure_note: string; // e.g. "Blood test, patient temperature, heartbeat rate"
+  prescriptions_and_investigation_ordered: string; // e.g. "Paracetamol x3, Amatem Soft gel x2"
+  invoice: string; // Cloudinary PDF link
+  additional_documents: string; // Cloudinary PDF link
+  healthcare_provider: string; // UUID of the hospital/clinic
+  status: "pending" | "approved" | "rejected"; // Enum-like status
+  created_at: string; // Timestamp
+  updated_at: string; // Timestamp
+}

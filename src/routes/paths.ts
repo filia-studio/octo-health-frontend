@@ -7,10 +7,12 @@ export const insuranceUrl = "/insurance";
 export const hospitalSidebarRoutes: Route[] = [
   { label: "Appointments", path: `${hospitalUrl}/schedule` },
   { label: "Patients", path: `${hospitalUrl}/patient-management` },
+  { label: "Claims", path: `${hospitalUrl}/claims` },
 ];
 
 export const insuranceSidebarRoutes: Route[] = [
   { label: "Schedule", path: `${insuranceUrl}/schedule` },
+  { label: "Claims", path: `${insuranceUrl}/claims` },
   // { label: "Patients", path: `${hospitalUrl}/patient-management` },
 ];
 
