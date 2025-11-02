@@ -19,7 +19,7 @@ const PatientLogin = () => {
         navigate(`${storefrontUrl}/auth/verify-otp`);
       },
       errorMessage: "An error occurred!",
-      successMessage: "Success!",
+      successMessage: "Success! OTP has been sent to your mail",
     }
   );
 

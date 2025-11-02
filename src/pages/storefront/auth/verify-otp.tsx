@@ -14,6 +14,7 @@ const VerifyPatientOTP = () => {
     PatientOtpVerificationResponse
   >("patient/verify_otp/", {
     useAuth: false,
+    hideToast: "success",
     onSuccess: (data) => {
       navigate(`${storefrontUrl}/schedule`);
       setAuth({ token: data?.data?.access });

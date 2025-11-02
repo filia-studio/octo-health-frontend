@@ -56,6 +56,7 @@ const StorefrontFileClaim = () => {
     InsuranceProviderListResponse[]
   >("insurance_provider/", {
     useAuth: false,
+    hideToast: "success",
     errorMessage: "Failed to load insurance providers",
   });
 
@@ -63,6 +64,7 @@ const StorefrontFileClaim = () => {
     "healthcare/",
     {
       useAuth: false,
+      hideToast: "success",
       errorMessage: "Failed to load healthcare providers",
     }
   );

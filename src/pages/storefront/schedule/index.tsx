@@ -8,6 +8,7 @@ const StorefrontSchedule = () => {
 
   const { data } = useFetch<HealthcareListResponse>("healthcare/", {
     useAuth: false,
+    hideToast: "success",
     onSuccess: (data) => {
       setHealthcare(data?.data);
     },

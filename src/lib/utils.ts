@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import ls from "localstorage-slim";
+import dayjs from "dayjs";
 
 ls.config.storage = sessionStorage;
 
@@ -90,3 +91,17 @@ export const getInitials = (name: string) =>
     ?.split(" ")
     .map((n) => n[0]?.toUpperCase())
     .join("") || "";
+
+export const addDays = (dateString: string, daysToAdd: number) => {
+  // Parse the date using the known format
+  const newDate = dayjs(dateString, "DD-MM-YYYY").add(daysToAdd, "day");
+
+  // Return formatted new date
+  return newDate.format("DD-MM-YYYY");
+};
+
+export const formatAPIDate = (date: string) => {
+  return dayjs(date.split("T")[0]).format(
+    "MMMM D, YYYY"
+  );
+};

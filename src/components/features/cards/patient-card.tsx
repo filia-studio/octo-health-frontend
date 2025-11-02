@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import GridData, { type GridDataProps } from "../common/grid-data";
 import type { IPatient } from "@/types/patient";
 import { calculateAge } from "@/pages/healthcare/patient/utils";
+import dayjs from "dayjs";
 
 interface PatientCardProps {
   patientData: IPatient;
@@ -22,10 +23,7 @@ const PatientCard: React.FC<PatientCardProps> = ({ patientData }) => {
     },
     {
       title: "Member Since",
-      value: new Date(patientData?.user?.date_joined).toLocaleDateString(
-        "en-US",
-        { year: "numeric", month: "long", day: "numeric" }
-      ),
+      value: dayjs(patientData?.user?.date_joined?.split("T")[0]).format("MMMM D, YYYY"),
     },
     {
       title: "Phone",
@@ -59,7 +57,7 @@ const PatientCard: React.FC<PatientCardProps> = ({ patientData }) => {
         },
         {
           title: "Patient ID",
-          value: insurance?.patient ?? "N/A",
+          value: insurance?.hmo_id ?? "N/A",
         },
       ]
     : [{ title: "No Insurance", value: "N/A" }];

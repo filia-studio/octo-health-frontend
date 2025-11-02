@@ -11,7 +11,7 @@ import HospitalLogin from "@/pages/healthcare/auth/login";
 import Nurse from "@/pages/healthcare/schedule/nurse";
 import PharmacyInvoice from "@/pages/storefront/pharmacy/invoice";
 import VerifyOTP from "@/pages/healthcare/auth/verify-otp";
-import { hospitalUrl, insuranceUrl, storefrontUrl } from "./paths";
+import { healthcareUrl, insuranceUrl, storefrontUrl } from "./paths";
 import PatientManagement from "@/pages/healthcare/patient";
 import StorefrontClaims from "@/pages/storefront/claims";
 import StorefrontFileClaim from "@/pages/storefront/claims/file";
@@ -80,7 +80,7 @@ const AppRouter = () => {
           />
         </Route>
       </Route>
-      <Route path={hospitalUrl} element={<Outlet />}>
+      <Route path={healthcareUrl} element={<Outlet />}>
         <Route path="auth" element={<Outlet />}>
           <Route index element={<HospitalLogin />} />
           <Route path="verify-otp" element={<VerifyOTP />} />
@@ -107,7 +107,7 @@ const AppRouter = () => {
         <Route
           index
           path="*"
-          element={<Navigate to={`${hospitalUrl}/auth`} />}
+          element={<Navigate to={`${healthcareUrl}/auth`} />}
         />
       </Route>
       <Route path={insuranceUrl} element={<Outlet />}>
@@ -134,7 +134,7 @@ const AppRouter = () => {
         <Route
           index
           path="*"
-          element={<Navigate to={`${hospitalUrl}/auth`} />}
+          element={<Navigate to={`${healthcareUrl}/auth`} />}
         />
       </Route>
       <Route path="*" element={<Navigate to={`${storefrontUrl}/auth`} />} />

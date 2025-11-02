@@ -1,7 +1,7 @@
 import AuthLayout from "@/components/features/auth/layout";
 import AuthCard from "@/components/features/cards/auth";
 import { useSend } from "@/hooks/use-send";
-import { hospitalUrl } from "@/routes/paths";
+import { healthcareUrl } from "@/routes/paths";
 import { useStore } from "@/store";
 import type { OtpVerificationResponse } from "@/types/otp";
 import { useNavigate } from "react-router-dom";
@@ -14,7 +14,7 @@ const VerifyOTP = () => {
     {
       useAuth: false,
       onSuccess: (data) => {
-        navigate(`${hospitalUrl}/schedule`);
+        navigate(`${healthcareUrl}/schedule`);
         setAuth({ token: data?.data?.access, details: data?.data?.healthcare });
       },
     }

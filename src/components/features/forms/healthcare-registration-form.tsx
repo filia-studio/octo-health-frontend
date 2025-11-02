@@ -22,7 +22,7 @@ import { StandaloneSearchBox } from "@react-google-maps/api";
 import { useGetLocation } from "@/hooks/use-get-location";
 import { useSend } from "@/hooks/use-send";
 import { useNavigate } from "react-router-dom";
-import { hospitalUrl } from "@/routes/paths";
+import { healthcareUrl } from "@/routes/paths";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -82,7 +82,7 @@ const HealthcareRegistrationForm = () => {
     "/healthcare/",
     {
       useAuth: false,
-      onSuccess: () => navigate(`${hospitalUrl}/auth`),
+      onSuccess: () => navigate(`${healthcareUrl}/auth`),
     }
   );
 

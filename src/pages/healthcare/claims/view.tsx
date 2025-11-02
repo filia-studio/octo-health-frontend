@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { cn, getBadgeVarient } from "@/lib/utils";
+import { cn, formatAPIDate, getBadgeVarient } from "@/lib/utils";
 
 interface HealthcareClaim {
   id: string;
@@ -65,7 +65,7 @@ const HealthcareClaimDetails: React.FC = () => {
         <div>
           <p className="text-sm text-gray-500">Consultation Date</p>
           <p className="font-medium">
-            {new Date(consultation_date).toLocaleDateString()}
+            {formatAPIDate(consultation_date)}
           </p>
         </div>
 
@@ -78,7 +78,7 @@ const HealthcareClaimDetails: React.FC = () => {
 
         <div>
           <p className="text-sm text-gray-500">Date Filed</p>
-          <p className="font-medium">{new Date(created_at).toLocaleString()}</p>
+          <p className="font-medium">{formatAPIDate(created_at)}</p>
         </div>
       </div>
 

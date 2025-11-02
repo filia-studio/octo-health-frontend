@@ -4,32 +4,86 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import AppointmentModal from "../modals/appointment";
 import BookAppointmentModal from "../modals/book-appointment";
+import type { IHealthcare } from "@/types/healthcare";
+import type { Patient } from "@/types/otp";
+import { useSend } from "@/hooks/use-send";
+import type {
+  Appointment,
+  HealthcareAppointment,
+  ScheduleAppointment,
+} from "@/types/appointment";
+import dayjs from "dayjs";
+import { useFetch } from "@/hooks/use-fetch";
 
-interface Event {
-  id: string;
-  date: string;
-  fullDate?: string;
-  time: string;
-  title: string;
-}
-
-const Calendar = ({ isPatient }: { isPatient?: boolean }) => {
+const Calendar = ({
+  isPatient,
+  healthcare,
+  patient,
+}: {
+  isPatient?: boolean;
+  healthcare: IHealthcare;
+  patient: Patient;
+}) => {
   const [openAppointmentDetailModal, setOpenAppointmentDetailModal] =
     useState(false);
   const [openBookAppointmentModal, setOpenBookAppointmentModal] =
     useState(false);
-  const [currentDate, setCurrentDate] = useState(new Date(2025, 7, 17)); // Updated to August 2025 to match current date
+  const [currentDate, setCurrentDate] = useState(new Date()); // Updated to August 2025 to match current date
+  const [selected, setSelected] = useState({
+    date: new Date(),
+    time: "",
+  });
   const [viewMode, setViewMode] = useState<"Month" | "Week" | "Day" | "List">(
     "Month"
   );
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment>();
 
-  // Sample events matching the image
-  const events: Event[] = [
-    { id: "1", date: "2025-08-17", time: "10 AM", title: "Consultation" },
-    { id: "2", date: "2025-08-19", time: "2 PM", title: "Compliance Check" },
-    { id: "3", date: "2025-08-22", time: "4 PM", title: "Lab Consultation" },
-    { id: "4", date: "2025-08-25", time: "11 AM", title: "Team Meeting" },
-  ];
+  const { mutate: patientSchedule, isPending: patientScheduling } = useSend(
+    "/appointment/request_appointment/",
+    {
+      successMessage: "Request to schedule appointment has been sent",
+    }
+  );
+
+  const { mutate: healthcareSchedule, isPending: healthcareScheduling } =
+    useSend("/appointment/schedule_appointment/", {
+      successMessage: "Appointment has been scheduled",
+    });
+
+  const { data: patientAppointmentsData } = useFetch<Appointment[]>(
+    "/appointment/",
+    {
+      hideToast: "success",
+      enabled: isPatient,
+    }
+  );
+
+  const patientAppointments =
+    patientAppointmentsData?.filter(
+      ({ patient: patientId }) => patient.id === patientId
+    ) ?? [];
+
+  const { data: healthcareAppointmentsData } = useFetch<{
+    data: HealthcareAppointment[];
+  }>("/appointment/all_appointments/", {
+    hideToast: "success",
+    enabled: !isPatient,
+  });
+
+  const healthcareAppointments =
+    healthcareAppointmentsData?.data?.filter(
+      ({ patient: patientId }) => patient.id === patientId
+    ) ?? [];
+
+  const events = isPatient ? patientAppointments : healthcareAppointments;
+
+  const onSchedule = (payload: ScheduleAppointment) => {
+    if (isPatient) {
+      patientSchedule(payload);
+      return;
+    }
+    healthcareSchedule({ ...payload, healthcare: healthcare.id });
+  };
 
   const monthNames = [
     "January",
@@ -48,12 +102,23 @@ const Calendar = ({ isPatient }: { isPatient?: boolean }) => {
 
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-  const toggleAppointmentDetailModal = (e?: React.MouseEvent) => {
+  const toggleAppointmentDetailModal = (
+    e?: React.MouseEvent,
+    appointment?: Appointment
+  ) => {
     e?.stopPropagation();
     setOpenAppointmentDetailModal(!openAppointmentDetailModal);
+    setSelectedAppointment(appointment);
   };
 
-  const toggleBookAppointmentModal = () => {
+  const toggleBookAppointmentModal = ({
+    date,
+    time,
+  }: {
+    date: Date;
+    time: string;
+  }) => {
+    setSelected({ date, time });
     setOpenBookAppointmentModal(!openBookAppointmentModal);
   };
 
@@ -73,35 +138,37 @@ const Calendar = ({ isPatient }: { isPatient?: boolean }) => {
   };
 
   const getEventsForDate = (date: Date) => {
-    const dateString = date.toISOString().split("T")[0]; // Convert to YYYY-MM-DD format
-    return events.filter((event) => event.date === dateString);
+    const dateString = date.toLocaleDateString().split("T")[0];
+    return events.filter(
+      (event) => dayjs(event.date).format("DD/MM/YYYY") === dateString
+    );
   };
 
   const timeSlots = [
-    "12 AM",
-    "1 AM",
-    "2 AM",
-    "3 AM",
-    "4 AM",
-    "5 AM",
-    "6 AM",
-    "7 AM",
-    "8 AM",
-    "9 AM",
-    "10 AM",
-    "11 AM",
-    "12 PM",
-    "1 PM",
-    "2 PM",
-    "3 PM",
-    "4 PM",
-    "5 PM",
-    "6 PM",
-    "7 PM",
-    "8 PM",
-    "9 PM",
-    "10 PM",
-    "11 PM",
+    "12:00 AM",
+    "1:00 AM",
+    "2:00 AM",
+    "3:00 AM",
+    "4:00 AM",
+    "5:00 AM",
+    "6:00 AM",
+    "7:00 AM",
+    "8:00 AM",
+    "9:00 AM",
+    "10:00 AM",
+    "11:00 AM",
+    "12:00 PM",
+    "1:00 PM",
+    "2:00 PM",
+    "3:00 PM",
+    "4:00 PM",
+    "5:00 PM",
+    "6:00 PM",
+    "7:00 PM",
+    "8:00 PM",
+    "9:00 PM",
+    "10:00 PM",
+    "11:00 PM",
   ];
 
   const getDaysInMonth = (date: Date) => {
@@ -204,7 +271,16 @@ const Calendar = ({ isPatient }: { isPatient?: boolean }) => {
       days.push(
         <div
           key={`prev-${daysInPrevMonth - i}`}
-          onClick={toggleBookAppointmentModal}
+          onClick={() =>
+            toggleBookAppointmentModal({
+              date: new Date(
+                currentDate.getFullYear(),
+                currentDate.getMonth() - 1,
+                daysInPrevMonth - i
+              ),
+              time: "",
+            })
+          }
           className="h-24 p-2 text-gray-400 text-sm"
         >
           {daysInPrevMonth - i}
@@ -219,24 +295,33 @@ const Calendar = ({ isPatient }: { isPatient?: boolean }) => {
         currentDate.getMonth(),
         day
       );
+
       const dayEvents = getEventsForDate(currentDayDate);
 
       days.push(
         <div
           key={day}
-          onClick={toggleBookAppointmentModal}
+          onClick={() =>
+            toggleBookAppointmentModal({
+              date: currentDayDate,
+              time: "",
+            })
+          }
           className="h-24 p-2 border-r border-b border-gray-200 bg-white"
         >
           <div className="text-sm font-medium text-gray-900 mb-1">{day}</div>
           {dayEvents.map((event) => (
             <div
               key={event.id}
-              onClick={toggleAppointmentDetailModal}
+              onClick={(e) => toggleAppointmentDetailModal(e, event)}
               className="text-xs text-red-600 flex items-center cursor-pointer"
             >
               <div className="w-1.5 h-1.5 bg-red-500 rounded-full mr-1"></div>
               <span className="truncate">
-                {event.time} {event.title}
+                {event.time}{" "}
+                <span className="capitalize">
+                  {event.type_of_visit.toLowerCase()}
+                </span>
               </span>
             </div>
           ))}
@@ -252,7 +337,16 @@ const Calendar = ({ isPatient }: { isPatient?: boolean }) => {
       days.push(
         <div
           key={`next-${day}`}
-          onClick={toggleBookAppointmentModal}
+          onClick={() =>
+            toggleBookAppointmentModal({
+              date: new Date(
+                currentDate.getFullYear(),
+                currentDate.getMonth() + 1,
+                day
+              ),
+              time: "",
+            })
+          }
           className="h-24 p-2 text-gray-400 text-sm"
         >
           {day}
@@ -328,17 +422,24 @@ const Calendar = ({ isPatient }: { isPatient?: boolean }) => {
                 return (
                   <div
                     key={dateIndex}
-                    onClick={toggleBookAppointmentModal}
+                    onClick={() =>
+                      toggleBookAppointmentModal({
+                        date,
+                        time,
+                      })
+                    }
                     className="p-2 h-12 border-r border-gray-200 last:border-r-0 relative"
                   >
                     {timeEvents.map((event) => (
                       <div
                         key={event.id}
-                        onClick={toggleAppointmentDetailModal}
+                        onClick={(e) => toggleAppointmentDetailModal(e, event)}
                         className="text-xs text-red-600 flex items-center cursor-pointer"
                       >
                         <div className="w-1.5 h-1.5 bg-red-500 rounded-full mr-1"></div>
-                        <span className="truncate">{event.title}</span>
+                        <span className="truncate capitalize">
+                          {event.type_of_visit.toLowerCase()}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -386,16 +487,23 @@ const Calendar = ({ isPatient }: { isPatient?: boolean }) => {
                 </div>
                 <div
                   className="p-3 h-16 relative"
-                  onClick={toggleBookAppointmentModal}
+                  onClick={() =>
+                    toggleBookAppointmentModal({
+                      date: currentDate,
+                      time,
+                    })
+                  }
                 >
                   {timeEvents.map((event) => (
                     <div
                       key={event.id}
-                      onClick={toggleAppointmentDetailModal}
+                      onClick={(e) => toggleAppointmentDetailModal(e, event)}
                       className="text-sm text-red-600 flex items-center mb-1 cursor-pointer"
                     >
                       <div className="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
-                      <span>{event.title}</span>
+                      <span className="capitalize">
+                        {event.type_of_visit.toLowerCase()}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -417,26 +525,6 @@ const Calendar = ({ isPatient }: { isPatient?: boolean }) => {
     allEvents.sort(
       (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
     );
-    // const allEvents = [];
-
-    // // Collect all events for the month
-    // for (let day = 1; day <= daysInMonth; day++) {
-    //   const currentDayDate = new Date(
-    //     currentDate.getFullYear(),
-    //     currentDate.getMonth(),
-    //     day
-    //   );
-    //   const dayEvents = getEventsForDate(currentDayDate);
-    //   dayEvents.forEach((event) => {
-    //     allEvents.push({
-    //       ...event,
-    //       fullDate: new Date(event.date), // Parse the date string into a Date object
-    //     });
-    //   });
-    // }
-
-    // // Sort events by date
-    // allEvents.sort((a, b) => a.fullDate.getTime() - b.fullDate.getTime());
 
     return (
       <div className="p-4">
@@ -453,12 +541,14 @@ const Calendar = ({ isPatient }: { isPatient?: boolean }) => {
             {allEvents.map((event) => (
               <div
                 key={event.id}
-                onClick={toggleAppointmentDetailModal}
+                onClick={(e) => toggleAppointmentDetailModal(e, event)}
                 className="flex items-center p-3 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer"
               >
                 <div className="w-3 h-3 bg-red-500 rounded-full mr-3"></div>
                 <div className="flex-1">
-                  <div className="font-medium text-gray-900">{event.title}</div>
+                  <div className="font-medium text-gray-900 capitalize">
+                    {event.type_of_visit.toLowerCase()}
+                  </div>
                   <div className="text-sm text-gray-600">
                     {new Date(event?.date)?.toLocaleDateString("en-US", {
                       weekday: "long",
@@ -558,11 +648,27 @@ const Calendar = ({ isPatient }: { isPatient?: boolean }) => {
         isPatientView={isPatient}
         open={openAppointmentDetailModal}
         onOpenChange={() => toggleAppointmentDetailModal()}
+        appointment={selectedAppointment}
       />
 
       <BookAppointmentModal
         open={openBookAppointmentModal}
-        onOpenChange={() => toggleBookAppointmentModal()}
+        onOpenChange={() =>
+          toggleBookAppointmentModal({ date: new Date(), time: "" })
+        }
+        date={selected.date}
+        time={selected.time}
+        onSchedule={(data) =>
+          onSchedule?.({
+            time: data.time.replace(":00", ""),
+            date: dayjs(selected.date).format("YYYY-MM-DD"),
+            type_of_visit: data.type_of_visit,
+            healthcare: healthcare?.id,
+            patient: patient?.id,
+          })
+        }
+        healthcare={healthcare}
+        loading={patientScheduling || healthcareScheduling}
       />
     </div>
   );

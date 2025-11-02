@@ -1,19 +1,19 @@
 import type { Route } from "@/types/common";
 
-export const hospitalUrl = "/healthcare";
+export const healthcareUrl = "/healthcare";
 export const storefrontUrl = "/patient";
 export const insuranceUrl = "/insurance";
 
 export const hospitalSidebarRoutes: Route[] = [
-  { label: "Appointments", path: `${hospitalUrl}/schedule` },
-  { label: "Patients", path: `${hospitalUrl}/patient-management` },
-  { label: "Claims", path: `${hospitalUrl}/claims` },
+  { label: "Appointments", path: `${healthcareUrl}/schedule` },
+  { label: "Patients", path: `${healthcareUrl}/patient-management` },
+  { label: "Claims", path: `${healthcareUrl}/claims` },
 ];
 
 export const insuranceSidebarRoutes: Route[] = [
   { label: "Schedule", path: `${insuranceUrl}/schedule` },
   { label: "Claims", path: `${insuranceUrl}/claims` },
-  // { label: "Patients", path: `${hospitalUrl}/patient-management` },
+  // { label: "Patients", path: `${healthcareUrl}/patient-management` },
 ];
 
 export const storefrontSidebarRoutes: Route[] = [

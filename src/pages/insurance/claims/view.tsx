@@ -70,7 +70,10 @@ const InsuranceClaimDetails: React.FC = () => {
     }
   );
 
-  const { mutate, isPending } = useSend("/patient-claims/update_claim_status/");
+  const { mutate, isPending } = useSend(
+    "/patient-claims/update_claim_status/",
+    { successMessage: "Claim status updated successfully" }
+  );
 
   if (!claim) {
     return (

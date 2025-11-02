@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
   hospitalSidebarRoutes,
-  hospitalUrl,
+  healthcareUrl,
   insuranceSidebarRoutes,
   storefrontSidebarRoutes,
 } from "@/routes/paths";
@@ -43,7 +43,7 @@ const Sidebar = ({
   if (healthcareServices?.length) {
     modifiedHospitalRoutes.push({
       label: "Healthcare Services",
-      path: `${hospitalUrl}/services${healthcareServices[0].path}`,
+      path: `${healthcareUrl}/services${healthcareServices[0].path}`,
       subRoutes: healthcareServices,
     });
   }

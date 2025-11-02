@@ -7,6 +7,8 @@ import { MdVerified } from "react-icons/md";
 import { PiCalendarPlus } from "react-icons/pi";
 import CalendarModal from "../modals/calendar";
 import { ImageOff } from "lucide-react";
+import { useStore } from "@/store";
+import type { Patient } from "@/types/otp";
 
 interface Props {
   hospital: IHealthcare | null;
@@ -14,6 +16,7 @@ interface Props {
 
 const HospitalDetails: React.FC<Props> = ({ hospital }) => {
   const [openCalendar, setOpenCalendar] = useState(false);
+  const patient = useStore(state => state.patient)
 
   const images = [
     hospital?.photo_1,
@@ -130,6 +133,8 @@ const HospitalDetails: React.FC<Props> = ({ hospital }) => {
         open={openCalendar}
         onOpenChange={setOpenCalendar}
         isPatient
+        healthcare={hospital as IHealthcare}
+        patient={patient as Patient}
       />
     </div>
   );
