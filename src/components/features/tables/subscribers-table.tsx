@@ -89,13 +89,7 @@ const SubscribersTable: React.FC<{
   ];
 
   return (
-    <div>
-      <DataTable
-        loading={isLoading}
-        columns={columns}
-        data={patientData || []}
-      />
-    </div>
+    <DataTable loading={isLoading} columns={columns} data={patientData || []} />
   );
 };
 

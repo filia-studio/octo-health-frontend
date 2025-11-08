@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
-import { cn } from "@/lib/utils";
+import { cn, getBadgeVarient } from "@/lib/utils";
 import { useState } from "react";
 import type { GridDataProps } from "../common/grid-data";
 import GridData, { GridDataItem } from "../common/grid-data";
@@ -20,6 +20,11 @@ import { RiImageAddFill } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { Checkbox } from "@/components/ui/checkbox";
 import { BsArrowsAngleExpand } from "react-icons/bs";
+import type { Appointment } from "@/types/appointment";
+import dayjs from "dayjs";
+import { useFetch } from "@/hooks/use-fetch";
+import type { IHealthcare } from "@/types/healthcare";
+import type { Patient } from "@/types/otp";
 
 const Prescription = ({
   className,
@@ -263,53 +268,92 @@ const HospitalPrescription = ({
 const AppointmentModal = ({
   open,
   onOpenChange,
+  appointment,
   isPatientView = true,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  appointment?: Appointment;
   isPatientView?: boolean;
 }) => {
   const [tab, setTab] = useState("summary");
 
+  const { data: healthcare } = useFetch<IHealthcare>(
+    `/healthcare/${appointment?.healthcare}`,
+    { hideToast: "success", enabled: Boolean(appointment?.healthcare) }
+  );
+
+  const { data: patient } = useFetch<Patient>(
+    `/patient/${appointment?.patient}`,
+    { hideToast: "success", enabled: Boolean(appointment?.patient) }
+  );
+
+  const isPendingOrRejectedAppointment =
+    !appointment ||
+    ["pending", "cancelled", "rejected"].includes(appointment?.status ?? "");
+
+  const isRejectedAppointment = ["cancelled", "rejected"].includes(
+    appointment?.status ?? ""
+  );
+
   const summaryData: GridDataProps[] = [
     {
       title: "Patient",
-      value: "Alima Dansabo (F)",
-      value2: "Lagos, Nigeria",
+      value: patient
+        ? patient?.user?.first_name +
+          " " +
+          patient?.user?.last_name +
+          " (" +
+          patient?.user?.gender?.[0]?.toUpperCase() +
+          ")"
+        : "",
+      value2: patient ? patient?.user?.address : "",
     },
     {
       title: "Contact",
-      value: "alimashineshine@gmail.com",
-      value2: "+234 080 4567 4536",
+      value: patient ? patient?.user?.email : "",
+      value2: patient ? patient?.user?.contact_number : "",
     },
     {
       title: "Consultant",
-      value: "Dr Tobechukwu Anyanwu",
+      value: "--",
     },
     {
       title: "Purpose",
-      value: "Follow up",
+      value: appointment?.type_of_visit,
     },
-    {
-      title: "Provider",
-      value: "AXA Mansard",
-    },
-    {
-      title: "Plan",
-      value: <span className="text-primary">Deluxe Pro II</span>,
-    },
-    {
-      title: "Next appointment",
-      value: "Not set, pending lab",
-    },
-    ...(!isPatientView
+    ...(isPendingOrRejectedAppointment
       ? []
       : [
           {
-            title: "Total cost",
-            value: <span className="text-primary">N400000.86</span>,
+            title: "Provider",
+            value: "AXA Mansard",
           },
+          {
+            title: "Plan",
+            value: <span className="text-primary">Deluxe Pro II</span>,
+          },
+          {
+            title: "Next appointment",
+            value: "Not set, pending lab",
+          },
+          ...(!isPatientView
+            ? []
+            : [
+                {
+                  title: "Total cost",
+                  value: <span className="text-primary">N400000.86</span>,
+                },
+              ]),
         ]),
+    ...(isRejectedAppointment
+      ? [
+          {
+            title: "Reason",
+            value: appointment?.deactivation_reason,
+          },
+        ]
+      : []),
   ];
 
   const vitalsData: GridDataProps[] = [
@@ -340,68 +384,83 @@ const AppointmentModal = ({
       <DialogContent className="sm:max-w-[29.25rem] rounded-3xl gap-0">
         <DialogHeader className="gap-0 text-left">
           <h4 className="text-2xl font-semibold text-primary mb-2">
-            12 Aug 2028
+            {dayjs(appointment?.date).format("MMMM D, YYYY")}
           </h4>
-          <p>Evercare Hospital</p>
-          <p className="text-gray-400">10:00am - 02:00pm</p>
+          <p>{healthcare?.name}</p>
+          <p className="text-gray-400 mb-2">{appointment?.time}</p>
+          <Badge
+            className={cn(
+              getBadgeVarient(appointment?.status ?? ""),
+              "capitalize"
+            )}
+          >
+            {appointment?.status}
+          </Badge>
         </DialogHeader>
-        <div className="mt-7">
-          <div className="flex gap-8">
-            <Button
-              type="button"
-              variant="link"
-              className={cn("w-fit h-fit p-0 text-gray-400", {
-                "text-black": tab === "summary",
-              })}
-              onClick={() => setTab("summary")}
-            >
-              Summary
-            </Button>
-            {!isPatientView && (
+        <div
+          className={cn({
+            "mt-7": !isPendingOrRejectedAppointment,
+            "mt-3": isPendingOrRejectedAppointment,
+          })}
+        >
+          {!isPendingOrRejectedAppointment && (
+            <div className="flex gap-8">
               <Button
                 type="button"
                 variant="link"
                 className={cn("w-fit h-fit p-0 text-gray-400", {
-                  "text-black": tab === "vitals",
+                  "text-black": tab === "summary",
                 })}
-                onClick={() => setTab("vitals")}
+                onClick={() => setTab("summary")}
               >
-                Vitals
+                Summary
               </Button>
-            )}
-            <Button
-              type="button"
-              variant="link"
-              className={cn("w-fit h-fit p-0 text-gray-400", {
-                "text-black": tab === "prescription",
-              })}
-              onClick={() => setTab("prescription")}
-            >
-              Prescription
-            </Button>
-            <Button
-              type="button"
-              variant="link"
-              className={cn("w-fit h-fit p-0 text-gray-400", {
-                "text-black": tab === "lab",
-              })}
-              onClick={() => setTab("lab")}
-            >
-              Lab
-            </Button>
-            {!isPatientView && (
+              {!isPatientView && (
+                <Button
+                  type="button"
+                  variant="link"
+                  className={cn("w-fit h-fit p-0 text-gray-400", {
+                    "text-black": tab === "vitals",
+                  })}
+                  onClick={() => setTab("vitals")}
+                >
+                  Vitals
+                </Button>
+              )}
               <Button
                 type="button"
                 variant="link"
                 className={cn("w-fit h-fit p-0 text-gray-400", {
-                  "text-black": tab === "notes",
+                  "text-black": tab === "prescription",
                 })}
-                onClick={() => setTab("notes")}
+                onClick={() => setTab("prescription")}
               >
-                Notes
+                Prescription
               </Button>
-            )}
-          </div>
+              <Button
+                type="button"
+                variant="link"
+                className={cn("w-fit h-fit p-0 text-gray-400", {
+                  "text-black": tab === "lab",
+                })}
+                onClick={() => setTab("lab")}
+              >
+                Lab
+              </Button>
+              {!isPatientView && (
+                <Button
+                  type="button"
+                  variant="link"
+                  className={cn("w-fit h-fit p-0 text-gray-400", {
+                    "text-black": tab === "notes",
+                  })}
+                  onClick={() => setTab("notes")}
+                >
+                  Notes
+                </Button>
+              )}
+            </div>
+          )}
           <div>
             {tab === "summary" && (
               <GridData className="my-7" data={summaryData} />
@@ -435,35 +494,39 @@ const AppointmentModal = ({
             )}
           </div>
         </div>
-        <div className={cn("flex justify-between items-center", {
-          "mt-6": isPatientView,
-          "mt-10": !isPatientView
-        })}>
-          <div className="flex items-center gap-3.5">
-            {isPatientView && (
-              <>
-                <Button className="rounded-[3.125rem]">Pay now</Button>
-                <Button size="icon" className="rounded-full size-9">
-                  <FaRegFileAlt className="size-4" />
-                </Button>
-                <Button size="icon" className="rounded-full size-9">
-                  <MdOutlineAddShoppingCart className="size-4" />
-                </Button>
-              </>
-            )}
-            {!isPatientView && (
-              <>
-                <Button size="icon" className="rounded-full size-9">
-                  <FaPen className="size-3" />
-                </Button>
-                <Button size="icon" className="rounded-full size-9">
-                  <FaRegFileAlt className="size-4" />
-                </Button>
-              </>
-            )}
+        {!isPendingOrRejectedAppointment && (
+          <div
+            className={cn("flex justify-between items-center", {
+              "mt-6": isPatientView,
+              "mt-10": !isPatientView,
+            })}
+          >
+            <div className="flex items-center gap-3.5">
+              {isPatientView && (
+                <>
+                  <Button className="rounded-[3.125rem]">Pay now</Button>
+                  <Button size="icon" className="rounded-full size-9">
+                    <FaRegFileAlt className="size-4" />
+                  </Button>
+                  <Button size="icon" className="rounded-full size-9">
+                    <MdOutlineAddShoppingCart className="size-4" />
+                  </Button>
+                </>
+              )}
+              {!isPatientView && (
+                <>
+                  <Button size="icon" className="rounded-full size-9">
+                    <FaPen className="size-3" />
+                  </Button>
+                  <Button size="icon" className="rounded-full size-9">
+                    <FaRegFileAlt className="size-4" />
+                  </Button>
+                </>
+              )}
+            </div>
+            {isPatientView && <FeedbackPopover />}
           </div>
-          {isPatientView && <FeedbackPopover />}
-        </div>
+        )}
       </DialogContent>
     </Dialog>
   );

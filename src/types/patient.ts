@@ -12,8 +12,9 @@ export interface IInsuranceDetail {
   updated_at: string;
   name: string;
   insurance_type: string;
+  hmo_id: string;
   insurance_plan: string;
-  patient: string; // references Patient.id
+  patient: string;
 }
 
 export interface IUser {

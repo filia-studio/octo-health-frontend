@@ -5,7 +5,7 @@ import type { IPatient } from "@/types/patient";
 import React from "react";
 import { Link } from "react-router-dom";
 import { FaPlusCircle } from "react-icons/fa";
-import { hospitalUrl } from "@/routes/paths";
+import { healthcareUrl } from "@/routes/paths";
 
 const PatientManagement: React.FC = () => {
   const { data, refetch, isLoading } = useFetch<IPatient[]>("patient/", {
@@ -18,7 +18,7 @@ const PatientManagement: React.FC = () => {
     <div className="px-4">
       <div className="flex justify-end items-end py-3">
         <Button asChild>
-          <Link to={`${hospitalUrl}/patient-management/create`}>
+          <Link to={`${healthcareUrl}/patient-management/create`}>
             <FaPlusCircle />
             Create Patient
           </Link>

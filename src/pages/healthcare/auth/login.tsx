@@ -1,7 +1,7 @@
 import AuthLayout from "@/components/features/auth/layout";
 import AuthCard from "@/components/features/cards/auth";
 import { useSend } from "@/hooks/use-send";
-import { hospitalUrl } from "@/routes/paths";
+import { healthcareUrl } from "@/routes/paths";
 import { useNavigate } from "react-router-dom";
 
 const HospitalLogin = () => {
@@ -12,7 +12,7 @@ const HospitalLogin = () => {
       useAuth: false,
       onSuccess: (_, variables) => {
         sessionStorage.setItem("email", variables.email);
-        navigate(`${hospitalUrl}/auth/verify-otp`);
+        navigate(`${healthcareUrl}/auth/verify-otp`);
       },
     }
   );

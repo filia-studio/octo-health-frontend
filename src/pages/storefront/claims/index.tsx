@@ -17,7 +17,7 @@ import type { HealthcareListResponse } from "@/types/healthcare";
 import type {
   InsuranceClaim,
   InsuranceClaimsResponse,
-  InsuranceProviderListResponse,
+  // InsuranceProviderListResponse,
 } from "@/types/insurance";
 import { useMemo, useState } from "react";
 import { FaPlusCircle } from "react-icons/fa";
@@ -45,21 +45,23 @@ const StorefrontClaims = () => {
     `patient-claims/my-claims?${query}`,
     {
       useAuth: true,
+      hideToast: "success",
       errorMessage: "Failed to load claims record",
     }
   );
 
-  const { data: insuranceProviders } = useFetch<
-    InsuranceProviderListResponse[]
-  >("insurance_provider/", {
-    useAuth: false,
-    errorMessage: "Failed to load insurance providers",
-  });
+  // const { data: insuranceProviders } = useFetch<
+  //   InsuranceProviderListResponse[]
+  // >("insurance_provider/", {
+  //   useAuth: false,
+  //   errorMessage: "Failed to load insurance providers",
+  // });
 
   const { data: healthcareProviderResponse } = useFetch<HealthcareListResponse>(
     "healthcare/",
     {
       useAuth: false,
+      hideToast: "success",
       errorMessage: "Failed to load healthcare providers",
     }
   );
@@ -161,7 +163,7 @@ const StorefrontClaims = () => {
               ))}
             </SelectContent>
           </Select>
-          <Select
+          {/* <Select
             value={filters?.insurance_provider}
             onValueChange={(val) =>
               handleFilterChange("insurance_provider", val)
@@ -177,7 +179,7 @@ const StorefrontClaims = () => {
                 </SelectItem>
               ))}
             </SelectContent>
-          </Select>
+          </Select> */}
           <Select
             value={filters.status}
             onValueChange={(val) => handleFilterChange("status", val)}

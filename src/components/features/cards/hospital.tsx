@@ -126,6 +126,8 @@ const HospitalCard = ({
         open={openCalendar}
         onOpenChange={setOpenCalendar}
         isPatient
+        patient={patient as Patient}
+        healthcare={healthcare}
       />
     </Card>
   );

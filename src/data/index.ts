@@ -11,10 +11,7 @@ export const recentItems = [
 export const tabs = [
   "Patients",
   "Claims",
-  "Staff",
   "Appointments",
-  "Pharmacy",
-  "Lab",
 ];
 
 export const overview = [

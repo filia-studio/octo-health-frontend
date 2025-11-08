@@ -99,6 +99,6 @@ export interface User {
   gender: "male" | "female" | string; // expand if more genders possible
   user_type: "patient" | "doctor" | "admin" | string; // adjust as needed
   date_of_birth: string; // YYYY-MM-DD format
-  groups: any[]; // could define better if known
-  user_permissions: any[];
+  groups: unknown[];
+  user_permissions: unknown[];
 }

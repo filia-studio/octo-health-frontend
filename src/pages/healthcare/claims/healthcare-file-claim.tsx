@@ -14,7 +14,7 @@ import Select from "react-select";
 import { useFetch } from "@/hooks/use-fetch";
 import { useSend } from "@/hooks/use-send";
 import { useNavigate } from "react-router-dom";
-import { storefrontUrl } from "@/routes/paths";
+import { healthcareUrl } from "@/routes/paths";
 import type { InsuranceProviderListResponse } from "@/types/insurance";
 import { useState } from "react";
 import type { IPatient } from "@/types/patient";
@@ -69,14 +69,14 @@ const HealthcareFileClaim = () => {
     "healthcare-claim/",
     {
       useAuth: true,
-      onSuccess: () => navigate(`${storefrontUrl}/hospital/claims`),
+      onSuccess: () => navigate(`${healthcareUrl}/claims`),
       errorMessage: "An error occurred while submitting claim",
       successMessage: "Claim filed successfully on behalf of patient",
     }
   );
 
   const patientOptions =
-    patientResponse?.map((p: any) => ({
+    patientResponse?.map((p) => ({
       label: `${p.user.first_name} ${p.user.last_name}`,
       value: p.id,
     })) || [];
@@ -101,7 +101,7 @@ const HealthcareFileClaim = () => {
         value: provider?.insurance?.id || "",
       })) || [];
 
-  const handlePatientSelect = (option: any) => {
+  const handlePatientSelect = (option: { label: string; value: string }) => {
     form.setValue("patient_id", option.value);
     const selectedPatient = patientResponse?.find(
       (patient: IPatient) => patient?.id === option.value
@@ -143,9 +143,16 @@ const HealthcareFileClaim = () => {
                     <Select
                       isMulti={false}
                       value={patientOptions.find(
-                        (opt: any) => opt.value === field.value
+                        (opt) => opt.value === field.value
                       )}
-                      onChange={(option) => handlePatientSelect(option)}
+                      onChange={(option) =>
+                        handlePatientSelect(
+                          option as {
+                            label: string;
+                            value: string;
+                          }
+                        )
+                      }
                       options={patientOptions}
                       placeholder="Select patient"
                       classNames={{

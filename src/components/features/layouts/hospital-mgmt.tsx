@@ -5,7 +5,7 @@ import Sidebar from "../nav/sidebar";
 import { DashboardModule } from "@/types/common";
 import { cn } from "@/lib/utils";
 import { LogoIcon } from "@/components/icons";
-import { hospitalUrl } from "@/routes/paths";
+import { healthcareUrl } from "@/routes/paths";
 import { useStore } from "@/store";
 
 const HospitalMgmtLayout: React.FC = () => {
@@ -14,7 +14,7 @@ const HospitalMgmtLayout: React.FC = () => {
   const { healthcareAuth } = useStore();
 
   if (!healthcareAuth.token) {
-    return <Navigate to={`${hospitalUrl}/auth`} replace />;
+    return <Navigate to={`${healthcareUrl}/auth`} replace />;
   }
 
   return (

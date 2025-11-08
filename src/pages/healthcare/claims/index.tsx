@@ -14,8 +14,8 @@ import DataTable, {
   type Column,
 } from "@/components/features/common/data-table";
 import { useFetch } from "@/hooks/use-fetch";
-import { cn, getBadgeVarient } from "@/lib/utils";
-import { hospitalUrl } from "@/routes/paths";
+import { cn, formatAPIDate, getBadgeVarient } from "@/lib/utils";
+import { healthcareUrl } from "@/routes/paths";
 import type {
   HealthcareClaim,
   HealthcareClaimResponse,
@@ -42,6 +42,7 @@ const HealthcareClaims = () => {
 
   const { data: patientResponse } = useFetch<IPatient[]>("patient/", {
     useAuth: false,
+    hideToast: "success",
     errorMessage: "Failed to load patients",
   });
 
@@ -49,6 +50,7 @@ const HealthcareClaims = () => {
     InsuranceProviderListResponse[]
   >("insurance_provider/", {
     useAuth: false,
+    hideToast: "success",
     errorMessage: "Failed to load insurance providers",
   });
 
@@ -56,12 +58,13 @@ const HealthcareClaims = () => {
     `healthcare-claim/my_claims?${query}`,
     {
       useAuth: true,
+      hideToast: "success",
       errorMessage: "Failed to load claims record",
     }
   );
 
   const patientOptions =
-    patientResponse?.map((p: any) => ({
+    patientResponse?.map((p) => ({
       label: `${p.user.first_name} ${p.user.last_name}`,
       value: p.id,
     })) || [];
@@ -121,7 +124,7 @@ const HealthcareClaims = () => {
       header: "Consultation Date",
       key: "consultation_date",
       render(row) {
-        return new Date(row.consultation_date).toLocaleDateString();
+        return formatAPIDate(row.consultation_date);
       },
     },
     {
@@ -139,7 +142,7 @@ const HealthcareClaims = () => {
       header: "Submitted On",
       key: "created_at",
       render(row) {
-        return new Date(row.created_at).toLocaleString();
+        return formatAPIDate(row.created_at);
       },
     },
     {
@@ -149,7 +152,7 @@ const HealthcareClaims = () => {
         return (
           <div className="flex items-center justify-end gap-2">
             <Link
-              to={`${hospitalUrl}/claims/${row.id}`}
+              to={`${healthcareUrl}/claims/${row.id}`}
               state={{ claim: row }}
               className="text-sm text-blue-600 hover:underline"
             >
@@ -171,7 +174,7 @@ const HealthcareClaims = () => {
   ];
 
   return (
-    <section>
+    <section className="p-6">
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <div className="flex flex-wrap gap-2">
           <Select
@@ -239,7 +242,7 @@ const HealthcareClaims = () => {
         </div>
 
         <Button asChild>
-          <Link to={`${hospitalUrl}/claims/file`}>
+          <Link to={`${healthcareUrl}/claims/file`}>
             <FaPlusCircle />
             File a claim
           </Link>
