@@ -21,8 +21,8 @@ const Calendar = ({
   patient,
 }: {
   isPatient?: boolean;
-  healthcare: IHealthcare;
-  patient: Patient;
+  healthcare?: IHealthcare;
+  patient?: Patient;
 }) => {
   const [openAppointmentDetailModal, setOpenAppointmentDetailModal] =
     useState(false);
@@ -60,7 +60,7 @@ const Calendar = ({
 
   const patientAppointments =
     patientAppointmentsData?.filter(
-      ({ patient: patientId }) => patient.id === patientId
+      ({ patient: patientId }) => patient?.id === patientId
     ) ?? [];
 
   const { data: healthcareAppointmentsData } = useFetch<{
@@ -72,7 +72,7 @@ const Calendar = ({
 
   const healthcareAppointments =
     healthcareAppointmentsData?.data?.filter(
-      ({ patient: patientId }) => patient.id === patientId
+      ({ patient: patientId }) => patient?.id === patientId
     ) ?? [];
 
   const events = isPatient ? patientAppointments : healthcareAppointments;
@@ -82,7 +82,7 @@ const Calendar = ({
       patientSchedule(payload);
       return;
     }
-    healthcareSchedule({ ...payload, healthcare: healthcare.id });
+    healthcareSchedule({ ...payload, healthcare: healthcare?.id });
   };
 
   const monthNames = [
@@ -663,8 +663,8 @@ const Calendar = ({
             time: data.time.replace(":00", ""),
             date: dayjs(selected.date).format("YYYY-MM-DD"),
             type_of_visit: data.type_of_visit,
-            healthcare: healthcare?.id,
-            patient: patient?.id,
+            healthcare: healthcare?.id || "",
+            patient: patient?.id || "",
           })
         }
         healthcare={healthcare}
