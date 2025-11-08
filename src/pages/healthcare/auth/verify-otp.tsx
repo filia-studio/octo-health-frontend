@@ -8,17 +8,20 @@ import { useNavigate } from "react-router-dom";
 
 const VerifyOTP = () => {
   const navigate = useNavigate();
-  const { setAuth } = useStore();
-  const { mutate, isPending } = useSend<{ otp: string }, OtpVerificationResponse>(
-    "healthcare/verify_otp/",
-    {
-      useAuth: false,
-      onSuccess: (data) => {
-        navigate(`${hospitalUrl}/schedule`);
-        setAuth({ token: data?.data?.access, details: data?.data?.healthcare });
-      },
-    }
-  );
+  const { setHealthcareAuth } = useStore();
+  const { mutate, isPending } = useSend<
+    { otp: string },
+    OtpVerificationResponse
+  >("healthcare/verify_otp/", {
+    useAuth: false,
+    onSuccess: (data) => {
+      navigate(`${hospitalUrl}/schedule`);
+      setHealthcareAuth({
+        token: data?.data?.access,
+        details: data?.data?.healthcare,
+      });
+    },
+  });
 
   const onSubmit = (data: { otp: string }) => {
     mutate(data);
@@ -35,7 +38,7 @@ const VerifyOTP = () => {
           placeholder="Enter OTP"
           btnText="Verify OTP"
           showResendOtp={true}
-          onSubmit={(data) => onSubmit(data as { otp: string; })}
+          onSubmit={(data) => onSubmit(data as { otp: string })}
           defaultValues={{ otp: "" }}
           registerKey="otp"
           loading={isPending}

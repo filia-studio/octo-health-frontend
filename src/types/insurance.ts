@@ -53,3 +53,32 @@ export interface PatientDetails {
   gender: "male" | "female" | string;
   date_of_birth: string;
 }
+
+export interface VerifyOtpResponse {
+  success: boolean;
+  message: string;
+  data: VerifyOtpData;
+}
+
+export interface VerifyOtpData {
+  access: string;
+  data: InsuranceData;
+}
+
+export interface InsuranceData {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  accreditation_number: string;
+  address: string;
+  email: string;
+  phone_number: string;
+  accreditation_verified: boolean;
+  insurance: Insurance;
+}
+
+export interface Insurance {
+  id: string;
+  name: string;
+  hmo_id: string;
+}

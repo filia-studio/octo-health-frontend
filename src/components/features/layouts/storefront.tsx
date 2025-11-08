@@ -10,9 +10,9 @@ import { storefrontUrl } from "@/routes/paths";
 const StorefrontLayout = () => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleSidebar = () => setIsOpen(!isOpen);
-  const { auth } = useStore();
+  const { patientAuth } = useStore();
 
-  if (!auth.token) {
+  if (!patientAuth.token) {
     return <Navigate to={`${storefrontUrl}/auth`} replace />;
   }
 
