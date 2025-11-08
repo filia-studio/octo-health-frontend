@@ -5,16 +5,16 @@ import Sidebar from "../nav/sidebar";
 import { DashboardModule } from "@/types/common";
 import { cn } from "@/lib/utils";
 import { LogoIcon } from "@/components/icons";
-import { healthcareUrl } from "@/routes/paths";
 import { useStore } from "@/store";
+import { insuranceUrl } from "@/routes/paths";
 
 const InsuranceProviderLayout: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleSidebar = () => setIsOpen(!isOpen);
-  const { auth } = useStore();
+  const { insuranceAuth } = useStore();
 
-  if (!auth.token) {
-    return <Navigate to={`${healthcareUrl}/auth`} replace />;
+  if (!insuranceAuth.token) {
+    return <Navigate to={`${insuranceUrl}/auth`} replace />;
   }
 
   return (

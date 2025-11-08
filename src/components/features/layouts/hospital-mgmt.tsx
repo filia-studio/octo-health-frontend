@@ -11,9 +11,9 @@ import { useStore } from "@/store";
 const HospitalMgmtLayout: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleSidebar = () => setIsOpen(!isOpen);
-  const { auth } = useStore();
+  const { healthcareAuth } = useStore();
 
-  if (!auth.token) {
+  if (!healthcareAuth.token) {
     return <Navigate to={`${healthcareUrl}/auth`} replace />;
   }
 

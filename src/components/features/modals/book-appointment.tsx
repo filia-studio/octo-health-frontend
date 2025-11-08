@@ -30,7 +30,7 @@ interface BookAppointmentModalProps {
   onOpenChange: (open: boolean) => void;
   date: Date;
   time?: string;
-  healthcare: IHealthcare;
+  healthcare?: IHealthcare;
   loading: boolean;
   onSchedule?: ({
     type_of_visit,
@@ -90,7 +90,7 @@ const BookAppointmentModal = ({
               className="w-full md:w-1/2 !h-12 border-black rounded-[2.5rem] px-5"
               placeholder="Type of visit"
               options={appointments.map((x) => ({
-                label: x.replace('_', '-'),
+                label: x.replace("_", "-"),
                 value: x.toUpperCase(),
               }))}
               value={state.type_of_visit}

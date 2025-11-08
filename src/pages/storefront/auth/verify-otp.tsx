@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 const VerifyPatientOTP = () => {
   const navigate = useNavigate();
-  const { setAuth, setPatient } = useStore();
+  const { setPatientAuth, setPatient } = useStore();
   const { mutate, isPending } = useSend<
     { otp: string },
     PatientOtpVerificationResponse
@@ -17,7 +17,10 @@ const VerifyPatientOTP = () => {
     hideToast: "success",
     onSuccess: (data) => {
       navigate(`${storefrontUrl}/schedule`);
-      setAuth({ token: data?.data?.access });
+      setPatientAuth({
+        token: data?.data?.access,
+        details: data?.data?.patient,
+      });
       setPatient(data?.data?.patient);
     },
   });

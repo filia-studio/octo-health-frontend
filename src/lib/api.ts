@@ -15,14 +15,15 @@ export const createApiClient = (params?: {
 
   subscription();
 
-  const { auth } = useStore.getState();
-
+  const { healthcareAuth, patientAuth, insuranceAuth } = useStore.getState();
+  const token =
+    healthcareAuth?.token || patientAuth?.token || insuranceAuth?.token;
   const config: CreateAxiosDefaults = { baseURL };
 
   if (useAuth) {
     config["headers"] = {
       ...config?.["headers"],
-      Authorization: `Bearer ${auth.token}`,
+      Authorization: `Bearer ${token}`,
     };
   }
 

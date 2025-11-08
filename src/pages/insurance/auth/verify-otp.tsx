@@ -3,22 +3,25 @@ import AuthCard from "@/components/features/cards/auth";
 import { useSend } from "@/hooks/use-send";
 import { insuranceUrl } from "@/routes/paths";
 import { useStore } from "@/store";
-import type { OtpVerificationResponse } from "@/types/otp";
+import type { VerifyOtpResponse } from "@/types/insurance";
 import { useNavigate } from "react-router-dom";
 
 const VerifyInsuranceOTP = () => {
   const navigate = useNavigate();
-  const { setAuth } = useStore();
-  const { mutate, isPending } = useSend<
-    { otp: string },
-    OtpVerificationResponse
-  >("insurance_provider/verify_otp/", {
-    useAuth: false,
-    onSuccess: (data) => {
-      navigate(`${insuranceUrl}/schedule`);
-      setAuth({ token: data?.data?.access, details: data?.data?.healthcare });
-    },
-  });
+  const { setInsuranceAuth } = useStore();
+  const { mutate, isPending } = useSend<{ otp: string }, VerifyOtpResponse>(
+    "insurance_provider/verify_otp/",
+    {
+      useAuth: false,
+      onSuccess: (data) => {
+        navigate(`${insuranceUrl}/schedule`);
+        setInsuranceAuth({
+          token: data?.data?.access,
+          details: data?.data?.data,
+        });
+      },
+    }
+  );
 
   const onSubmit = (data: { otp: string }) => {
     mutate(data);

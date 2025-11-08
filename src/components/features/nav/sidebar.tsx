@@ -27,9 +27,14 @@ const Sidebar = ({
   module?: string;
 }) => {
   const [subRoute, setSubRoute] = useState("");
-  const { resetAuth, auth } = useStore();
+  const {
+    resetHealthcareAuth,
+    healthcareAuth,
+    resetInsuranceAuth,
+    resetPatientAuth,
+  } = useStore();
 
-  const healthcareServices = auth?.details?.healthcare_services?.map(
+  const healthcareServices = healthcareAuth?.details?.healthcare_services?.map(
     (service) => ({
       label: service,
       path: `/${service}`,
@@ -60,7 +65,9 @@ const Sidebar = ({
     paths?.find((path) => path.label === subRoute)?.subRoutes ?? [];
 
   const handleLogout = () => {
-    resetAuth();
+    resetHealthcareAuth();
+    resetInsuranceAuth();
+    resetPatientAuth();
   };
 
   return (

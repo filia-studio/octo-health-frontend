@@ -11,7 +11,7 @@ import { useLocation } from "react-router-dom";
 
 const HMPatient: React.FC = () => {
   const { state } = useLocation();
-  const healthcare = useStore((store) => store.auth.details);
+  const healthcare = useStore((store) => store.healthcareAuth.details);
   const patientData: Patient = state?.patient || {};
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-full px-4">
