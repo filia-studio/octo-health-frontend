@@ -7,6 +7,7 @@ export type ScheduleAppointment = {
   type_of_visit: string;
   healthcare: string;
   patient: string;
+  healthcare_service?: string[];
 };
 
 export type AppointmentStatus = "pending" | "approved" | "declined" | "cancelled" | "completed";
@@ -28,4 +29,5 @@ export type Appointment = {
   healthcare_details: IHealthcare;
   patient_details: IPatient;
   type_of_visit_display: string;
+  healthcare_service?: string[];
 };

@@ -640,6 +640,7 @@ const Calendar = ({
             type_of_visit: data.type_of_visit,
             healthcare: healthcare?.id || "",
             patient: patient?.id || "",
+            healthcare_service: data.healthcare_service?.map((x) => x.id),
           })
         }
         healthcare={healthcare}

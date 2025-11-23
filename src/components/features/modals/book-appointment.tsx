@@ -5,6 +5,7 @@ import type { IHealthcare } from "@/types/healthcare";
 import { useReducerState } from "@/hooks/use-reducer-state";
 import { useEffect, useMemo } from "react";
 import dayjs from "dayjs";
+import Select from "react-select";
 
 // const appointments = [
 //   "Consultation",
@@ -25,6 +26,18 @@ import dayjs from "dayjs";
 
 const appointments = ["Physical", "Virtual", "Follow_up", "Emergency"];
 
+type State = {
+  type_of_visit: string;
+  time: string;
+  healthcare_service: { id: string; name: string }[];
+};
+
+type FormState = {
+  type_of_visit: string;
+  time: string;
+  healthcare_service: { value: string; label: string }[];
+};
+
 interface BookAppointmentModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -32,13 +45,7 @@ interface BookAppointmentModalProps {
   time?: string;
   healthcare?: IHealthcare;
   loading: boolean;
-  onSchedule?: ({
-    type_of_visit,
-    time,
-  }: {
-    type_of_visit: string;
-    time: string;
-  }) => void;
+  onSchedule?: ({ type_of_visit, time }: State) => void;
 }
 
 const BookAppointmentModal = ({
@@ -50,9 +57,10 @@ const BookAppointmentModal = ({
   onSchedule,
   loading,
 }: BookAppointmentModalProps) => {
-  const [state, setState] = useReducerState({
+  const [state, setState] = useReducerState<FormState>({
     type_of_visit: "",
     time: time ?? "",
+    healthcare_service: [],
   });
 
   const hours = useMemo(
@@ -85,7 +93,7 @@ const BookAppointmentModal = ({
           <p className="text-gray-400 text-lg">{healthcare?.address}</p>
         </DialogHeader>
         <section>
-          <div className="flex gap-16 flex-wrap sm:flex-nowrap mt-10 mb-5">
+          <div className="flex gap-6 flex-wrap sm:flex-nowrap mt-10 mb-5">
             <PillDropdown
               className="w-full md:w-1/2 !h-12 border-black rounded-[2.5rem] px-5"
               placeholder="Type of visit"
@@ -104,6 +112,30 @@ const BookAppointmentModal = ({
               onValueChange={(value) => setState({ time: value })}
             />
           </div>
+          <div className="mb-5">
+            <Select
+              isMulti
+              placeholder="Healthcare services (optional)"
+              value={state.healthcare_service}
+              onChange={(value) =>
+                setState({
+                  healthcare_service: value as FormState["healthcare_service"],
+                })
+              }
+              options={healthcare?.healthcare_services?.map((x) => ({
+                label: x.name,
+                value: x.id,
+              }))}
+              classNames={{
+                control: (state) =>
+                  `border !border-black !rounded-full !min-h-12 px-5 !shadow-none ${
+                    state.isFocused
+                      ? "!border-ring ring-ring/50 ring-[3px]"
+                      : ""
+                  }`,
+              }}
+            />
+          </div>
           <p className="text-gray-500 mb-6">
             Please note that all bookings are subject to confirmation by your
             provider and rescheduling after confirmation attracts fees.
@@ -111,7 +143,15 @@ const BookAppointmentModal = ({
           <Button
             size="lg"
             className="rounded-[3.125rem] w-full max-w-[7.7rem]"
-            onClick={() => onSchedule?.(state)}
+            onClick={() =>
+              onSchedule?.({
+                ...state,
+                healthcare_service: state.healthcare_service.map((x) => ({
+                  id: x.value,
+                  name: x.label,
+                })),
+              })
+            }
             isLoading={loading}
           >
             Book

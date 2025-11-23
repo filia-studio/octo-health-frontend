@@ -34,6 +34,7 @@ export const getBadgeVarient = (status: string) => {
       return "bg-[#C8E6C9] text-[#2E7D32]";
     case "rejected":
     case "declined":
+    case "cancelled":
       return "bg-[#FFCDD2] text-[#C62828]";
     default:
       return "bg-[#C8E6C9] text-[#2E7D32]";

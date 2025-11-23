@@ -22,6 +22,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { BsArrowsAngleExpand } from "react-icons/bs";
 import type { Appointment } from "@/types/appointment";
 import dayjs from "dayjs";
+import ConfirmModal from "./confirm";
+import { useSend } from "@/hooks/use-send";
 
 const Prescription = ({
   className,
@@ -274,6 +276,7 @@ const AppointmentModal = ({
   isPatientView?: boolean;
 }) => {
   const [tab, setTab] = useState("summary");
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
 
   const isPendingOrRejectedAppointment =
     !appointment ||
@@ -287,6 +290,22 @@ const AppointmentModal = ({
 
   const patient = appointment?.patient_details;
   const healthcare = appointment?.healthcare_details;
+  const healthcareServices = healthcare?.healthcare_services?.filter((x) =>
+    appointment?.healthcare_service?.includes(x.id)
+  );
+  const dateDifference = dayjs(appointment?.date).diff(dayjs(), "hour");
+
+  const { mutate: cancelAppointment, isPending: cancelling } = useSend(
+    `appointment/${appointment?.id}/cancel_appointment/`,
+    {
+      onSuccess: () => {
+        onOpenChange(false);
+        setOpenConfirmModal(false);
+      },
+      errorMessage: "Failed to cancel appointment",
+      successMessage: "Appointment cancelled successfully",
+    }
+  );
 
   const summaryData: GridDataProps[] = [
     {
@@ -312,6 +331,10 @@ const AppointmentModal = ({
     {
       title: "Purpose",
       value: appointment?.type_of_visit_display,
+    },
+    {
+      title: "Selected Services",
+      value: healthcareServices?.map((x) => x.name).join(", ") || "--",
     },
     ...(appointment?.status === "completed"
       ? [
@@ -518,12 +541,28 @@ const AppointmentModal = ({
             {isPatientView && <FeedbackPopover />}
           </div>
         )}
-        {appointment?.status === "approved" && (
+        {appointment?.status === "approved" && dateDifference > 1 && (
           <div className="mt-10">
-            <Button className="rounded-[3.125rem]">Cancel Appointment</Button>
+            <Button
+              className="rounded-[3.125rem]"
+              onClick={() => setOpenConfirmModal(true)}
+            >
+              Cancel Appointment
+            </Button>
           </div>
         )}
       </DialogContent>
+      <ConfirmModal
+        open={openConfirmModal}
+        onOpenChange={setOpenConfirmModal}
+        title="Cancel Appointment"
+        description="Are you sure you want to cancel this appointment?"
+        confirmText="Cancel"
+        cancelText="No"
+        isLoading={cancelling}
+        onConfirm={() => cancelAppointment({ deactivation_reason: "Cancel" })}
+        onCancel={() => setOpenConfirmModal(false)}
+      />
     </Dialog>
   );
 };
