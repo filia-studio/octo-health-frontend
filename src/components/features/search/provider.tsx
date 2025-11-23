@@ -3,11 +3,12 @@ import { Input } from "@/components/ui/input";
 import { IoFilter } from "react-icons/io5";
 import { cn } from "@/lib/utils";
 
-const SearchProvider = ({ className }: { className?: string }) => {
+const SearchProvider = ({ className, onChange }: { className?: string; onChange?: (value: string) => void }) => {
   return (
     <div className={cn("flex items-center gap-2 w-full max-w-[36rem]", className)}>
       <Input
         placeholder="Search for provider"
+        onChange={(e) => onChange?.(e.target.value)}
         className="w-full max-w-[32.2rem] h-11 rounded-[12.5rem] border-black bg-transparent"
       />
       <Button size="icon" className="size-8 lg:size-11 rounded-full bg-black">

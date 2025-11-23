@@ -15,15 +15,15 @@ const Tabs: React.FC<TabsProps> = ({
   className,
 }) => {
   return (
-    <div className={cn("flex items-center gap-4", className)}>
+    <div className={cn("flex items-center bg-white border border-primary border-r-0 rounded w-fit overflow-hidden", className)}>
       {tabs.map((tab: string) => (
         <button
           key={tab}
           onClick={() => setActiveTab(tab)}
-          className={`text-base transition-colors cursor-pointer ${
+          className={`text-base transition-colors cursor-pointer p-2 font-medium min-w-28 border-r border-primary ${
             activeTab === tab
-              ? "text-black font-bold"
-              : "text-[#676767] font-normal"
+              ? "bg-primary text-white"
+              : "text-black"
           }`}
         >
           {tab}

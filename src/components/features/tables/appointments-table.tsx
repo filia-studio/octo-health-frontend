@@ -1,4 +1,4 @@
-import type { Appointment, HealthcareAppointment } from "@/types/appointment";
+import type { Appointment } from "@/types/appointment";
 import DataTable, { type Column } from "../common/data-table";
 import dayjs from "dayjs";
 import { Badge } from "@/components/ui/badge";
@@ -8,10 +8,12 @@ import { useState } from "react";
 import ActionPopover from "../popovers/action";
 import AppointmentModal from "../modals/appointment";
 import { useSend } from "@/hooks/use-send";
+import ConfirmModal from "../modals/confirm";
+import { useReducerState } from "@/hooks/use-reducer-state";
 
 type AppointmentsTableProps = {
   isLoading: boolean;
-  data: (Appointment | HealthcareAppointment)[];
+  data: (Appointment)[];
   type?: "patient" | "healthcare";
   refresh?: () => void;
 };
@@ -26,6 +28,12 @@ const AppointmentsTable = ({
   const [selected, setSelected] = useState<string>("");
   const [appointment, setAppointment] = useState<Appointment>();
   const [openDetailsModal, setOpenDetailsModal] = useState(false);
+  const [confirmDetails, setConfirmDetails] = useReducerState({
+    open: false,
+    type: "",
+    title: "",
+    description: "",
+  });
 
   const { mutate: approveAppointment, isPending: approving } = useSend(
     `/appointment/${appointment?.id}/approve_appointment/`,
@@ -47,7 +55,7 @@ const AppointmentsTable = ({
     }
   );
 
-  const healthcareColumns: Column<HealthcareAppointment>[] = [
+  const healthcareColumns: Column<Appointment>[] = [
     {
       header: "Patient",
       key: "patient",
@@ -108,13 +116,26 @@ const AppointmentsTable = ({
               ? [
                   {
                     title: "Approve",
-                    onClick: () => approveAppointment({ notes: "Approved" }),
+                    onClick: () => {
+                      setConfirmDetails({
+                        open: true,
+                        type: "approve",
+                        title: "Approve Appointment",
+                        description: "Are you sure you want to approve this appointment?",
+                      });
+                    },
                     isLoading: approving,
                   },
                   {
                     title: "Decline",
-                    onClick: () =>
-                      declineAppointment({ deactivation_reason: "Declined" }),
+                    onClick: () => {
+                      setConfirmDetails({
+                        open: true,
+                        type: "decline",
+                        title: "Decline Appointment",
+                        description: "Are you sure you want to decline this appointment?",
+                      });
+                    },
                     isLoading: declining,
                   },
                 ]
@@ -150,13 +171,28 @@ const AppointmentsTable = ({
       <DataTable
         loading={isLoading}
         columns={columns}
-        data={(data as unknown as HealthcareAppointment[]) || []}
+        data={(data) || []}
       />
       <AppointmentModal
         isPatientView={type === "patient"}
         open={openDetailsModal}
         onOpenChange={() => setOpenDetailsModal(!openDetailsModal)}
         appointment={appointment}
+      />
+      <ConfirmModal
+        open={confirmDetails.open}
+        onOpenChange={() => setConfirmDetails({ open: false })}
+        title={confirmDetails.title}
+        description={confirmDetails.description}
+        onConfirm={() => {
+          if (confirmDetails.type === "approve") {
+            approveAppointment({ notes: "Approved" });
+          } else {
+            declineAppointment({ deactivation_reason: "Declined" });
+          }
+        }}
+        onCancel={() => setConfirmDetails({ open: false })}
+        isLoading={approving || declining}
       />
     </>
   );

@@ -28,10 +28,12 @@ export function cn(...inputs: ClassValue[]) {
 export const getBadgeVarient = (status: string) => {
   switch (status) {
     case "pending":
-      return "bg-[#FFCDD2] text-[#C62828]";
+      return "bg-[#FFDE00] text-black";
     case "approved":
+    case "completed":
       return "bg-[#C8E6C9] text-[#2E7D32]";
     case "rejected":
+    case "declined":
       return "bg-[#FFCDD2] text-[#C62828]";
     default:
       return "bg-[#C8E6C9] text-[#2E7D32]";
@@ -101,7 +103,5 @@ export const addDays = (dateString: string, daysToAdd: number) => {
 };
 
 export const formatAPIDate = (date: string) => {
-  return dayjs(date.split("T")[0]).format(
-    "MMMM D, YYYY"
-  );
+  return dayjs(date.split("T")[0]).format("MMMM D, YYYY");
 };

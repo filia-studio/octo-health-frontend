@@ -62,8 +62,18 @@ export const useSend = <Variables, T = unknown>(
       const axiosErrorData = error?.response?.data;
       const axiosError = axiosErrorData?.message;
       const userError = axiosErrorData?.error;
-      const formatUserError = typeof userError === "string" ? userError : typeof userError !== "undefined" && Object.values(userError)[0][0];
-      const axiosErrorMessage = errorMessage ?? formatUserError ?? axiosError ?? Object.values(axiosErrorData as unknown as Record<string, string[]>)[0][0];
+      const formatUserError = userError
+        ? typeof userError === "string"
+          ? userError
+          : Object.values(userError)[0][0]
+        : undefined;
+      const axiosErrorMessage =
+        errorMessage ??
+        formatUserError ??
+        axiosError ??
+        Object.values(
+          axiosErrorData as unknown as Record<string, string[]>
+        )[0][0];
       if (!["error", "all"].includes(hideToast)) toast.error(axiosErrorMessage);
     },
   });
