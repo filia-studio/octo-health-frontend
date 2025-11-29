@@ -4,19 +4,28 @@ import PatientRegistrationForm, {
 import DashboardDetailLayout from "@/components/features/layouts/dashboard-detail";
 import { useSend } from "@/hooks/use-send";
 import { healthcareUrl } from "@/routes/paths";
+import { useStore } from "@/store";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const CreatePatient: React.FC = () => {
+  const healthcare = useStore();
   const navigate = useNavigate();
-  const { mutate } = useSend<unknown, { message: string }>("patient/", {
-    useAuth: false,
-    onSuccess: () => navigate(`${healthcareUrl}/patient-management`),
-    errorMessage: "An error occurred!",
-    successMessage: "Patient record created successfully",
-  });
+  const { mutate } = useSend<unknown, { message: string }>(
+    "healthcare/create_patient/",
+    {
+      useAuth: false,
+      onSuccess: () => navigate(`${healthcareUrl}/patient-management`),
+      errorMessage: "An error occurred!",
+      successMessage: "Patient record created successfully",
+    }
+  );
 
   const handleSubmit = (data: FormSchema) => {
+    const payload = {
+      ...data,
+      healthcare_id: healthcare?.healthcareAuth?.details?.id,
+    };
     // const formData = new FormData();
 
     // data.insurance.forEach((item, index) => {
@@ -39,7 +48,7 @@ const CreatePatient: React.FC = () => {
     // formData.append("longitude", data.longitude);
     // formData.append("latitude", data.latitude);
     // formData.append("zipcode", data.zipcode);
-    mutate(data);
+    mutate(payload);
   };
   return (
     <DashboardDetailLayout title="Create Patient">
