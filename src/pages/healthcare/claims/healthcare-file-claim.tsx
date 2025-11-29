@@ -53,8 +53,8 @@ const HealthcareFileClaim = () => {
     null
   );
 
-  const { data: patientResponse } = useFetch<IPatient[]>("patient/", {
-    useAuth: false,
+  const { data: patientResponse } = useFetch<{ data: IPatient[] }>("patient/", {
+    useAuth: true,
     errorMessage: "Failed to load patients",
   });
 
@@ -76,7 +76,7 @@ const HealthcareFileClaim = () => {
   );
 
   const patientOptions =
-    patientResponse?.map((p) => ({
+    patientResponse?.data?.map((p) => ({
       label: `${p.user.first_name} ${p.user.last_name}`,
       value: p.id,
     })) || [];
@@ -94,16 +94,14 @@ const HealthcareFileClaim = () => {
     }) || [];
 
   const insuranceOptions =
-    patientInsuranceArray
-      .filter((provider) => provider?.insurance)
-      .map((provider) => ({
-        label: provider?.insurance?.name || "",
-        value: provider?.insurance?.id || "",
-      })) || [];
+    patientInsuranceArray?.map((provider) => ({
+      label: provider?.name || "",
+      value: provider?.insurance_provider_id || "",
+    })) || [];
 
   const handlePatientSelect = (option: { label: string; value: string }) => {
     form.setValue("patient_id", option.value);
-    const selectedPatient = patientResponse?.find(
+    const selectedPatient = patientResponse?.data?.find(
       (patient: IPatient) => patient?.id === option.value
     ) as IPatient;
     setSeletectedPatient(selectedPatient);
