@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import AppointmentModal from "../modals/appointment";
@@ -7,11 +5,7 @@ import BookAppointmentModal from "../modals/book-appointment";
 import type { IHealthcare } from "@/types/healthcare";
 import type { Patient } from "@/types/otp";
 import { useSend } from "@/hooks/use-send";
-import type {
-  Appointment,
-  HealthcareAppointment,
-  ScheduleAppointment,
-} from "@/types/appointment";
+import type { Appointment, ScheduleAppointment } from "@/types/appointment";
 import dayjs from "dayjs";
 import { useFetch } from "@/hooks/use-fetch";
 
@@ -50,32 +44,13 @@ const Calendar = ({
       successMessage: "Appointment has been scheduled",
     });
 
-  const { data: patientAppointmentsData } = useFetch<Appointment[]>(
-    "/appointment/",
-    {
-      hideToast: "success",
-      enabled: isPatient,
-    }
-  );
-
-  const patientAppointments =
-    patientAppointmentsData?.filter(
-      ({ patient: patientId }) => patient?.id === patientId
-    ) ?? [];
-
-  const { data: healthcareAppointmentsData } = useFetch<{
-    data: HealthcareAppointment[];
-  }>("/appointment/all_appointments/", {
+  const { data: events = [] } = useFetch<Appointment[]>("/appointment/", {
     hideToast: "success",
-    enabled: !isPatient,
+    params: {
+      patient_id: patient?.id,
+      healthcare_id: healthcare?.id,
+    },
   });
-
-  const healthcareAppointments =
-    healthcareAppointmentsData?.data?.filter(
-      ({ patient: patientId }) => patient?.id === patientId
-    ) ?? [];
-
-  const events = isPatient ? patientAppointments : healthcareAppointments;
 
   const onSchedule = (payload: ScheduleAppointment) => {
     if (isPatient) {
@@ -665,6 +640,7 @@ const Calendar = ({
             type_of_visit: data.type_of_visit,
             healthcare: healthcare?.id || "",
             patient: patient?.id || "",
+            healthcare_service: data.healthcare_service?.map((x) => x.id),
           })
         }
         healthcare={healthcare}

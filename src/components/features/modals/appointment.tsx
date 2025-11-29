@@ -22,9 +22,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { BsArrowsAngleExpand } from "react-icons/bs";
 import type { Appointment } from "@/types/appointment";
 import dayjs from "dayjs";
-import { useFetch } from "@/hooks/use-fetch";
-import type { IHealthcare } from "@/types/healthcare";
-import type { Patient } from "@/types/otp";
+import ConfirmModal from "./confirm";
+import { useSend } from "@/hooks/use-send";
 
 const Prescription = ({
   className,
@@ -277,42 +276,53 @@ const AppointmentModal = ({
   isPatientView?: boolean;
 }) => {
   const [tab, setTab] = useState("summary");
-
-  const { data: healthcare } = useFetch<IHealthcare>(
-    `/healthcare/${appointment?.healthcare}`,
-    { hideToast: "success", enabled: Boolean(appointment?.healthcare) }
-  );
-
-  const { data: patient } = useFetch<Patient>(
-    `/patient/${appointment?.patient}`,
-    { hideToast: "success", enabled: Boolean(appointment?.patient) }
-  );
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
 
   const isPendingOrRejectedAppointment =
     !appointment ||
-    ["pending", "cancelled", "rejected"].includes(appointment?.status ?? "");
+    ["pending", "cancelled", "rejected", "declined"].includes(
+      appointment?.status ?? ""
+    );
 
-  const isRejectedAppointment = ["cancelled", "rejected"].includes(
+  const isRejectedAppointment = ["cancelled", "rejected", "declined"].includes(
     appointment?.status ?? ""
+  );
+
+  const patient = appointment?.patient_details;
+  const healthcare = appointment?.healthcare_details;
+  const healthcareServices = healthcare?.healthcare_services?.filter((x) =>
+    appointment?.healthcare_service?.includes(x.id)
+  );
+  const dateDifference = dayjs(appointment?.date).diff(dayjs(), "hour");
+
+  const { mutate: cancelAppointment, isPending: cancelling } = useSend(
+    `appointment/${appointment?.id}/cancel_appointment/`,
+    {
+      onSuccess: () => {
+        onOpenChange(false);
+        setOpenConfirmModal(false);
+      },
+      errorMessage: "Failed to cancel appointment",
+      successMessage: "Appointment cancelled successfully",
+    }
   );
 
   const summaryData: GridDataProps[] = [
     {
       title: "Patient",
-      value: patient
-        ? patient?.user?.first_name +
-          " " +
-          patient?.user?.last_name +
-          " (" +
-          patient?.user?.gender?.[0]?.toUpperCase() +
-          ")"
-        : "",
-      value2: patient ? patient?.user?.address : "",
+      value:
+        patient?.user?.first_name +
+        " " +
+        patient?.user?.last_name +
+        " (" +
+        patient?.user?.gender?.[0]?.toUpperCase() +
+        ")",
+      value2: patient?.user?.address,
     },
     {
       title: "Contact",
-      value: patient ? patient?.user?.email : "",
-      value2: patient ? patient?.user?.contact_number : "",
+      value: patient?.user?.email,
+      value2: patient?.user?.contact_number,
     },
     {
       title: "Consultant",
@@ -320,11 +330,14 @@ const AppointmentModal = ({
     },
     {
       title: "Purpose",
-      value: appointment?.type_of_visit,
+      value: appointment?.type_of_visit_display,
     },
-    ...(isPendingOrRejectedAppointment
-      ? []
-      : [
+    {
+      title: "Selected Services",
+      value: healthcareServices?.map((x) => x.name).join(", ") || "--",
+    },
+    ...(appointment?.status === "completed"
+      ? [
           {
             title: "Provider",
             value: "AXA Mansard",
@@ -345,7 +358,8 @@ const AppointmentModal = ({
                   value: <span className="text-primary">N400000.86</span>,
                 },
               ]),
-        ]),
+        ]
+      : []),
     ...(isRejectedAppointment
       ? [
           {
@@ -399,11 +413,11 @@ const AppointmentModal = ({
         </DialogHeader>
         <div
           className={cn({
-            "mt-7": !isPendingOrRejectedAppointment,
+            "mt-7": appointment?.status === "completed",
             "mt-3": isPendingOrRejectedAppointment,
           })}
         >
-          {!isPendingOrRejectedAppointment && (
+          {appointment?.status === "completed" && (
             <div className="flex gap-8">
               <Button
                 type="button"
@@ -494,7 +508,7 @@ const AppointmentModal = ({
             )}
           </div>
         </div>
-        {!isPendingOrRejectedAppointment && (
+        {appointment?.status === "completed" && (
           <div
             className={cn("flex justify-between items-center", {
               "mt-6": isPatientView,
@@ -527,7 +541,28 @@ const AppointmentModal = ({
             {isPatientView && <FeedbackPopover />}
           </div>
         )}
+        {appointment?.status === "approved" && dateDifference > 1 && (
+          <div className="mt-10">
+            <Button
+              className="rounded-[3.125rem]"
+              onClick={() => setOpenConfirmModal(true)}
+            >
+              Cancel Appointment
+            </Button>
+          </div>
+        )}
       </DialogContent>
+      <ConfirmModal
+        open={openConfirmModal}
+        onOpenChange={setOpenConfirmModal}
+        title="Cancel Appointment"
+        description="Are you sure you want to cancel this appointment?"
+        confirmText="Cancel"
+        cancelText="No"
+        isLoading={cancelling}
+        onConfirm={() => cancelAppointment({ deactivation_reason: "Cancel" })}
+        onCancel={() => setOpenConfirmModal(false)}
+      />
     </Dialog>
   );
 };

@@ -35,6 +35,7 @@ import HealthcareFileClaim from "@/pages/healthcare/claims/healthcare-file-claim
 import HealthcareClaimDetails from "@/pages/healthcare/claims/view";
 import InsuranceClaims from "@/pages/insurance/claims";
 import InsuranceClaimDetails from "@/pages/insurance/claims/view";
+import ServicePage from "@/pages/healthcare/services/service";
 
 const AppRouter = () => {
   return (
@@ -102,7 +103,7 @@ const AppRouter = () => {
           <Route path="patient-management" element={<PatientManagement />} />
           <Route path="patient-management/create" element={<CreatePatient />} />
           <Route path="patient-management/:id" element={<HMPatient />} />
-          <Route path="services/:id" element={<div>Services</div>} />
+          <Route path="services/:id" element={<ServicePage />} />
         </Route>
         <Route
           index

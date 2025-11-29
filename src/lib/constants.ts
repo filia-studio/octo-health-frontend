@@ -18,7 +18,20 @@ export const providers: Healthcare[] = [
     latitude: "37.7749",
     zipcode: "94107",
     healthcare_type: "hospital",
-    healthcare_services: ["emergency", "diagnosis", "therapy"],
+    healthcare_services: [
+      {
+        name: "Emergency Care",
+        id: "1",
+      },
+      {
+        name: "Diagnosis",
+        id: "2",
+      },
+      {
+        name: "Therapy",
+        id: "3",
+      },
+    ],
     created_at: "2022-01-01",
     updated_at: "2022-01-01",
   },
@@ -39,7 +52,20 @@ export const providers: Healthcare[] = [
     latitude: "37.7749",
     zipcode: "94107",
     healthcare_type: "hospital",
-    healthcare_services: ["emergency", "diagnosis", "therapy"],
+    healthcare_services: [
+      {
+        name: "Emergency Care",
+        id: "1",
+      },
+      {
+        name: "Diagnosis",
+        id: "2",
+      },
+      {
+        name: "Therapy",
+        id: "3",
+      },
+    ],
     created_at: "2022-01-01",
     updated_at: "2022-01-01",
   },

@@ -17,7 +17,7 @@ export type Healthcare = {
   latitude: string;
   zipcode: string;
   healthcare_type: string;
-  healthcare_services: string[];
+  healthcare_services: { id: string; name: string }[];
 };
 
 export interface HealthcareListResponse {
@@ -28,7 +28,7 @@ export interface HealthcareListResponse {
 
 export interface IHealthcare {
   id: string;
-  healthcare_services: string[];
+  healthcare_services: { id: string; name: string }[];
   created_at: string; // ISO timestamp string
   updated_at: string; // ISO timestamp string
   name: string;
@@ -81,4 +81,11 @@ export interface HealthcareClaim {
   status: "pending" | "approved" | "rejected"; // Enum-like status
   created_at: string; // Timestamp
   updated_at: string; // Timestamp
+  patients_details: {
+    id: string;
+    first_name: string;
+    last_name: string;
+    patient_code: string;
+    photo: string;
+  };
 }

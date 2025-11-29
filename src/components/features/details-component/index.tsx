@@ -122,7 +122,7 @@ const HospitalDetails: React.FC<Props> = ({ hospital }) => {
             <h3 className="text-[#7A7A7A] text-sm">Services Offered</h3>
             <ul className="text-sm text-gray-700">
               {hospital?.healthcare_services.map((s, i) => (
-                <li key={i}>{s}</li>
+                <li key={i}>{s.name}</li>
               ))}
             </ul>
           </div>

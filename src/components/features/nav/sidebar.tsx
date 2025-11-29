@@ -36,8 +36,8 @@ const Sidebar = ({
 
   const healthcareServices = healthcareAuth?.details?.healthcare_services?.map(
     (service) => ({
-      label: service,
-      path: `/${service}`,
+      label: service?.name,
+      path: `${healthcareUrl}/services/${service?.id}?n=${service?.name}`,
     })
   );
 
@@ -48,7 +48,7 @@ const Sidebar = ({
   if (healthcareServices?.length) {
     modifiedHospitalRoutes.push({
       label: "Healthcare Services",
-      path: `${healthcareUrl}/services${healthcareServices[0].path}`,
+      path: healthcareServices[0].path,
       subRoutes: healthcareServices,
     });
   }

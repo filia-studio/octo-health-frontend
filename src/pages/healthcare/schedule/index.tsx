@@ -7,30 +7,36 @@ import RecentSection from "@/components/features/pills/recent";
 import { useFetch } from "@/hooks/use-fetch";
 import type { IPatient } from "@/types/patient";
 import AppointmentsTable from "@/components/features/tables/appointments-table";
-import type { HealthcareAppointment } from "@/types/appointment";
+import type { Appointment } from "@/types/appointment";
+import { useStore } from "@/store";
 
 const HMSchedule: React.FC = () => {
   const [activeTab, setActiveTab] = useState("Patients");
+  const healthcare = useStore((s) => s.healthcareAuth.details);
+  const [search, setSearch] = useState("");
 
-  const { data: patients, isLoading: loadingPatients } = useFetch<IPatient[]>(
-    "patient/",
-    {
-      useAuth: false,
-      enabled: activeTab === "Patients",
-      hideToast: "success",
-      errorMessage: "Failed to load patients",
-    }
-  );
+  const { data: patients, isLoading: loadingPatients } = useFetch<{
+    data: IPatient[];
+  }>("patient/", {
+    enabled: activeTab === "Patients",
+    hideToast: "success",
+    errorMessage: "Failed to load patients",
+    params: {
+      ...(search ? { search } : {}),
+    },
+  });
 
   const {
     data: healthcareAppointmentsData,
     isLoading: loadingAppointments,
     refetch: refetchAppointments,
-  } = useFetch<{
-    data: HealthcareAppointment[];
-  }>("/appointment/all_appointments/", {
+  } = useFetch<Appointment[]>("/appointment/", {
     hideToast: "success",
     enabled: activeTab === "Appointments",
+    params: {
+      healthcare_id: healthcare?.id,
+      search,
+    },
   });
 
   return (
@@ -41,18 +47,19 @@ const HMSchedule: React.FC = () => {
         tabs={tabs}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
+        onSearch={setSearch}
       />
       <div>
         {activeTab === "Patients" && (
           <PatientsTable
             isLoading={loadingPatients}
-            patientData={patients ?? []}
+            patientData={patients?.data ?? []}
           />
         )}
         {activeTab === "Appointments" && (
           <AppointmentsTable
             isLoading={loadingAppointments}
-            data={healthcareAppointmentsData?.data ?? []}
+            data={healthcareAppointmentsData ?? []}
             refresh={refetchAppointments}
           />
         )}

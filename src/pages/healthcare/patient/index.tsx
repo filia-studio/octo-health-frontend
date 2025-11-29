@@ -9,11 +9,8 @@ import { healthcareUrl } from "@/routes/paths";
 
 const PatientManagement: React.FC = () => {
   const { data, refetch, isLoading } = useFetch<{
-    message: string;
-    success: boolean;
     data: IPatient[];
   }>("patient/", {
-    useAuth: true,
     hideToast: "success",
     errorMessage: "Failed to load patients",
   });

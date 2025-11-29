@@ -118,10 +118,6 @@ const PatientRegistrationForm = ({
     }
   );
 
-  const { longitude, latitude, zipcode } = getLocation(
-    form.watch("user.address")
-  );
-
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "insurance",
@@ -135,6 +131,7 @@ const PatientRegistrationForm = ({
     })) || [];
 
   const onSubmit: SubmitHandler<FormSchema> = (data) => {
+    const { longitude, latitude, zipcode } = getLocation(data.user.address);
     const payload = {
       ...data,
       longitude: longitude,
