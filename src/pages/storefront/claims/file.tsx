@@ -98,12 +98,10 @@ const StorefrontFileClaim = () => {
     }) || [];
 
   const insuranceProvider =
-    patientInsuranceArray
-      .filter((provider) => provider?.insurance)
-      .map((provider) => ({
-        label: provider?.insurance?.name || "",
-        value: provider?.insurance?.id || "",
-      })) || [];
+    patientInsuranceArray.map((provider) => ({
+      label: provider?.name || "",
+      value: provider?.insurance_provider_id || "",
+    })) || [];
 
   const typeOptions = [
     "Consultation",
@@ -116,7 +114,6 @@ const StorefrontFileClaim = () => {
 
   const onSubmit = (values: FileClaimFormValues) => {
     const formData = new FormData();
-    console.log({ values });
 
     Object.entries(values).forEach(([key, value]) => {
       if (value instanceof FileList) {

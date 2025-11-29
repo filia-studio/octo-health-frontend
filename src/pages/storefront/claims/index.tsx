@@ -17,7 +17,6 @@ import type { HealthcareListResponse } from "@/types/healthcare";
 import type {
   InsuranceClaim,
   InsuranceClaimsResponse,
-  // InsuranceProviderListResponse,
 } from "@/types/insurance";
 import { useMemo, useState } from "react";
 import { FaPlusCircle } from "react-icons/fa";
@@ -25,7 +24,6 @@ import { Link } from "react-router-dom";
 
 const StorefrontClaims = () => {
   const [filters, setFilters] = useState({
-    // consultation_date: "",
     end_date: "",
     healthcare_provider: "",
     insurance_provider: "",
@@ -50,13 +48,6 @@ const StorefrontClaims = () => {
     }
   );
 
-  // const { data: insuranceProviders } = useFetch<
-  //   InsuranceProviderListResponse[]
-  // >("insurance_provider/", {
-  //   useAuth: false,
-  //   errorMessage: "Failed to load insurance providers",
-  // });
-
   const { data: healthcareProviderResponse } = useFetch<HealthcareListResponse>(
     "healthcare/",
     {
@@ -70,7 +61,7 @@ const StorefrontClaims = () => {
     {
       header: "Claim Type",
       key: "claim_type",
-      cellClassName: 'capitalize'
+      cellClassName: "capitalize",
     },
     {
       header: "Diagnosis",
@@ -105,7 +96,14 @@ const StorefrontClaims = () => {
       header: "Submitted On",
       key: "created_at",
       render(row) {
-        return new Date(row.created_at).toLocaleString();
+        const raw = row?.created_at;
+
+        const iso = raw.replace(
+          /^(\d{2})-(\d{2})-(\d{4})/,
+          (_, mm, dd, yyyy) => `${yyyy}-${mm}-${dd}`
+        );
+
+        return new Date(iso).toLocaleDateString() || "";
       },
     },
     {
@@ -163,23 +161,7 @@ const StorefrontClaims = () => {
               ))}
             </SelectContent>
           </Select>
-          {/* <Select
-            value={filters?.insurance_provider}
-            onValueChange={(val) =>
-              handleFilterChange("insurance_provider", val)
-            }
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="All Insurance Providers" />
-            </SelectTrigger>
-            <SelectContent>
-              {insuranceProviders?.map((provider) => (
-                <SelectItem key={provider?.id} value={provider?.id}>
-                  {provider?.insurance?.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select> */}
+
           <Select
             value={filters.status}
             onValueChange={(val) => handleFilterChange("status", val)}
