@@ -27,7 +27,7 @@ const DataTable = <T extends object>({
     <table className="w-full">
       <thead className="bg-[#C80740]">
         <tr className=" text-white">
-          {columns.map(({ header, headerClassName, className }, index) => (
+          {columns?.map(({ header, headerClassName, className }, index) => (
             <th
               key={header}
               className={cn(
@@ -53,7 +53,7 @@ const DataTable = <T extends object>({
               Loading...
             </td>
           </tr>
-        ) : data.length === 0 ? (
+        ) : data?.length === 0 ? (
           <tr>
             <td
               colSpan={columns.length}

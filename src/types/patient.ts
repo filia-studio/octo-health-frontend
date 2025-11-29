@@ -15,6 +15,7 @@ export interface IInsuranceDetail {
   hmo_id: string;
   insurance_plan: string;
   patient: string;
+  insurance_provider_id: string;
 }
 
 export interface IUser {

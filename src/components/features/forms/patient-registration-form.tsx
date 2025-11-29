@@ -13,7 +13,7 @@ import Select from "react-select";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { removeEmptyFields } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { StandaloneSearchBox } from "@react-google-maps/api";
 import { useGetLocation } from "@/hooks/use-get-location";
@@ -24,6 +24,8 @@ import {
 } from "@/components/ui/tooltip";
 import { useFetch } from "@/hooks/use-fetch";
 import type { InsuranceProviderListResponse } from "@/types/insurance";
+import { useSend } from "@/hooks/use-send";
+import { useStore } from "@/store";
 
 const schema = z.object({
   insurance: z.array(
@@ -32,10 +34,11 @@ const schema = z.object({
       insurance_type: z.string(),
       insurance_plan: z.string(),
       hmo_id: z.string(),
+      insurance_provider_id: z.string(),
     })
   ),
   user: z.object({
-    photo: z.string(),
+    // photo: z.file().optional().or(z.string()),
     email: z.email("Invalid email"),
     first_name: z.string().min(1, "First name is required"),
     last_name: z.string().min(1, "Last name is required"),
@@ -61,8 +64,11 @@ const PatientRegistrationForm = ({
   loading?: boolean;
   handleSubmit: (data: FormSchema) => void;
 }) => {
+  const patient = useStore();
+
   const [preview, setPreview] = useState<string | null>(null);
   const [step, setStep] = useState<1 | 2>(1);
+  const [patientPhoto, setPatientPhoto] = useState<File | null>(null);
 
   const { data: insuranceProviderResponse } = useFetch<
     InsuranceProviderListResponse[]
@@ -77,10 +83,16 @@ const PatientRegistrationForm = ({
     resolver: zodResolver(schema),
     defaultValues: {
       insurance: [
-        { name: "", insurance_type: "", insurance_plan: "", hmo_id: "" },
+        {
+          name: "",
+          insurance_type: "",
+          insurance_plan: "",
+          hmo_id: "",
+          insurance_provider_id: "",
+        },
       ],
       user: {
-        photo: "",
+        // photo: "",
         email: "",
         first_name: "",
         last_name: "",
@@ -96,6 +108,16 @@ const PatientRegistrationForm = ({
     },
   });
 
+  const { mutate } = useSend<unknown, { message: string }>(
+    "patient/upload_patient_photo/",
+    {
+      useAuth: false,
+      // onSuccess: () => navigate(`${healthcareUrl}/patient-management`),
+      errorMessage: "An error occurred!",
+      successMessage: "Patient record created successfully",
+    }
+  );
+
   const { longitude, latitude, zipcode } = getLocation(
     form.watch("user.address")
   );
@@ -109,6 +131,7 @@ const PatientRegistrationForm = ({
     insuranceProviderResponse?.map((provider) => ({
       label: provider.insurance.name,
       value: provider.insurance.name,
+      id: provider.id,
     })) || [];
 
   const onSubmit: SubmitHandler<FormSchema> = (data) => {
@@ -129,6 +152,16 @@ const PatientRegistrationForm = ({
     }
     handleSubmit({ ...rest, insurance: insuranceProviders } as FormSchema);
   };
+
+  useEffect(() => {
+    const formData = new FormData();
+    if (!patient?.patient?.id || !patientPhoto) return;
+    const payload = { patient_id: patient?.patient?.id, photo: patientPhoto };
+    Object.entries(payload).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+    mutate(formData);
+  }, [patientPhoto, patient]);
 
   return (
     <Form {...form}>
@@ -156,52 +189,46 @@ const PatientRegistrationForm = ({
                 User Information
               </h2>
               {!isAuth && (
-                <FormField
-                  control={form.control}
-                  name="user.photo"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Profile Picture</FormLabel>
-                      <FormControl>
-                        <div className="flex flex-col items-start space-y-3">
-                          <Input
-                            type="file"
-                            accept="image/*"
-                            className="h-auto"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                const url = URL.createObjectURL(file);
-                                setPreview(url);
-                                field.onChange(file);
-                              }
-                            }}
+                <FormItem>
+                  <FormLabel>Profile Picture</FormLabel>
+                  <FormControl>
+                    <div className="flex flex-col items-start space-y-3">
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        className="h-auto"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const url = URL.createObjectURL(file);
+                            setPreview(url);
+                            setPatientPhoto(file);
+                          }
+                        }}
+                      />
+                      {preview && (
+                        <div className="relative w-32 h-32">
+                          <img
+                            src={preview}
+                            alt="Profile Preview"
+                            className="w-32 h-32 rounded-full object-cover border shadow-md"
                           />
-                          {preview && (
-                            <div className="relative w-32 h-32">
-                              <img
-                                src={preview}
-                                alt="Profile Preview"
-                                className="w-32 h-32 rounded-full object-cover border shadow-md"
-                              />
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setPreview(null);
-                                  field.onChange("");
-                                }}
-                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 shadow"
-                              >
-                                <X size={16} />
-                              </button>
-                            </div>
-                          )}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setPreview(null);
+                              setPatientPhoto(null);
+                            }}
+                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 shadow"
+                          >
+                            <X size={16} />
+                          </button>
                         </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                      )}
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
 
               <FormField
@@ -379,6 +406,10 @@ const PatientRegistrationForm = ({
                               )}
                               onChange={(val) => {
                                 field.onChange(val?.value);
+                                form.setValue(
+                                  `insurance.${index}.insurance_provider_id`,
+                                  val?.id ?? ""
+                                );
                               }}
                               options={insuranceProvider}
                               classNames={{
@@ -524,6 +555,7 @@ const PatientRegistrationForm = ({
                     insurance_type: "",
                     insurance_plan: "",
                     hmo_id: "",
+                    insurance_provider_id: "",
                   })
                 }
               >
@@ -542,6 +574,9 @@ const PatientRegistrationForm = ({
                 <Button
                   type="submit"
                   isLoading={loading}
+                  disabled={
+                    loading || Object.keys(form.formState.errors)?.length > 0
+                  }
                   className="rounded-[12.5rem] bg-black w-full max-w-[6.5rem] lg:max-w-[11.8rem] h-10 lg:h-[4.1875rem] text-sm lg:text-xl font-semibold"
                 >
                   Submit

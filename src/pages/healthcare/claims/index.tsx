@@ -40,8 +40,12 @@ const HealthcareClaims = () => {
     return params.toString();
   }, [filters]);
 
-  const { data: patientResponse } = useFetch<IPatient[]>("patient/", {
-    useAuth: false,
+  const { data: patientResponse } = useFetch<{
+    message: string;
+    success: boolean;
+    data: IPatient[];
+  }>("patient/", {
+    useAuth: true,
     hideToast: "success",
     errorMessage: "Failed to load patients",
   });
@@ -64,7 +68,7 @@ const HealthcareClaims = () => {
   );
 
   const patientOptions =
-    patientResponse?.map((p) => ({
+    patientResponse?.data?.map((p) => ({
       label: `${p.user.first_name} ${p.user.last_name}`,
       value: p.id,
     })) || [];
@@ -93,7 +97,7 @@ const HealthcareClaims = () => {
       header: "Patient",
       key: "claim_patient",
       render(row) {
-        const patientData = patientResponse?.find(
+        const patientData = patientResponse?.data?.find(
           (patient) => patient?.id === row?.claim_patient
         );
 
