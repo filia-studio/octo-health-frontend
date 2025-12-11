@@ -4,6 +4,7 @@ export interface IPatient {
   user: IUser;
   created_at: string;
   updated_at: string;
+  patient_code?: string;
 }
 
 export interface IInsuranceDetail {

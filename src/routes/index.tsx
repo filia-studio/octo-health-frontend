@@ -36,6 +36,7 @@ import HealthcareClaimDetails from "@/pages/healthcare/claims/view";
 import InsuranceClaims from "@/pages/insurance/claims";
 import InsuranceClaimDetails from "@/pages/insurance/claims/view";
 import ServicePage from "@/pages/healthcare/services/service";
+import AppointmentDetails from "@/pages/healthcare/schedule/appointment-details";
 
 const AppRouter = () => {
   return (
@@ -91,6 +92,7 @@ const AppRouter = () => {
           <Route path="schedule" element={<Outlet />}>
             <Route index element={<HMSchedule />} />
             <Route path=":id" element={<HMPatient />} />
+            <Route path="appointment/:id" element={<AppointmentDetails />} />
           </Route>
 
           <Route path="claims" element={<Outlet />}>
