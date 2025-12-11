@@ -12,7 +12,6 @@ import { useFetch } from "@/hooks/use-fetch";
 import { Badge } from "@/components/ui/badge";
 import { cn, getBadgeVarient } from "@/lib/utils";
 import PatientsTable from "@/components/features/tables/patients-table";
-import type { IPatient } from "@/types/patient";
 
 export const tabs = ["Subscribers", "Claims", "Plans", "Network"];
 export const overview = [
