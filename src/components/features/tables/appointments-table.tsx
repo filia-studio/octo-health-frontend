@@ -13,7 +13,7 @@ import { useReducerState } from "@/hooks/use-reducer-state";
 
 type AppointmentsTableProps = {
   isLoading: boolean;
-  data: (Appointment)[];
+  data: Appointment[];
   type?: "patient" | "healthcare";
   refresh?: () => void;
 };
@@ -61,11 +61,7 @@ const AppointmentsTable = ({
       key: "patient",
       render: (row) => (
         <div
-          onClick={() =>
-            navigate(`${row?.patient_details?.id}`, {
-              state: { patient: row?.patient_details },
-            })
-          }
+          onClick={() => navigate(`appointment/${row?.id}`)}
           className="text-white"
         >
           {row?.patient_details?.user?.first_name}{" "}
@@ -121,7 +117,8 @@ const AppointmentsTable = ({
                         open: true,
                         type: "approve",
                         title: "Approve Appointment",
-                        description: "Are you sure you want to approve this appointment?",
+                        description:
+                          "Are you sure you want to approve this appointment?",
                       });
                     },
                     isLoading: approving,
@@ -133,7 +130,8 @@ const AppointmentsTable = ({
                         open: true,
                         type: "decline",
                         title: "Decline Appointment",
-                        description: "Are you sure you want to decline this appointment?",
+                        description:
+                          "Are you sure you want to decline this appointment?",
                       });
                     },
                     isLoading: declining,
@@ -168,11 +166,7 @@ const AppointmentsTable = ({
   const columns = type === "patient" ? patientColumns : healthcareColumns;
   return (
     <>
-      <DataTable
-        loading={isLoading}
-        columns={columns}
-        data={(data) || []}
-      />
+      <DataTable loading={isLoading} columns={columns} data={data || []} />
       <AppointmentModal
         isPatientView={type === "patient"}
         open={openDetailsModal}
