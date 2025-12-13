@@ -7,6 +7,7 @@ export interface IPatient {
   longitude: string | null;
   latitude: string | null;
   zipcode: string | null;
+  patient_code?: string;
 }
 
 export interface IInsuranceDetail {

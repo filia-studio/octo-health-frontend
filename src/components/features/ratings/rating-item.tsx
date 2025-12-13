@@ -6,7 +6,9 @@ const RatingItem: React.FC<{ rating: any }> = ({ rating }) => {
     <div className="flex flex-col py-3 border-b border-gray-200">
       <div className="flex justify-between items-center">
         <span className="font-medium text-sm text-gray-800">{rating.user}</span>
-        <span className="text-red-500 font-semibold">{rating.score} / 5.0</span>
+        <span className="text-red-500 font-semibold">
+          {rating?.rating} / 5.0
+        </span>
       </div>
       <p className="text-sm text-gray-600">{rating.comment}</p>
     </div>

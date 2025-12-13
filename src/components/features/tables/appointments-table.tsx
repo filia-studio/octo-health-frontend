@@ -13,7 +13,7 @@ import { useReducerState } from "@/hooks/use-reducer-state";
 
 type AppointmentsTableProps = {
   isLoading: boolean;
-  data: (Appointment)[];
+  data: Appointment[];
   type?: "patient" | "healthcare";
   refresh?: () => void;
 };
@@ -112,7 +112,7 @@ const AppointmentsTable = ({
                 setOpenDetailsModal(true);
               },
             },
-            ...(row.status === "pending"
+            ...(row.status === "pending" && type === "healthcare"
               ? [
                   {
                     title: "Approve",
@@ -121,7 +121,8 @@ const AppointmentsTable = ({
                         open: true,
                         type: "approve",
                         title: "Approve Appointment",
-                        description: "Are you sure you want to approve this appointment?",
+                        description:
+                          "Are you sure you want to approve this appointment?",
                       });
                     },
                     isLoading: approving,
@@ -133,7 +134,8 @@ const AppointmentsTable = ({
                         open: true,
                         type: "decline",
                         title: "Decline Appointment",
-                        description: "Are you sure you want to decline this appointment?",
+                        description:
+                          "Are you sure you want to decline this appointment?",
                       });
                     },
                     isLoading: declining,
@@ -146,6 +148,13 @@ const AppointmentsTable = ({
     },
   ];
   const patientColumns: Column<Appointment>[] = [
+    {
+      header: "Healthcare Provider",
+      key: "healthcare_provider_name",
+      render: (row) => (
+        <div className="text-white">{row?.healthcare_details?.name}</div>
+      ),
+    },
     {
       header: "Type",
       key: "type_of_visit_display",
@@ -162,22 +171,44 @@ const AppointmentsTable = ({
     {
       header: "Status",
       key: "status",
-      render: (row) => <Badge>{row?.status}</Badge>,
+      render: (row) => (
+        <Badge className={cn(getBadgeVarient(row?.status), "capitalize")}>
+          {row?.status}
+        </Badge>
+      ),
+    },
+    {
+      header: "Actions",
+      key: "actions",
+      render: (row) => (
+        <ActionPopover
+          open={selected === row?.id}
+          toggle={() => {
+            setSelected(selected ? "" : row?.id);
+            setAppointment(row);
+          }}
+          options={[
+            {
+              title: "View",
+              onClick: () => {
+                setOpenDetailsModal(true);
+              },
+            },
+          ]}
+        />
+      ),
     },
   ];
   const columns = type === "patient" ? patientColumns : healthcareColumns;
   return (
     <>
-      <DataTable
-        loading={isLoading}
-        columns={columns}
-        data={(data) || []}
-      />
+      <DataTable loading={isLoading} columns={columns} data={data || []} />
       <AppointmentModal
         isPatientView={type === "patient"}
         open={openDetailsModal}
         onOpenChange={() => setOpenDetailsModal(!openDetailsModal)}
         appointment={appointment}
+        refresh={refresh}
       />
       <ConfirmModal
         open={confirmDetails.open}

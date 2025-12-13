@@ -93,6 +93,7 @@ const AppRouter = () => {
           <Route path="schedule" element={<Outlet />}>
             <Route index element={<HMSchedule />} />
             <Route path=":id" element={<HMPatient />} />
+            {/* <Route path="appointment/:id" element={<AppointmentDetails />} /> */}
           </Route>
 
           <Route path="claims" element={<Outlet />}>

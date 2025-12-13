@@ -23,7 +23,9 @@ const PatientCard: React.FC<PatientCardProps> = ({ patientData }) => {
     },
     {
       title: "Member Since",
-      value: dayjs(patientData?.user?.date_joined?.split("T")[0]).format("MMMM D, YYYY"),
+      value: dayjs(patientData?.user?.date_joined?.split("T")[0]).format(
+        "MMMM D, YYYY"
+      ),
     },
     {
       title: "Phone",
