@@ -3,7 +3,7 @@ import RatingItem from "./rating-item";
 
 const RatingsList: React.FC<{ ratings: any }> = ({ ratings }) => {
   const avg = ratings.length
-    ? ratings.reduce((sum: any, r: any) => sum + r.score, 0) / ratings.length
+    ? ratings.reduce((sum: any, r: any) => sum + r.rating, 0) / ratings.length
     : 0;
 
   return (
