@@ -9,54 +9,76 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import Rating from "@/components/ui/rating";
 import { useSend } from "@/hooks/use-send";
 import { useForm } from "react-hook-form";
 
-const CompleteAppointmentModal = ({
+const ReviewModal = ({
   open,
   onClose,
   appointmentId,
-  refetchAppointments,
+  healthcareId,
 }: {
   open: boolean;
   onClose: () => void;
   appointmentId?: string;
-  refetchAppointments?: () => void;
+  healthcareId: string;
 }) => {
   const form = useForm({
     defaultValues: {
       comments: "",
-      //   rating: 5,
+      rating: 0,
     },
   });
 
-  const { isPending: loading, mutate: completeAppointment } = useSend(
-    `/appointment/${appointmentId}/complete/`,
+  const { isPending: loading, mutate: ratehealthcare } = useSend(
+    `healthcare-ratings/`,
     {
       useAuth: true,
       onSuccess: () => {
-        refetchAppointments?.();
+        onClose();
       },
     }
   );
 
-  const onSubmit = (values: { comments: string }) => {
-    completeAppointment(values);
-    onClose();
+  const onSubmit = (values: { comments: string; rating: number }) => {
+    const payload = {
+      healthcare: healthcareId,
+      rating: values.rating,
+      appointment: appointmentId || "",
+      comment: values.comments,
+    };
+
+    ratehealthcare(payload);
   };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[34.8em] rounded-3xl gap-0">
         <DialogHeader className="gap-0 text-left">
-          <h2 className="text-xl font-semibold">Complete Appointment</h2>
+          <h2 className="text-xl font-semibold">Leave a Review</h2>
         </DialogHeader>
-        <div className="p-6 space-y-4">
+
+        <div className="flex flex-col items-start space-y-1">
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
               className="max-w-[40rem] mx-auto space-y-6 py-12 px-4"
             >
+              <FormField
+                control={form.control}
+                name="rating"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Rating</FormLabel>
+                    <FormControl>
+                      <Rating rating={field.value} onChange={field.onChange} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <FormField
                 control={form.control}
                 name="comments"
@@ -65,7 +87,7 @@ const CompleteAppointmentModal = ({
                     <FormLabel>Comments</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Input appointment comments here..."
+                        placeholder="Input review comments here..."
                         {...field}
                       />
                     </FormControl>
@@ -73,13 +95,12 @@ const CompleteAppointmentModal = ({
                   </FormItem>
                 )}
               />
-              <div className="flex justify-end mt-12">
-                <Button
-                  isLoading={loading}
-                  type="submit"
-                  className="rounded-[12.5rem] bg-black w-full max-w-[6.5rem] lg:max-w-[11.8rem] h-10 lg:h-12 text-sm lg:text-lg font-semibold"
-                >
-                  Submit
+              <div className="flex gap-2 justify-end mt-12">
+                <Button onClick={onClose} color="inherit" variant="outline">
+                  Cancel
+                </Button>
+                <Button isLoading={loading} type="submit" color="inherit">
+                  Submit Review
                 </Button>
               </div>
             </form>
@@ -89,4 +110,4 @@ const CompleteAppointmentModal = ({
     </Dialog>
   );
 };
-export default CompleteAppointmentModal;
+export default ReviewModal;

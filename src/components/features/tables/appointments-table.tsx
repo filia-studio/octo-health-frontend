@@ -61,7 +61,11 @@ const AppointmentsTable = ({
       key: "patient",
       render: (row) => (
         <div
-          onClick={() => navigate(`appointment/${row?.id}`)}
+          onClick={() =>
+            navigate(`${row?.patient_details?.id}`, {
+              state: { patient: row?.patient_details },
+            })
+          }
           className="text-white"
         >
           {row?.patient_details?.user?.first_name}{" "}
@@ -108,7 +112,7 @@ const AppointmentsTable = ({
                 setOpenDetailsModal(true);
               },
             },
-            ...(row.status === "pending"
+            ...(row.status === "pending" && type === "healthcare"
               ? [
                   {
                     title: "Approve",
@@ -145,6 +149,13 @@ const AppointmentsTable = ({
   ];
   const patientColumns: Column<Appointment>[] = [
     {
+      header: "Healthcare Provider",
+      key: "healthcare_provider_name",
+      render: (row) => (
+        <div className="text-white">{row?.healthcare_details?.name}</div>
+      ),
+    },
+    {
       header: "Type",
       key: "type_of_visit_display",
     },
@@ -160,7 +171,32 @@ const AppointmentsTable = ({
     {
       header: "Status",
       key: "status",
-      render: (row) => <Badge>{row?.status}</Badge>,
+      render: (row) => (
+        <Badge className={cn(getBadgeVarient(row?.status), "capitalize")}>
+          {row?.status}
+        </Badge>
+      ),
+    },
+    {
+      header: "Actions",
+      key: "actions",
+      render: (row) => (
+        <ActionPopover
+          open={selected === row?.id}
+          toggle={() => {
+            setSelected(selected ? "" : row?.id);
+            setAppointment(row);
+          }}
+          options={[
+            {
+              title: "View",
+              onClick: () => {
+                setOpenDetailsModal(true);
+              },
+            },
+          ]}
+        />
+      ),
     },
   ];
   const columns = type === "patient" ? patientColumns : healthcareColumns;
@@ -172,6 +208,7 @@ const AppointmentsTable = ({
         open={openDetailsModal}
         onOpenChange={() => setOpenDetailsModal(!openDetailsModal)}
         appointment={appointment}
+        refresh={refresh}
       />
       <ConfirmModal
         open={confirmDetails.open}
