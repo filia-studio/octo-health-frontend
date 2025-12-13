@@ -16,6 +16,8 @@ import { insuranceCoverages } from "@/lib/constants";
 import { cn, getBadgeVarient } from "@/lib/utils";
 import { insuranceUrl } from "@/routes/paths";
 import type {
+  HealthcareInsuranceClaim,
+  HealthcareInsuranceClaimsResponse,
   InsuranceClaim,
   InsuranceClaimsResponse,
 } from "@/types/insurance";
@@ -25,7 +27,7 @@ import { Link } from "react-router-dom";
 
 const InsuranceClaims = () => {
   const [activeTab, setActiveTab] = useState("Patients");
-  const { data } = useFetch<InsuranceClaimsResponse>(
+  const { data: patientData } = useFetch<InsuranceClaimsResponse>(
     "/patient-claims/get_patient_claims_by_insurance_provider/",
     {
       useAuth: true,
@@ -34,7 +36,7 @@ const InsuranceClaims = () => {
       hideToast: "success",
     }
   );
-  const { data: healthcareData } = useFetch<InsuranceClaimsResponse>(
+  const { data: healthcareData } = useFetch<HealthcareInsuranceClaimsResponse>(
     "/healthcare-claim/get_healthcare_claims_by_insurance_provider/",
     {
       useAuth: true,
@@ -44,9 +46,7 @@ const InsuranceClaims = () => {
     }
   );
 
-  console.log("healthcareData", healthcareData);
-
-  const columns: Column<InsuranceClaim>[] = [
+  const patientColumns: Column<InsuranceClaim>[] = [
     {
       header: "Claim Type",
       key: "claim_type",
@@ -107,6 +107,65 @@ const InsuranceClaims = () => {
     },
   ];
 
+  const healthcareColumns: Column<HealthcareInsuranceClaim>[] = [
+    {
+      header: "Patient",
+      key: "claim_patient",
+      cellClassName: "capitalize",
+      render(row) {
+        return row.patients_details.first_name + " " + row.patients_details.last_name;
+      },
+    },
+    {
+      header: "Diagnosis",
+      key: "diagnosis_icd_code",
+    },
+    {
+      header: "Consultation Date",
+      key: "consultation_date",
+      render(row) {
+        return dayjs(row.consultation_date.split("T")[0]).format(
+          "DD MMM, YYYY"
+        );
+      },
+    },
+    {
+      header: "Status",
+      key: "status",
+      render(row) {
+        return (
+          <Badge className={cn(getBadgeVarient(row.status), "capitalize")}>
+            {row.status}
+          </Badge>
+        );
+      },
+    },
+    {
+      header: "Submitted On",
+      key: "created_at",
+      render(row) {
+        return dayjs(row.created_at.split("T")[0]).format("DD MMM, YYYY");
+      },
+    },
+    {
+      header: "",
+      key: "",
+      render(row) {
+        return (
+          <div className="flex justify-end">
+            <Link
+              to={`${insuranceUrl}/claims/${row.id}`}
+              state={{ claim: row, type: "healthcare" }}
+              className="text-sm text-blue-600 hover:underline"
+            >
+              View Details
+            </Link>
+          </div>
+        );
+      },
+    },
+  ];
+
   return (
     <section className="px-6">
       <div className="mb-6 flex justify-between items-center">
@@ -148,7 +207,15 @@ const InsuranceClaims = () => {
           }}
         />
       </div>
-      <DataTable columns={columns} data={data?.data || []} />
+      {activeTab === "Patients" && (
+        <DataTable columns={patientColumns} data={patientData?.data || []} />
+      )}
+      {activeTab === "Healthcare" && (
+        <DataTable
+          columns={healthcareColumns}
+          data={healthcareData?.data || []}
+        />
+      )}
     </section>
   );
 };

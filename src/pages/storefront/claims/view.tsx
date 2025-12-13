@@ -1,11 +1,14 @@
 import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { cn, getBadgeVarient } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import type { InsuranceProviderListResponse } from "@/types/insurance";
 import { useFetch } from "@/hooks/use-fetch";
 import type { IHealthcare } from "@/types/healthcare";
+import { FaArrowCircleRight } from "react-icons/fa";
+import { storefrontUrl } from "@/routes/paths";
+import { useStore } from "@/store";
 
 interface PatientDetails {
   id: number;
@@ -39,6 +42,7 @@ interface Claim {
 const ClaimDetails: React.FC = () => {
   const navigate = useNavigate();
   const claim = useLocation()?.state?.claim as Claim;
+  const patient = useStore((s) => s.patientAuth.details);
 
   const {
     claim_type,
@@ -55,6 +59,16 @@ const ClaimDetails: React.FC = () => {
     insurance_provider,
     healthcare_provider,
   } = claim || {};
+  
+    const { isLoading: isLoadingPaymentInfo, data: paymentData } = useFetch<{
+      data: {
+        bank: string;
+        account_name: string;
+        account_number: string;
+      };
+    }>(`/patient/${patient?.id}/get-patient-payment/`, {
+      hideToast: "success",
+    });
 
   const { data: insuranceProviderResponse } =
     useFetch<InsuranceProviderListResponse>(
@@ -331,6 +345,39 @@ const ClaimDetails: React.FC = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Payment Info */}
+      <div className="bg-white p-4 rounded-xl shadow-sm">
+        <h2 className="text-lg font-semibold mb-3">Payment Information</h2>
+        {isLoadingPaymentInfo ? (
+          <p className="text-gray-500">Loading payment information...</p>
+        ) : !paymentData?.data?.bank ? (
+          <>
+            <p className="text-gray-500 mb-2">No payment information available.</p>
+            <Link className="text-blue-500" to={`${storefrontUrl}/accounts/profile`}>
+              Click here to update payment information{" "}
+              <FaArrowCircleRight className="inline-block ml-2" />
+            </Link>
+          </>
+        ) : (
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-sm text-gray-500">Bank</p>
+              <p className="font-medium">{paymentData?.data?.bank}</p>
+            </div>
+
+            <div>
+              <p className="text-sm text-gray-500">Account Name</p>
+              <p className="font-medium">{paymentData?.data?.account_name}</p>
+            </div>
+
+            <div>
+              <p className="text-sm text-gray-500">Account Number</p>
+              <p className="font-medium">{paymentData?.data?.account_number}</p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,3 +1,5 @@
+import type { IHealthcare } from "./healthcare";
+
 export interface InsuranceProvider {
   id: string;
   name: string;
@@ -82,3 +84,39 @@ export interface Insurance {
   name: string;
   hmo_id: string;
 }
+
+export type HealthcareInsuranceClaim = {
+  id: string;
+  claim_patient: string;
+  insurance_provider: string;
+  diagnosis_icd_code: string;
+  consultation_date: string;
+  medical_report: string;
+  treatment_procedure_note: string;
+  prescriptions_and_investigation_ordered: string;
+  invoice: string | null;
+  additional_documents: string | null;
+  healthcare_provider: string;
+  status: string;
+  appointment_details: string | null;
+  patients_details: PatientDetails;
+  insurance_details: Omit<Insurance, "hmo_id">;
+  created_at: string;
+  updated_at: string;
+  healthcare_account_details: IHealthcare;
+};
+
+export interface HealthcareInsuranceClaimsResponse {
+  success: boolean;
+  message: string;
+  data: HealthcareInsuranceClaim[];
+}
+
+export type Enrollee = {
+  enrollee_id: string;
+  full_name: string;
+  email: string;
+  phone_number: string;
+  plan: string;
+  balance: string;
+};

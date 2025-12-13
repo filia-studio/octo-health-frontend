@@ -38,6 +38,8 @@ import InsuranceClaimDetails from "@/pages/insurance/claims/view";
 import ServicePage from "@/pages/healthcare/services/service";
 import HealthcarePaymentInformation from "@/pages/healthcare/accounts/payment-information";
 import HealthcareProfileInformation from "@/pages/healthcare/accounts/profile-information";
+import InsuranceEnrollees from "@/pages/insurance/enrollees";
+import UploadBulkEnrollees from "@/pages/insurance/enrollees/create";
 
 const AppRouter = () => {
   return (
@@ -131,12 +133,16 @@ const AppRouter = () => {
           <Route path="signup" element={<InsuranceSignup />} />
         </Route>
         <Route element={<InsuranceProviderLayout />}>
-          <Route path="schedule" element={<Outlet />}>
+          <Route path="home" element={<Outlet />}>
             <Route index element={<InsuranceDashboard />} />
           </Route>
           <Route path="claims" element={<Outlet />}>
             <Route index element={<InsuranceClaims />} />
             <Route path=":id" element={<InsuranceClaimDetails />} />
+          </Route>
+          <Route path="enrollees" element={<Outlet />}>
+            <Route index element={<InsuranceEnrollees />} />
+            <Route path="create" element={<UploadBulkEnrollees />} />
           </Route>
         </Route>
         <Route
