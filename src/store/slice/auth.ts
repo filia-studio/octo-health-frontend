@@ -1,10 +1,11 @@
+import type { IHealthcare } from "@/types/healthcare";
 import type { InsuranceData } from "@/types/insurance";
-import type { HealthcareDetails, Patient } from "@/types/otp";
+import type { IPatient } from "@/types/patient";
 import { type StateCreator } from "zustand";
 
 export interface HealthcareAuth {
   token: string;
-  details: HealthcareDetails | null;
+  details: IHealthcare | null;
 }
 
 export interface InsuranceAuth {
@@ -14,7 +15,7 @@ export interface InsuranceAuth {
 
 export interface PatientAuth {
   token: string;
-  details: Patient | null;
+  details: IPatient | null;
 }
 
 export type AuthSlice = {

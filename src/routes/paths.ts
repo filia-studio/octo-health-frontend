@@ -8,6 +8,21 @@ export const hospitalSidebarRoutes: Route[] = [
   { label: "Appointments", path: `${healthcareUrl}/schedule` },
   { label: "Patients", path: `${healthcareUrl}/patient-management` },
   { label: "Claims", path: `${healthcareUrl}/claims` },
+  {
+    label: "Accounts",
+    path: `${healthcareUrl}/accounts/profile`,
+    subRoutes: [
+      {
+        label: "Profile Information",
+        path: `${healthcareUrl}/accounts/profile`,
+      },
+      {
+        label: "Payment Information",
+        path: `${healthcareUrl}/accounts/payment`,
+      },
+      // { label: "Account Information", path: `${healthcareUrl}/accounts/info` },
+    ],
+  },
 ];
 
 export const insuranceSidebarRoutes: Route[] = [
@@ -32,7 +47,7 @@ export const storefrontSidebarRoutes: Route[] = [
         label: "Payment Information",
         path: `${storefrontUrl}/accounts/payment`,
       },
-      { label: "Account Information", path: `${storefrontUrl}/accounts/info` },
+      // { label: "Account Information", path: `${storefrontUrl}/accounts/info` },
     ],
   },
   // { label: "Pharmacy", path: `${storefrontUrl}/pharmacy` },

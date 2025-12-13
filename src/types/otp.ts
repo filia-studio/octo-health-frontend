@@ -1,41 +1,12 @@
-import type { IInsuranceDetail } from "./patient";
-
-export type HealthcareDetails = {
-  id: string;
-  healthcare_services: { id: string; name: string }[];
-  account_name?: string | null;
-  account_number?: string | null;
-  bank?: string | null;
-  created_at: string;
-  updated_at: string;
-  name: string;
-  address: string;
-  contact_number: string;
-  email: string;
-  website: string;
-  owner_name: string;
-  license_number: string;
-  tax_id_number: string;
-  country: string | null;
-  city: string | null;
-  state: string | null;
-  longitude: string | null;
-  latitude: string | null;
-  zipcode: string | null;
-  healthcare_type: string;
-  license_verified?: boolean;
-  logo?: string;
-  photo_1?: string;
-  photo_2?: string;
-  photo_3?: string;
-};
+import type { IHealthcare } from "./healthcare";
+import type { IPatient } from "./patient";
 
 export type OtpVerificationResponse = {
   success: boolean;
   message: string;
   data: {
     access: string;
-    healthcare: HealthcareDetails;
+    healthcare: IHealthcare;
   }
 };
 
@@ -43,22 +14,10 @@ export interface PatientOtpVerificationResponse {
   success: boolean;
   message: string;
   data: {
-    patient: Patient;
+    patient: IPatient;
     refresh: string;
     access: string;
   };
-}
-
-export interface Patient {
-  id: string;
-  insurance_details: IInsuranceDetail[];
-  user: User;
-  created_at: string;
-  updated_at: string;
-  patient_code: string;
-  longitude: string | null;
-  latitude: string | null;
-  zipcode: string | null;
 }
 
 export interface User {

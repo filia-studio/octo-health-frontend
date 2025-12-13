@@ -10,7 +10,7 @@ import type { IHealthcare } from "@/types/healthcare";
 import { haversineDistance } from "@/lib/utils";
 import { useStore } from "@/store";
 import { useNavigate } from "react-router-dom";
-import type { Patient } from "@/types/otp";
+import type { IPatient } from "@/types/patient";
 
 const HospitalCard = ({
   healthcare,
@@ -23,7 +23,7 @@ const HospitalCard = ({
 }) => {
   const [openCalendar, setOpenCalendar] = useState(false);
   const navigate = useNavigate();
-  const { patient } = useStore() as { patient: Patient | null };
+  const { patient } = useStore() as { patient: IPatient | null };
 
   const userLat = patient?.latitude ?? null;
   const userLon = patient?.longitude ?? null;
@@ -51,7 +51,7 @@ const HospitalCard = ({
     <Card className="py-0 gap-0 lg:max-w-[17rem] h-[22.625rem] overflow-hidden">
       <div className="relative">
         <img
-          src={healthcare?.logo || "/assets/images/hospital-sample.png"}
+          src={healthcare?.logo || "/assets/images/insurance-plan-basic.png"}
           alt={healthcare?.name}
           className="w-full h-[9.3125rem] object-cover"
         />
@@ -126,7 +126,7 @@ const HospitalCard = ({
         open={openCalendar}
         onOpenChange={setOpenCalendar}
         isPatient
-        patient={patient as Patient}
+        patient={patient as IPatient}
         healthcare={healthcare}
       />
     </Card>

@@ -5,7 +5,7 @@ import { cn, getBadgeVarient } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import type { InsuranceProviderListResponse } from "@/types/insurance";
 import { useFetch } from "@/hooks/use-fetch";
-import type { HealthcareDetails } from "@/types/otp";
+import type { IHealthcare } from "@/types/healthcare";
 
 interface PatientDetails {
   id: number;
@@ -67,7 +67,7 @@ const ClaimDetails: React.FC = () => {
       }
     );
 
-  const { data: healthcareProviderResponse } = useFetch<HealthcareDetails>(
+  const { data: healthcareProviderResponse } = useFetch<IHealthcare>(
     `healthcare/${healthcare_provider}`,
     {
       useAuth: true,

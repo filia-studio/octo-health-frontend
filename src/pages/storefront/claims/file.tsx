@@ -19,6 +19,7 @@ import { useStore } from "@/store";
 import { useSend } from "@/hooks/use-send";
 import { useNavigate } from "react-router-dom";
 import { storefrontUrl } from "@/routes/paths";
+import dayjs from "dayjs";
 
 interface FileClaimFormValues {
   insurance_provider_id: string;
@@ -95,7 +96,7 @@ const StorefrontFileClaim = () => {
         ...ins,
         insurance: match ? { ...match.insurance, id: match?.id } : null,
       };
-    }) || [];
+    })?.filter(({ insurance_provider_id }) => !!insurance_provider_id) || [];
 
   const insuranceProvider =
     patientInsuranceArray.map((provider) => ({
@@ -165,7 +166,7 @@ const StorefrontFileClaim = () => {
                 <FormItem>
                   <FormLabel>Date(s) of Treatment or Admission</FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} />
+                    <Input type="date" max={dayjs().format('YYYY-MM-DD')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

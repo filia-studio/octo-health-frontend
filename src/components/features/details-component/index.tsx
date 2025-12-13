@@ -8,7 +8,7 @@ import { PiCalendarPlus } from "react-icons/pi";
 import CalendarModal from "../modals/calendar";
 import { ImageOff } from "lucide-react";
 import { useStore } from "@/store";
-import type { Patient } from "@/types/otp";
+import type { IPatient } from "@/types/patient";
 
 interface Props {
   hospital: IHealthcare | null;
@@ -134,7 +134,7 @@ const HospitalDetails: React.FC<Props> = ({ hospital }) => {
         onOpenChange={setOpenCalendar}
         isPatient
         healthcare={hospital as IHealthcare}
-        patient={patient as Patient}
+        patient={patient as IPatient}
       />
     </div>
   );

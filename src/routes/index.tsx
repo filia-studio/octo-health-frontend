@@ -36,6 +36,8 @@ import HealthcareClaimDetails from "@/pages/healthcare/claims/view";
 import InsuranceClaims from "@/pages/insurance/claims";
 import InsuranceClaimDetails from "@/pages/insurance/claims/view";
 import ServicePage from "@/pages/healthcare/services/service";
+import HealthcarePaymentInformation from "@/pages/healthcare/accounts/payment-information";
+import HealthcareProfileInformation from "@/pages/healthcare/accounts/profile-information";
 
 const AppRouter = () => {
   return (
@@ -104,6 +106,16 @@ const AppRouter = () => {
           <Route path="patient-management/create" element={<CreatePatient />} />
           <Route path="patient-management/:id" element={<HMPatient />} />
           <Route path="services/:id" element={<ServicePage />} />
+
+          <Route path="accounts" element={<Outlet />}>
+            <Route path="info" element={<StorefrontAccountInformation />} />
+            <Route path="payment" element={<HealthcarePaymentInformation />} />
+            <Route path="profile" element={<HealthcareProfileInformation />} />
+            <Route
+              path="*"
+              element={<Navigate to={`${storefrontUrl}/accounts/profile`} />}
+            />
+          </Route>
         </Route>
         <Route
           index
@@ -120,17 +132,11 @@ const AppRouter = () => {
         <Route element={<InsuranceProviderLayout />}>
           <Route path="schedule" element={<Outlet />}>
             <Route index element={<InsuranceDashboard />} />
-            {/* <Route path=":id" element={<HMPatient />} /> */}
           </Route>
           <Route path="claims" element={<Outlet />}>
             <Route index element={<InsuranceClaims />} />
             <Route path=":id" element={<InsuranceClaimDetails />} />
           </Route>
-          {/* <Route path="nurse" element={<Nurse />} />
-          <Route path="patient-management" element={<PatientManagement />} />
-          <Route path="patient-management/create" element={<CreatePatient />} />
-          <Route path="patient-management/:id" element={<HMPatient />} />
-          <Route path="services/:id" element={<div>Services</div>} /> */}
         </Route>
         <Route
           index

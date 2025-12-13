@@ -26,6 +26,7 @@ import { useFetch } from "@/hooks/use-fetch";
 import type { InsuranceProviderListResponse } from "@/types/insurance";
 import { useSend } from "@/hooks/use-send";
 import { useStore } from "@/store";
+import dayjs from "dayjs";
 
 const schema = z.object({
   insurance: z.array(
@@ -56,15 +57,23 @@ const schema = z.object({
 export type FormSchema = z.infer<typeof schema>;
 
 const PatientRegistrationForm = ({
-  isAuth = false,
+  isAuth,
+  isEdit,
   loading,
   handleSubmit,
 }: {
   isAuth?: boolean;
+  isEdit?: boolean;
   loading?: boolean;
   handleSubmit: (data: FormSchema) => void;
 }) => {
   const patient = useStore();
+
+  const {
+    patientAuth: { details },
+  } = patient;
+
+  const patientData = isEdit ? details : undefined;
 
   const [preview, setPreview] = useState<string | null>(null);
   const [step, setStep] = useState<1 | 2>(1);
@@ -82,7 +91,13 @@ const PatientRegistrationForm = ({
   const form = useForm<FormSchema>({
     resolver: zodResolver(schema),
     defaultValues: {
-      insurance: [
+      insurance: patientData?.insurance_details?.map((i) => ({
+        name: i.name,
+        insurance_type: i.insurance_type,
+        insurance_plan: i.insurance_plan,
+        hmo_id: i.hmo_id,
+        insurance_provider_id: i.insurance_provider_id,
+      })) ?? [
         {
           name: "",
           insurance_type: "",
@@ -93,18 +108,18 @@ const PatientRegistrationForm = ({
       ],
       user: {
         // photo: "",
-        email: "",
-        first_name: "",
-        last_name: "",
-        contact_number: "",
-        address: "",
-        gender: "",
+        email: patientData?.user?.email || "",
+        first_name: patientData?.user?.first_name || "",
+        last_name: patientData?.user?.last_name || "",
+        contact_number: patientData?.user?.contact_number || "",
+        address: patientData?.user?.address || "",
+        gender: patientData?.user?.gender || "",
         user_type: "patient",
-        date_of_birth: "",
+        date_of_birth: patientData?.user?.date_of_birth || "",
       },
-      longitude: "",
-      latitude: "",
-      zipcode: "",
+      longitude: patientData?.longitude || "",
+      latitude: patientData?.latitude || "",
+      zipcode: patientData?.zipcode || "",
     },
   });
 
@@ -158,7 +173,7 @@ const PatientRegistrationForm = ({
       formData.append(key, value);
     });
     mutate(formData);
-  }, [patientPhoto, patient]);
+  }, [patientPhoto, patient, mutate]);
 
   return (
     <Form {...form}>
@@ -185,7 +200,7 @@ const PatientRegistrationForm = ({
               <h2 className="text-2xl font-bold text-gray-800">
                 User Information
               </h2>
-              {!isAuth && (
+              {!isAuth && !isEdit && (
                 <FormItem>
                   <FormLabel>Profile Picture</FormLabel>
                   <FormControl>
@@ -356,7 +371,11 @@ const PatientRegistrationForm = ({
                     <FormItem>
                       <FormLabel>Date of Birth</FormLabel>
                       <FormControl>
-                        <Input type="date" {...field} />
+                        <Input
+                          type="date"
+                          max={dayjs().format("YYYY-MM-DD")}
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -437,7 +456,7 @@ const PatientRegistrationForm = ({
                         </FormItem>
                       )}
                     />
-                    {isAuth && (
+                    {(isAuth || isEdit) && (
                       <FormField
                         control={form.control}
                         name={`insurance.${index}.insurance_type`}
@@ -493,7 +512,7 @@ const PatientRegistrationForm = ({
                         )}
                       />
                     )}
-                    {isAuth && (
+                    {(isAuth || isEdit) && (
                       <FormField
                         control={form.control}
                         name={`insurance.${index}.insurance_plan`}

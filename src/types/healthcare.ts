@@ -29,8 +29,11 @@ export interface HealthcareListResponse {
 export interface IHealthcare {
   id: string;
   healthcare_services: { id: string; name: string }[];
-  created_at: string; // ISO timestamp string
-  updated_at: string; // ISO timestamp string
+  account_name?: string | null;
+  account_number?: string | null;
+  bank?: string | null;
+  created_at: string;
+  updated_at: string;
   name: string;
   address: string;
   contact_number: string;
@@ -46,10 +49,11 @@ export interface IHealthcare {
   latitude: string | null;
   zipcode: string | null;
   healthcare_type: string;
-  logo: string;
-  photo_1: string;
-  photo_2: string;
-  photo_3: string;
+  license_verified?: boolean;
+  logo?: string;
+  photo_1?: string;
+  photo_2?: string;
+  photo_3?: string;
 }
 
 export type HealthcareService = {

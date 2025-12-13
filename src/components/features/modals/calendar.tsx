@@ -1,14 +1,14 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import Calendar from "../calendar";
 import type { IHealthcare } from "@/types/healthcare";
-import type { Patient } from "@/types/otp";
+import type { IPatient } from "@/types/patient";
 
 interface CalendarModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   isPatient?: boolean;
   healthcare: IHealthcare;
-  patient: Patient;
+  patient: IPatient;
 }
 
 const CalendarModal = ({
