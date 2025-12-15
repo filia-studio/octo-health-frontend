@@ -26,12 +26,12 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const InsuranceClaims = () => {
-  const [activeTab, setActiveTab] = useState("Patients");
+  const [activeTab, setActiveTab] = useState("Insured");
   const { data: patientData } = useFetch<InsuranceClaimsResponse>(
     "/patient-claims/get_patient_claims_by_insurance_provider/",
     {
       useAuth: true,
-      enabled: activeTab === "Patients",
+      enabled: activeTab === "Insured",
       errorMessage: "Failed to load claims record",
       hideToast: "success",
     }
@@ -40,7 +40,7 @@ const InsuranceClaims = () => {
     "/healthcare-claim/get_healthcare_claims_by_insurance_provider/",
     {
       useAuth: true,
-      enabled: activeTab === "Healthcare",
+      enabled: activeTab === "Providers",
       errorMessage: "Failed to load claims record",
       hideToast: "success",
     }
@@ -200,17 +200,17 @@ const InsuranceClaims = () => {
           </div>
         </div>
         <Tabs
-          tabs={["Patients", "Healthcare"]}
+          tabs={["Insured", "Providers"]}
           activeTab={activeTab}
           setActiveTab={(tab) => {
             setActiveTab(tab);
           }}
         />
       </div>
-      {activeTab === "Patients" && (
+      {activeTab === "Insured" && (
         <DataTable columns={patientColumns} data={patientData?.data || []} />
       )}
-      {activeTab === "Healthcare" && (
+      {activeTab === "Providers" && (
         <DataTable
           columns={healthcareColumns}
           data={healthcareData?.data || []}

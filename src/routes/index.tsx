@@ -40,6 +40,10 @@ import HealthcarePaymentInformation from "@/pages/healthcare/accounts/payment-in
 import HealthcareProfileInformation from "@/pages/healthcare/accounts/profile-information";
 import InsuranceEnrollees from "@/pages/insurance/enrollees";
 import UploadBulkEnrollees from "@/pages/insurance/enrollees/create";
+import InsuranceProcedures from "@/pages/insurance/procedures";
+import UploadBulkProcedures from "@/pages/insurance/procedures/create";
+import InsuranceDrugs from "@/pages/insurance/drugs";
+import UploadBulkDrugs from "@/pages/insurance/drugs/create";
 
 const AppRouter = () => {
   return (
@@ -143,6 +147,14 @@ const AppRouter = () => {
           <Route path="enrollees" element={<Outlet />}>
             <Route index element={<InsuranceEnrollees />} />
             <Route path="create" element={<UploadBulkEnrollees />} />
+          </Route>
+          <Route path="procedures" element={<Outlet />}>
+            <Route index element={<InsuranceProcedures />} />
+            <Route path="create" element={<UploadBulkProcedures />} />
+          </Route>
+          <Route path="drugs" element={<Outlet />}>
+            <Route index element={<InsuranceDrugs />} />
+            <Route path="create" element={<UploadBulkDrugs />} />
           </Route>
         </Route>
         <Route

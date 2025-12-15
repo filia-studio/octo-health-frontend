@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import GridData, { type GridDataProps } from "../common/grid-data";
-import type { Patient, User } from "@/types/otp";
+import type { User } from "@/types/otp";
 import dayjs from "dayjs";
 import { calculateAge } from "@/pages/healthcare/patient/utils";
+import type { IPatient } from "@/types/patient";
 
 const ProfileModal = ({
   open,
@@ -15,7 +16,7 @@ const ProfileModal = ({
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  patient?: Patient | null;
+  patient?: IPatient | null;
 }) => {
   const [tab, setTab] = useState("overview");
 

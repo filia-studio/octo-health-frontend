@@ -14,7 +14,7 @@ const VerifyInsuranceOTP = () => {
     {
       useAuth: false,
       onSuccess: (data) => {
-        navigate(`${insuranceUrl}/schedule`);
+        navigate(`${insuranceUrl}/home`);
         setInsuranceAuth({
           token: data?.data?.access,
           details: data?.data?.data,

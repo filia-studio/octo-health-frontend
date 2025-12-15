@@ -7,23 +7,8 @@ import { useFetch } from "@/hooks/use-fetch";
 import { useStore } from "@/store";
 import { healthcareUrl } from "@/routes/paths";
 import { FaArrowCircleRight } from "react-icons/fa";
+import type { HealthcareClaim } from "@/types/healthcare";
 
-interface HealthcareClaim {
-  id: string;
-  claim_patient: string;
-  insurance_provider: string;
-  diagnosis_icd_code: string;
-  consultation_date: string;
-  medical_report: string;
-  treatment_procedure_note: string;
-  prescriptions_and_investigation_ordered: string;
-  invoice: string;
-  additional_documents: string;
-  healthcare_provider: string;
-  status: "pending" | "approved" | "rejected";
-  created_at: string;
-  updated_at: string;
-}
 
 const HealthcareClaimDetails: React.FC = () => {
   const navigate = useNavigate();

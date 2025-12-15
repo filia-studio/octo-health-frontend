@@ -119,4 +119,26 @@ export type Enrollee = {
   phone_number: string;
   plan: string;
   balance: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type Procedure = {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  procedure_code: string;
+  procedure: string;
+  amount: string;
+  insurance_provider: string;
+};
+
+export type Drug = {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  drug_code: string;
+  drug: string;
+  amount: string;
+  insurance_provider: string;
 };

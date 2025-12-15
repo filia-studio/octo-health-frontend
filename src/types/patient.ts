@@ -43,3 +43,32 @@ export interface IUser {
   groups: string[]; // looks like empty array of strings
   user_permissions: string[]; // same here
 }
+
+interface PatientDetails {
+  id: number;
+  photo: string | null;
+  email: string;
+  first_name: string;
+  last_name: string;
+  contact_number: string;
+  address: string;
+  gender: string;
+  date_of_birth: string;
+}
+
+export interface PatientClaim {
+  id: string;
+  claim_type: string;
+  diagnosis: string;
+  treatment_date: string;
+  total_charges: string;
+  status: string;
+  reason: string | null;
+  created_at: string;
+  patient_details: PatientDetails;
+  invoice: string[];
+  payment_receipt: string[];
+  supporting_documents: string[];
+  insurance_provider: string;
+  healthcare_provider: string;
+}

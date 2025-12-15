@@ -19,7 +19,7 @@ const ServicePage = () => {
   const tabs =
     activeTab === "Appointments"
       ? ["Pending", "Approved", "Declined", "Cancelled", "Completed"]
-      : ["Pending", "Approved", "Rejected"];
+      : ["Pending", "Submitted", "Approved", "Rejected"];
 
   const {
     data: healthcareAppointmentsData,

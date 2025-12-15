@@ -23,7 +23,7 @@ const ACCEPTED_FILE_TYPES = [
   "text/csv",
 ];
 
-const UploadBulkEnrollees = () => {
+const UploadBulkProcedures = () => {
   const { client } = createApiClient({ useAuth: true });
   const [downloading, setDownloading] = useState(false);
   const navigate = useNavigate();
@@ -41,13 +41,13 @@ const UploadBulkEnrollees = () => {
     try {
       setDownloading(true);
       const data = await client.get<string, Blob>(
-        "/insurance-enrollee/download_simple_template/",
+        "/insurance-procedure-detail/download_template/",
         {
           responseType: "blob",
         }
       );
 
-      onDownloadBlob(data, "enrollees.xlsx");
+      onDownloadBlob(data, "procedures.xlsx");
     } catch (error) {
       console.error("Error downloading template:", error);
     } finally {
@@ -64,11 +64,14 @@ const UploadBulkEnrollees = () => {
 
   const file = form.watch("file");
 
-  const { mutate, isPending } = useSend("/insurance-enrollee/bulk_create/", {
-    onSuccess() {
-      navigate(-1);
-    },
-  });
+  const { mutate, isPending } = useSend(
+    "/insurance-procedure-detail/bulk_create/",
+    {
+      onSuccess() {
+        navigate(-1);
+      },
+    }
+  );
 
   const onSubmit = async (values: z.infer<typeof schema>) => {
     const formData = new FormData();
@@ -79,7 +82,7 @@ const UploadBulkEnrollees = () => {
   };
 
   return (
-    <DashboardDetailLayout title="Upload Enrollees">
+    <DashboardDetailLayout title="Upload Procedures">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -158,4 +161,4 @@ const UploadBulkEnrollees = () => {
   );
 };
 
-export default UploadBulkEnrollees;
+export default UploadBulkProcedures;
