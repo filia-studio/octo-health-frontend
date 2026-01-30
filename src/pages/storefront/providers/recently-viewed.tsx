@@ -13,17 +13,14 @@ const RecentlyViewedProviders = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
 
-  const {
-    data: patientAppointmentsData,
-    isLoading: loadingAppointments,
-  } = useFetch<Appointment[]>("/appointment/", {
-    hideToast: "success",
-    params: {
-      patient_id: patientAuth?.details?.id,
-    },
-  });
+  const { data: patientAppointmentsData, isLoading: loadingAppointments } =
+    useFetch<Appointment[]>("/appointment/", {
+      hideToast: "success",
+      params: {
+        patient_id: patientAuth?.details?.id,
+      },
+    });
 
-  // Client-side filtering and pagination (no API pagination for appointments)
   const uniqueAppointments = useMemo(() => {
     return patientAppointmentsData?.reduce(
       (acc: Appointment[], appointment) => {
@@ -40,14 +37,10 @@ const RecentlyViewedProviders = () => {
     );
   }, [patientAppointmentsData]);
 
-  // Client-side pagination
   const totalItems = uniqueAppointments?.length || 0;
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const paginatedAppointments = uniqueAppointments?.slice(
-    startIndex,
-    endIndex,
-  );
+  const paginatedAppointments = uniqueAppointments?.slice(startIndex, endIndex);
 
   return (
     <section className="space-y-6">

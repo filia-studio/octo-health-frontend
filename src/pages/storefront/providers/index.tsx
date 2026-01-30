@@ -20,7 +20,7 @@ const StorefrontProviders = () => {
     {
       useAuth: true,
       hideToast: "success",
-      params: { limit: "5" },
+      params: { limit: "4" },
       errorMessage: "Failed to load healthcare providers",
     },
   );
@@ -29,7 +29,7 @@ const StorefrontProviders = () => {
     useFetch<HealthcareListResponse>("healthcare/", {
       useAuth: false,
       hideToast: "success",
-      params: { limit: "5" },
+      params: { limit: "4" },
       errorMessage: "Failed to load healthcare providers",
     });
 
@@ -59,11 +59,10 @@ const StorefrontProviders = () => {
 
   const nearbyList: HealthcareFacility[] | null = data?.data?.facilities || [];
 
-  // Conditional "See All" logic
   const showRecentlyViewedSeeAll =
-    uniqueAppointments && uniqueAppointments.length > 5;
-  const showNearMeSeeAll = data?.data?.count && data.data.count > 5;
-  const showAllProvidersSeeAll = providersist && providersist.length >= 5;
+    uniqueAppointments && uniqueAppointments.length > 4;
+  const showNearMeSeeAll = data?.data?.count && data.data.count > 4;
+  const showAllProvidersSeeAll = providersist && providersist.length >= 4;
 
   return (
     <section className="space-y-10">
@@ -85,9 +84,9 @@ const StorefrontProviders = () => {
           <LoadingGrid count={4} />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {uniqueAppointments?.slice(0, 5).map((appointment, index) => (
+            {uniqueAppointments?.slice(0, 4).map((appointment, index) => (
               <HospitalCard
-                showCalendar={false}
+                showCalendar={true}
                 key={index}
                 healthcare={appointment?.healthcare_details}
               />
@@ -111,9 +110,9 @@ const StorefrontProviders = () => {
           <LoadingGrid count={4} />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {nearbyList?.slice(0, 5).map((healthcare, index) => (
+            {nearbyList?.slice(0, 4).map((healthcare, index) => (
               <HospitalCard
-                showCalendar={false}
+                showCalendar={true}
                 key={index}
                 healthcare={healthcare}
               />
@@ -139,9 +138,9 @@ const StorefrontProviders = () => {
           <LoadingGrid count={4} />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {providersist?.slice(0, 5).map((provider, index) => (
+            {providersist?.slice(0, 4).map((provider, index) => (
               <HospitalCard
-                showCalendar={false}
+                showCalendar={true}
                 key={index}
                 healthcare={provider}
               />
