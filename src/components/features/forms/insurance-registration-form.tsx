@@ -56,7 +56,7 @@ const InsuranceRegistrationForm = () => {
       name: string;
       hmo_id: string;
     }[]
-  >("/insurance/", {
+  >("/insurance/without_providers", {
     useAuth: false,
     hideToast: "success",
     onSuccess: (data) => {
@@ -74,6 +74,7 @@ const InsuranceRegistrationForm = () => {
     "/insurance_provider/",
     {
       useAuth: false,
+      successMessage: "Insurance provider registered successfully",
       onSuccess: () => navigate(`${insuranceUrl}/auth`),
     }
   );

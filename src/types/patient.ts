@@ -4,6 +4,9 @@ export interface IPatient {
   user: IUser;
   created_at: string;
   updated_at: string;
+  longitude: string | null;
+  latitude: string | null;
+  zipcode: string | null;
   patient_code?: string;
 }
 

@@ -16,13 +16,14 @@ import PillDropdown from "../pills/dropdown";
 import { healthcareProviders } from "@/lib/constants";
 import { useState } from "react";
 import { useFetch } from "@/hooks/use-fetch";
-import type { HealthcareService } from "@/types/healthcare";
+import type { HealthcareService, IHealthcare } from "@/types/healthcare";
 import { Button } from "@/components/ui/button";
 import { StandaloneSearchBox } from "@react-google-maps/api";
 import { useGetLocation } from "@/hooks/use-get-location";
 import { useSend } from "@/hooks/use-send";
 import { useNavigate } from "react-router-dom";
 import { healthcareUrl } from "@/routes/paths";
+import { useStore } from "@/store";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -44,24 +45,31 @@ const schema = z.object({
     .min(1, "At least one service is required"),
 });
 
-const HealthcareRegistrationForm = () => {
+const HealthcareRegistrationForm = ({ isEdit }: { isEdit?: boolean }) => {
   const navigate = useNavigate();
+  const { setHealthcareAuth, healthcareAuth } = useStore();
   const { inputRef, isLoaded, getLocation } = useGetLocation();
   const [services, setServices] = useState<{ value: string; label: string }[]>(
     []
   );
+  const healthcare = isEdit ? healthcareAuth?.details : undefined;
 
   const form = useForm({
     defaultValues: {
-      services: [],
-      healthcare_type: "hospital",
-      owner_name: "",
-      email: "",
-      license_number: "",
-      tax_id_number: "",
-      contact_number: "",
-      website: "",
-      address: "",
+      services:
+        healthcare?.healthcare_services?.map(({ id, name }) => ({
+          value: id,
+          label: name,
+        })) ?? [],
+      name: healthcare?.name ?? "",
+      healthcare_type: healthcare?.healthcare_type ?? "hospital",
+      owner_name: healthcare?.owner_name ?? "",
+      email: healthcare?.email ?? "",
+      license_number: healthcare?.license_number ?? "",
+      tax_id_number: healthcare?.tax_id_number ?? "",
+      contact_number: healthcare?.contact_number ?? "",
+      website: healthcare?.website ?? "",
+      address: healthcare?.address ?? "",
     },
     resolver: zodResolver(schema),
   });
@@ -78,13 +86,26 @@ const HealthcareRegistrationForm = () => {
       ),
   });
 
-  const { isPending: isCreating, mutate: createHealthcare } = useSend(
-    "/healthcare/",
-    {
-      useAuth: false,
-      onSuccess: () => navigate(`${healthcareUrl}/auth`),
-    }
-  );
+  const { isPending: isCreating, mutate: createHealthcare } = useSend<
+    unknown,
+    { data: IHealthcare }
+  >(`/healthcare/${isEdit ? `${healthcare?.id}/` : ""}`, {
+    method: isEdit ? "patch" : "post",
+    useAuth: !isEdit,
+    successMessage: isEdit ? "Profile information has been updated" : undefined,
+    onSuccess: (response) => {
+      if (isEdit) {
+        setHealthcareAuth({
+          details: {
+            ...healthcare,
+            ...response?.data,
+          },
+        });
+        return;
+      }
+      navigate(`${healthcareUrl}/auth`);
+    },
+  });
 
   const loading = isLoading || isCreating;
 
@@ -147,7 +168,12 @@ const HealthcareRegistrationForm = () => {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input type="email" placeholder="Enter email" {...field} />
+                  <Input
+                    type="email"
+                    disabled={isEdit}
+                    placeholder="Enter email"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -205,7 +231,7 @@ const HealthcareRegistrationForm = () => {
                 )}
               </FormControl>
               <FormDescription className="text-xs">
-                Kindly select location from the dropdown provided.
+                Select location from the dropdown provided.
               </FormDescription>
               <FormMessage />
             </FormItem>

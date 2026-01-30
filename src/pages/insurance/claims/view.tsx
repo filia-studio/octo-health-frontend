@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { cn, getBadgeVarient } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useFetch } from "@/hooks/use-fetch";
-import type { HealthcareDetails } from "@/types/otp";
 import { FaArrowLeft } from "react-icons/fa";
 import { useSend } from "@/hooks/use-send";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import dayjs from "dayjs";
+import type { IHealthcare } from "@/types/healthcare";
 
 interface PatientDetails {
   id: number;
@@ -60,7 +61,7 @@ const InsuranceClaimDetails: React.FC = () => {
     healthcare_provider,
   } = claim || {};
 
-  const { data: healthcareProviderResponse } = useFetch<HealthcareDetails>(
+  const { data: healthcareProviderResponse } = useFetch<IHealthcare>(
     `healthcare/${healthcare_provider}`,
     {
       useAuth: true,
@@ -74,6 +75,16 @@ const InsuranceClaimDetails: React.FC = () => {
     "/patient-claims/update_claim_status/",
     { successMessage: "Claim status updated successfully" }
   );
+
+  useEffect(() => {
+    if (claim.status === "pending") {
+      mutate({
+        status: "submitted",
+        claim_id: claim.id,
+        reason: "",
+      });
+    }
+  }, [claim, mutate]);
 
   if (!claim) {
     return (
@@ -103,7 +114,7 @@ const InsuranceClaimDetails: React.FC = () => {
         <div>
           <p className="text-sm text-gray-500">Treatment Date</p>
           <p className="font-medium">
-            {new Date(treatment_date).toLocaleDateString()}
+            {dayjs(treatment_date.split("T")[0]).format("DD MMM, YYYY")}
           </p>
         </div>
         <div>
@@ -120,7 +131,9 @@ const InsuranceClaimDetails: React.FC = () => {
         </div>
         <div>
           <p className="text-sm text-gray-500">Date Filed</p>
-          <p className="font-medium">{new Date(created_at).toLocaleString()}</p>
+          <p className="font-medium">
+            {dayjs(created_at.split("T")[0]).format("DD MMM, YYYY")}
+          </p>
         </div>
         {reason && (
           <div className="col-span-2">
@@ -155,7 +168,9 @@ const InsuranceClaimDetails: React.FC = () => {
           <div>
             <p className="text-sm text-gray-500">Date of Birth</p>
             <p className="font-medium">
-              {new Date(patient_details?.date_of_birth).toLocaleDateString()}
+              {dayjs(patient_details?.date_of_birth.split("T")[0]).format(
+                "DD MMM, YYYY"
+              )}
             </p>
           </div>
           <div>

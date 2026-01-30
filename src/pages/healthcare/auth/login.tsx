@@ -10,6 +10,7 @@ const HospitalLogin = () => {
     "healthcare/login/",
     {
       useAuth: false,
+      hideToast: "success",
       onSuccess: (_, variables) => {
         sessionStorage.setItem("email", variables.email);
         navigate(`${healthcareUrl}/auth/verify-otp`);

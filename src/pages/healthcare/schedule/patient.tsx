@@ -4,7 +4,6 @@ import PatientCard from "@/components/features/cards/patient-card";
 import ProfileCard from "@/components/features/cards/profile-card";
 import { useStore } from "@/store";
 import type { IHealthcare } from "@/types/healthcare";
-import type { Patient } from "@/types/otp";
 import type { IPatient } from "@/types/patient";
 import React from "react";
 import { useLocation } from "react-router-dom";
@@ -12,7 +11,7 @@ import { useLocation } from "react-router-dom";
 const HMPatient: React.FC = () => {
   const { state } = useLocation();
   const healthcare = useStore((store) => store.healthcareAuth.details);
-  const patientData: Patient = state?.patient || {};
+  const patientData: IPatient = state?.patient || {};
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-full px-4">
       <div className="col-span-1 flex flex-col gap-4">

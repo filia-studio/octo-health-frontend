@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 const CreatePatient: React.FC = () => {
   const healthcare = useStore();
   const navigate = useNavigate();
-  const { mutate } = useSend<unknown, { message: string }>(
+  const { mutate, isPending } = useSend<unknown, { message: string }>(
     "healthcare/create_patient/",
     {
       useAuth: false,
@@ -52,7 +52,7 @@ const CreatePatient: React.FC = () => {
   };
   return (
     <DashboardDetailLayout title="Create Patient">
-      <PatientRegistrationForm handleSubmit={handleSubmit} />
+      <PatientRegistrationForm loading={isPending} handleSubmit={handleSubmit} />
     </DashboardDetailLayout>
   );
 };

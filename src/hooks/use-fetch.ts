@@ -30,7 +30,7 @@ export const useFetch = <T>(url: string, options: IFetchOptions<T> = {}) => {
     errorMessage,
     onError,
     select,
-    hideToast = "none",
+    hideToast = "success",
     ...others
   } = options;
   const { client } = createApiClient({ useAuth, baseUrl });

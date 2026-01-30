@@ -1,13 +1,13 @@
-import type { Patient } from "@/types/otp";
+import type { IPatient } from "@/types/patient";
 import { type StateCreator } from "zustand";
 
 export type PatientSlice = {
-  patient: Patient | null;
-  setPatient: (value: Patient) => void;
+  patient: IPatient | null;
+  setPatient: (value: IPatient) => void;
   resetPatient: () => void;
 };
 
-const initialPatient: Patient | null = null;
+const initialPatient: IPatient | null = null;
 
 export const patientSlice: StateCreator<PatientSlice> = (set) => ({
   patient: initialPatient,

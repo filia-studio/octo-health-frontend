@@ -22,7 +22,7 @@ const PillDropdown = ({
   value?: string;
 }) => {
   return (
-    <Select onValueChange={onValueChange} value={value}>
+    <Select key={value} onValueChange={onValueChange} value={value}>
       <SelectTrigger
         className={cn("py-0.5 px-1.5 font-medium !h-fit rounded-2xl text-xs", className)}
         icon={<IoIosArrowRoundDown />}

@@ -1,21 +1,29 @@
+import PatientRegistrationForm from "@/components/features/forms/patient-registration-form";
 import DashboardDetailLayout from "@/components/features/layouts/dashboard-detail";
-import { Input } from "@/components/ui/input";
+import { useSend } from "@/hooks/use-send";
 import { useStore } from "@/store";
+import type { IPatient } from "@/types/patient";
 
 const StorefrontProfileInformation = () => {
-  const { patient } = useStore();
+  const { setPatientAuth, patientAuth } = useStore();
+
+  const { mutate, isPending } = useSend<unknown, { data: IPatient }>(
+    `patient/${patientAuth?.details?.id}/`,
+    {
+      method: "patch",
+      onSuccess: (data) =>
+        setPatientAuth({ details: { ...patientAuth?.details, ...data?.data } }),
+      successMessage: "Profile information has been updated successfully",
+    }
+  );
+
   return (
-    <DashboardDetailLayout showBack={false} title="Profile Information">
-      <div className="pt-10 grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6 max-w-4xl mx-auto">
-        <Input placeholder="First Name" value={patient?.user?.first_name} />
-        <Input placeholder="Last Name" value={patient?.user?.last_name} />
-        <Input placeholder="Email" value={patient?.user.email} />
-        <Input
-          placeholder="Phone Number"
-          value={patient?.user?.contact_number}
-        />
-        <Input placeholder="Address" value={patient?.user?.address} />
-      </div>
+    <DashboardDetailLayout title="Profile Information">
+      <PatientRegistrationForm
+        isEdit
+        loading={isPending}
+        handleSubmit={mutate}
+      />
     </DashboardDetailLayout>
   );
 };

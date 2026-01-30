@@ -29,8 +29,8 @@ const schema = z.object({
   bank: z.string().min(1, "Bank is required"),
 });
 
-const StorefrontPaymentInformation = () => {
-  const auth = useStore((s) => s.patientAuth);
+const HealthcarePaymentInformation = () => {
+  const auth = useStore((s) => s.healthcareAuth);
   const form = useForm({
     defaultValues: initialValues,
     resolver: zodResolver(schema),
@@ -45,11 +45,11 @@ const StorefrontPaymentInformation = () => {
 
   const { isLoading: isLoadingPaymentInfo } = useFetch<{
     data: {
-      bank: string;
-      account_name: string;
-      account_number: string;
-    };
-  }>(`/patient/${auth?.details?.id}/get-patient-payment`, {
+    bank: string;
+    account_name: string;
+    account_number: string;
+  }
+  }>(`/healthcare/${auth?.details?.id}/get_healthcare_payment`, {
     onSuccess: (response) => {
       if (response?.data?.bank) {
         form.reset(response?.data);
@@ -58,7 +58,7 @@ const StorefrontPaymentInformation = () => {
   });
 
   const { isPending: isSubmitting, mutate: save } = useSend(
-    `/patient/${auth.details?.id}/payment/`,
+    `/healthcare/${auth.details?.id}/healthcare_payment/`,
     {
       successMessage: "Payment information saved successfully.",
     }
@@ -125,10 +125,7 @@ const StorefrontPaymentInformation = () => {
           </div>
 
           <div className="flex justify-end pt-4">
-            <Button
-              type="submit"
-              isLoading={isLoading || isSubmitting || isLoadingPaymentInfo}
-            >
+            <Button type="submit" isLoading={isLoading || isSubmitting || isLoadingPaymentInfo}>
               Save
             </Button>
           </div>
@@ -138,4 +135,4 @@ const StorefrontPaymentInformation = () => {
   );
 };
 
-export default StorefrontPaymentInformation;
+export default HealthcarePaymentInformation;

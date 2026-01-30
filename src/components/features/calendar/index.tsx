@@ -3,11 +3,11 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import AppointmentModal from "../modals/appointment";
 import BookAppointmentModal from "../modals/book-appointment";
 import type { HealthcareFacility, IHealthcare } from "@/types/healthcare";
-import type { Patient } from "@/types/otp";
 import { useSend } from "@/hooks/use-send";
 import type { Appointment, ScheduleAppointment } from "@/types/appointment";
 import dayjs from "dayjs";
 import { useFetch } from "@/hooks/use-fetch";
+import type { IPatient } from "@/types/patient";
 
 const Calendar = ({
   isPatient,
@@ -16,7 +16,7 @@ const Calendar = ({
 }: {
   isPatient?: boolean;
   healthcare?: HealthcareFacility | IHealthcare;
-  patient?: Patient;
+  patient?: IPatient;
 }) => {
   const [openAppointmentDetailModal, setOpenAppointmentDetailModal] =
     useState(false);

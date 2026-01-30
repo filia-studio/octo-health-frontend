@@ -18,6 +18,7 @@ import { healthcareUrl } from "@/routes/paths";
 import type { InsuranceProviderListResponse } from "@/types/insurance";
 import { useState } from "react";
 import type { IPatient } from "@/types/patient";
+import dayjs from "dayjs";
 
 interface HospitalFileClaimFormValues {
   patient_id: string;
@@ -52,6 +53,9 @@ const HealthcareFileClaim = () => {
   const [selectedPatient, setSeletectedPatient] = useState<IPatient | null>(
     null
   );
+  const [searchPatient, setSearchPatient] = useState("");
+
+  console.log({ searchPatient });
 
   const { data: patientResponse } = useFetch<{ data: IPatient[] }>("patient/", {
     useAuth: true,
@@ -136,13 +140,14 @@ const HealthcareFileClaim = () => {
               name="patient_id"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Select Patient</FormLabel>
+                  <FormLabel>Patient</FormLabel>
                   <FormControl>
                     <Select
                       isMulti={false}
                       value={patientOptions.find(
                         (opt) => opt.value === field.value
                       )}
+                      onInputChange={(value) => setSearchPatient(value)}
                       onChange={(option) =>
                         handlePatientSelect(
                           option as {
@@ -226,7 +231,7 @@ const HealthcareFileClaim = () => {
                 <FormItem>
                   <FormLabel>Date(s) of Consultation / Treatment</FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} />
+                    <Input type="date" max={dayjs().format('YYYY-MM-DD')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
