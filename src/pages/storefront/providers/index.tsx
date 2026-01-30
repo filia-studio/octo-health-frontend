@@ -21,7 +21,6 @@ const StorefrontProviders = () => {
       useAuth: true,
       hideToast: "success",
       params: { limit: "5" },
-      onSuccess: (data) => {},
       errorMessage: "Failed to load healthcare providers",
     },
   );
@@ -31,9 +30,6 @@ const StorefrontProviders = () => {
       useAuth: false,
       hideToast: "success",
       params: { limit: "5" },
-      onSuccess: (data) => {
-        // setHealthcare(data?.data);
-      },
       errorMessage: "Failed to load healthcare providers",
     });
 
