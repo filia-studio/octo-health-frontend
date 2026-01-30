@@ -89,3 +89,60 @@ export interface HealthcareClaim {
     photo: string;
   };
 }
+
+export interface HealthcareFacilitiesResponse {
+  success: boolean;
+  message: string;
+  data: HealthcareFacilitiesData;
+}
+
+export interface HealthcareFacilitiesData {
+  count: number;
+  patient_location: PatientLocation;
+  radius_km: number;
+  facilities: HealthcareFacility[];
+}
+
+export interface PatientLocation {
+  latitude: number;
+  longitude: number;
+}
+
+export interface HealthcareFacility {
+  id: string;
+  distance_display: string;
+  distance_km: number;
+  created_at: string;
+  updated_at: string;
+
+  logo: string | null;
+  photo_1: string | null;
+  photo_2: string | null;
+  photo_3: string | null;
+  banner: string | null;
+
+  name: string;
+  address: string;
+  contact_number: string;
+  email: string;
+  website: string;
+  owner_name: string;
+
+  license_number: string;
+  tax_id_number: string;
+
+  country: string;
+  state: string;
+  city: string;
+  zipcode: string;
+
+  latitude: string;
+  longitude: string;
+
+  healthcare_type: "Hospital" | "Clinic" | "Pharmacy" | string;
+  license_verified: boolean;
+
+  account_name: string | null;
+  account_number: string | null;
+  bank: string | null;
+}

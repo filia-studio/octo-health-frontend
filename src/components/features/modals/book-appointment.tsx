@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import PillDropdown from "../pills/dropdown";
 import { Button } from "@/components/ui/button";
-import type { IHealthcare } from "@/types/healthcare";
+import type { HealthcareFacility, IHealthcare } from "@/types/healthcare";
 import { useReducerState } from "@/hooks/use-reducer-state";
 import { useEffect, useMemo } from "react";
 import dayjs from "dayjs";
@@ -43,7 +43,7 @@ interface BookAppointmentModalProps {
   onOpenChange: (open: boolean) => void;
   date: Date;
   time?: string;
-  healthcare?: IHealthcare;
+  healthcare?: HealthcareFacility | IHealthcare;
   loading: boolean;
   onSchedule?: ({ type_of_visit, time }: State) => void;
 }
@@ -74,7 +74,7 @@ const BookAppointmentModal = ({
           // value: `${String(i).padStart(2, "0")}:00`,
         };
       }),
-    []
+    [],
   );
 
   useEffect(() => {
@@ -122,10 +122,10 @@ const BookAppointmentModal = ({
                   healthcare_service: value as FormState["healthcare_service"],
                 })
               }
-              options={healthcare?.healthcare_services?.map((x) => ({
-                label: x.name,
-                value: x.id,
-              }))}
+              // options={healthcare?.?.map((x) => ({
+              //   label: x.name,
+              //   value: x.id,
+              // }))}
               classNames={{
                 control: (state) =>
                   `border !border-black !rounded-full !min-h-12 px-5 !shadow-none ${

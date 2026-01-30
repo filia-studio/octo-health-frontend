@@ -1,5 +1,6 @@
 import type { Route } from "@/types/common";
 
+export const roleSelectionUrl = "/";
 export const healthcareUrl = "/healthcare";
 export const storefrontUrl = "/patient";
 export const insuranceUrl = "/insurance";

@@ -36,11 +36,13 @@ import HealthcareClaimDetails from "@/pages/healthcare/claims/view";
 import InsuranceClaims from "@/pages/insurance/claims";
 import InsuranceClaimDetails from "@/pages/insurance/claims/view";
 import ServicePage from "@/pages/healthcare/services/service";
+import RoleSelectionPage from "@/pages/role-selection";
 // import AppointmentDetails from "@/pages/healthcare/schedule/appointment-details";
 
 const AppRouter = () => {
   return (
     <Routes>
+      <Route path="/" element={<RoleSelectionPage />} />
       <Route path={storefrontUrl} element={<Outlet />}>
         <Route path="auth" element={<Outlet />}>
           <Route index element={<StorefrontLogin />} />
@@ -137,10 +139,10 @@ const AppRouter = () => {
         <Route
           index
           path="*"
-          element={<Navigate to={`${healthcareUrl}/auth`} />}
+          element={<Navigate to={`${insuranceUrl}/auth`} />}
         />
       </Route>
-      <Route path="*" element={<Navigate to={`${storefrontUrl}/auth`} />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 };
