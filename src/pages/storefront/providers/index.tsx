@@ -1,6 +1,8 @@
 import HospitalCard from "@/components/features/cards/hospital";
+import LoadingGrid from "@/components/features/common/loading-grid";
 import { useFetch } from "@/hooks/use-fetch";
 import { useStore } from "@/store";
+import { storefrontUrl } from "@/routes/paths";
 import type { Appointment } from "@/types/appointment";
 import type {
   HealthcareFacilitiesResponse,
@@ -8,6 +10,7 @@ import type {
   HealthcareListResponse,
   IHealthcare,
 } from "@/types/healthcare";
+import { Link } from "react-router-dom";
 
 const StorefrontProviders = () => {
   const { patientAuth } = useStore();
@@ -34,16 +37,13 @@ const StorefrontProviders = () => {
       errorMessage: "Failed to load healthcare providers",
     });
 
-  const {
-    data: patientAppointmentsData,
-    isLoading: loadingAppointments,
-    refetch: refetchAppointments,
-  } = useFetch<Appointment[]>("/appointment/", {
-    hideToast: "success",
-    params: {
-      patient_id: patientAuth?.details?.id,
-    },
-  });
+  const { data: patientAppointmentsData, isLoading: loadingAppointments } =
+    useFetch<Appointment[]>("/appointment/", {
+      hideToast: "success",
+      params: {
+        patient_id: patientAuth?.details?.id,
+      },
+    });
 
   const uniqueAppointments = patientAppointmentsData?.reduce(
     (acc: Appointment[], appointment) => {
@@ -63,6 +63,12 @@ const StorefrontProviders = () => {
 
   const nearbyList: HealthcareFacility[] | null = data?.data?.facilities || [];
 
+  // Conditional "See All" logic
+  const showRecentlyViewedSeeAll =
+    uniqueAppointments && uniqueAppointments.length > 5;
+  const showNearMeSeeAll = data?.data?.count && data.data.count > 5;
+  const showAllProvidersSeeAll = providersist && providersist.length >= 5;
+
   return (
     <section className="space-y-10">
       <div>
@@ -70,49 +76,82 @@ const StorefrontProviders = () => {
           <h4 className="text-lg font-semibold mb-4 pb-1 border-b">
             Recently viewed
           </h4>
-          <span>See All</span>
+          {showRecentlyViewedSeeAll && (
+            <Link
+              to={`${storefrontUrl}/providers/recently-viewed`}
+              className="text-primary hover:underline text-sm cursor-pointer"
+            >
+              See All
+            </Link>
+          )}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {uniqueAppointments?.map((appointment, index) => (
-            <HospitalCard
-              showCalendar={false}
-              key={index}
-              healthcare={appointment?.healthcare_details}
-            />
-          ))}
-        </div>
+        {loadingAppointments ? (
+          <LoadingGrid count={4} />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {uniqueAppointments?.slice(0, 5).map((appointment, index) => (
+              <HospitalCard
+                showCalendar={false}
+                key={index}
+                healthcare={appointment?.healthcare_details}
+              />
+            ))}
+          </div>
+        )}
       </div>
       <div>
         <div className="flex items-center justify-between">
           <h4 className="text-lg font-semibold mb-4 pb-1 border-b">Near me</h4>
-          <span>See All</span>
+          {showNearMeSeeAll && (
+            <Link
+              to={`${storefrontUrl}/providers/near-me`}
+              className="text-primary hover:underline text-sm cursor-pointer"
+            >
+              See All
+            </Link>
+          )}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {nearbyList?.map((healthcare, index) => (
-            <HospitalCard
-              showCalendar={false}
-              key={index}
-              healthcare={healthcare}
-            />
-          ))}
-        </div>
+        {isLoading ? (
+          <LoadingGrid count={4} />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {nearbyList?.slice(0, 5).map((healthcare, index) => (
+              <HospitalCard
+                showCalendar={false}
+                key={index}
+                healthcare={healthcare}
+              />
+            ))}
+          </div>
+        )}
       </div>
       <div>
         <div className="flex items-center justify-between">
           <h4 className="text-lg font-semibold mb-4 pb-1 border-b">
             All providers
           </h4>
-          <span>See All</span>
+          {showAllProvidersSeeAll && (
+            <Link
+              to={`${storefrontUrl}/providers/all`}
+              className="text-primary hover:underline text-sm cursor-pointer"
+            >
+              See All
+            </Link>
+          )}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {providersist?.map((provider, index) => (
-            <HospitalCard
-              showCalendar={false}
-              key={index}
-              healthcare={provider}
-            />
-          ))}
-        </div>
+        {loadingAll ? (
+          <LoadingGrid count={4} />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {providersist?.slice(0, 5).map((provider, index) => (
+              <HospitalCard
+                showCalendar={false}
+                key={index}
+                healthcare={provider}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

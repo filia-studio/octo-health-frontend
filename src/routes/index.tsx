@@ -16,6 +16,9 @@ import PatientManagement from "@/pages/healthcare/patient";
 import StorefrontClaims from "@/pages/storefront/claims";
 import StorefrontFileClaim from "@/pages/storefront/claims/file";
 import StorefrontProviders from "@/pages/storefront/providers";
+import RecentlyViewedProviders from "@/pages/storefront/providers/recently-viewed";
+import NearMeProviders from "@/pages/storefront/providers/near-me";
+import AllProviders from "@/pages/storefront/providers/all";
 import StorefrontAccountInformation from "@/pages/storefront/accounts/account-info";
 import StorefrontPaymentInformation from "@/pages/storefront/accounts/payment-info";
 import StorefrontProfileInformation from "@/pages/storefront/accounts/profile-info";
@@ -66,6 +69,12 @@ const AppRouter = () => {
           </Route>
           <Route path="providers" element={<Outlet />}>
             <Route index element={<StorefrontProviders />} />
+            <Route
+              path="recently-viewed"
+              element={<RecentlyViewedProviders />}
+            />
+            <Route path="near-me" element={<NearMeProviders />} />
+            <Route path="all" element={<AllProviders />} />
           </Route>
           <Route path="accounts" element={<Outlet />}>
             <Route path="info" element={<StorefrontAccountInformation />} />
