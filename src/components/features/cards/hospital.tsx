@@ -6,7 +6,7 @@ import { CiClock2 } from "react-icons/ci";
 import { MdVerified } from "react-icons/md";
 import CalendarModal from "../modals/calendar";
 import { useState } from "react";
-import type { IHealthcare } from "@/types/healthcare";
+import type { HealthcareFacility, IHealthcare } from "@/types/healthcare";
 import { haversineDistance } from "@/lib/utils";
 import { useStore } from "@/store";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +17,7 @@ const HospitalCard = ({
   showDirection = true,
   showCalendar = true,
 }: {
-  healthcare: IHealthcare;
+  healthcare: HealthcareFacility | IHealthcare;
   showDirection?: boolean;
   showCalendar?: boolean;
 }) => {
@@ -43,7 +43,7 @@ const HospitalCard = ({
       Number(userLat),
       Number(userLon),
       Number(hospitalLat),
-      Number(hospitalLon)
+      Number(hospitalLon),
     );
   }
 

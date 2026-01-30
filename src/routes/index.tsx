@@ -16,6 +16,9 @@ import PatientManagement from "@/pages/healthcare/patient";
 import StorefrontClaims from "@/pages/storefront/claims";
 import StorefrontFileClaim from "@/pages/storefront/claims/file";
 import StorefrontProviders from "@/pages/storefront/providers";
+import RecentlyViewedProviders from "@/pages/storefront/providers/recently-viewed";
+import NearMeProviders from "@/pages/storefront/providers/near-me";
+import AllProviders from "@/pages/storefront/providers/all";
 import StorefrontAccountInformation from "@/pages/storefront/accounts/account-info";
 import StorefrontPaymentInformation from "@/pages/storefront/accounts/payment-info";
 import StorefrontProfileInformation from "@/pages/storefront/accounts/profile-info";
@@ -36,6 +39,8 @@ import HealthcareClaimDetails from "@/pages/healthcare/claims/view";
 import InsuranceClaims from "@/pages/insurance/claims";
 import InsuranceClaimDetails from "@/pages/insurance/claims/view";
 import ServicePage from "@/pages/healthcare/services/service";
+import RoleSelectionPage from "@/pages/role-selection";
+// import AppointmentDetails from "@/pages/healthcare/schedule/appointment-details";
 import HealthcarePaymentInformation from "@/pages/healthcare/accounts/payment-information";
 import HealthcareProfileInformation from "@/pages/healthcare/accounts/profile-information";
 import InsuranceEnrollees from "@/pages/insurance/enrollees";
@@ -44,6 +49,7 @@ import UploadBulkEnrollees from "@/pages/insurance/enrollees/create";
 const AppRouter = () => {
   return (
     <Routes>
+      <Route path="/" element={<RoleSelectionPage />} />
       <Route path={storefrontUrl} element={<Outlet />}>
         <Route path="auth" element={<Outlet />}>
           <Route index element={<StorefrontLogin />} />
@@ -67,6 +73,12 @@ const AppRouter = () => {
           </Route>
           <Route path="providers" element={<Outlet />}>
             <Route index element={<StorefrontProviders />} />
+            <Route
+              path="recently-viewed"
+              element={<RecentlyViewedProviders />}
+            />
+            <Route path="near-me" element={<NearMeProviders />} />
+            <Route path="all" element={<AllProviders />} />
           </Route>
           <Route path="accounts" element={<Outlet />}>
             <Route path="info" element={<StorefrontAccountInformation />} />
@@ -148,10 +160,10 @@ const AppRouter = () => {
         <Route
           index
           path="*"
-          element={<Navigate to={`${healthcareUrl}/auth`} />}
+          element={<Navigate to={`${insuranceUrl}/auth`} />}
         />
       </Route>
-      <Route path="*" element={<Navigate to={`${storefrontUrl}/auth`} />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 };
