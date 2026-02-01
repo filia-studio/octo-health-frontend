@@ -191,14 +191,14 @@ const StorefrontClaims = () => {
             <div className="flex items-center justify-end gap-3 mt-6">
               <Button
                 onClick={() => refetch()}
-                className="h-10 px-8 rounded-md w-full"
+                className="h-10 px-8 rounded-md w-1/2"
               >
                 Search
               </Button>
               <Button
                 variant="outline"
                 onClick={handleReset}
-                className="h-10 px-8 rounded-md w-full"
+                className="h-10 px-8 rounded-md w-1/2"
               >
                 Clear filters
               </Button>
