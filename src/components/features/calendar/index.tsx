@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import AppointmentModal from "../modals/appointment";
 import BookAppointmentModal from "../modals/book-appointment";
-import type { IHealthcare } from "@/types/healthcare";
+import type { HealthcareFacility, IHealthcare } from "@/types/healthcare";
 import { useSend } from "@/hooks/use-send";
 import type { Appointment, ScheduleAppointment } from "@/types/appointment";
 import dayjs from "dayjs";
@@ -15,7 +15,7 @@ const Calendar = ({
   patient,
 }: {
   isPatient?: boolean;
-  healthcare?: IHealthcare;
+  healthcare?: HealthcareFacility | IHealthcare;
   patient?: IPatient;
 }) => {
   const [openAppointmentDetailModal, setOpenAppointmentDetailModal] =
@@ -28,7 +28,7 @@ const Calendar = ({
     time: "",
   });
   const [viewMode, setViewMode] = useState<"Month" | "Week" | "Day" | "List">(
-    "Month"
+    "Month",
   );
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment>();
 
@@ -36,12 +36,18 @@ const Calendar = ({
     "/appointment/request_appointment/",
     {
       successMessage: "Request to schedule appointment has been sent",
-    }
+      onSuccess() {
+        setOpenBookAppointmentModal(false);
+      },
+    },
   );
 
   const { mutate: healthcareSchedule, isPending: healthcareScheduling } =
     useSend("/appointment/schedule_appointment/", {
       successMessage: "Appointment has been scheduled",
+      onSuccess() {
+        setOpenBookAppointmentModal(false);
+      },
     });
 
   const { data: events = [] } = useFetch<Appointment[]>("/appointment/", {
@@ -79,7 +85,7 @@ const Calendar = ({
 
   const toggleAppointmentDetailModal = (
     e?: React.MouseEvent,
-    appointment?: Appointment
+    appointment?: Appointment,
   ) => {
     e?.stopPropagation();
     setOpenAppointmentDetailModal(!openAppointmentDetailModal);
@@ -115,7 +121,7 @@ const Calendar = ({
   const getEventsForDate = (date: Date) => {
     const dateString = date.toLocaleDateString().split("T")[0];
     return events.filter(
-      (event) => dayjs(event.date).format("DD/MM/YYYY") === dateString
+      (event) => dayjs(event.date).format("DD/MM/YYYY") === dateString,
     );
   };
 
@@ -156,13 +162,13 @@ const Calendar = ({
 
   const getPreviousMonth = () => {
     setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
+      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1),
     );
   };
 
   const getNextMonth = () => {
     setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
+      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1),
     );
   };
 
@@ -236,7 +242,7 @@ const Calendar = ({
     const daysInMonth = getDaysInMonth(currentDate);
     const firstDay = getFirstDayOfMonth(currentDate);
     const daysInPrevMonth = getDaysInMonth(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
+      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1),
     );
 
     const days = [];
@@ -251,7 +257,7 @@ const Calendar = ({
               date: new Date(
                 currentDate.getFullYear(),
                 currentDate.getMonth() - 1,
-                daysInPrevMonth - i
+                daysInPrevMonth - i,
               ),
               time: "",
             })
@@ -259,7 +265,7 @@ const Calendar = ({
           className="h-24 p-2 text-gray-400 text-sm"
         >
           {daysInPrevMonth - i}
-        </div>
+        </div>,
       );
     }
 
@@ -268,7 +274,7 @@ const Calendar = ({
       const currentDayDate = new Date(
         currentDate.getFullYear(),
         currentDate.getMonth(),
-        day
+        day,
       );
 
       const dayEvents = getEventsForDate(currentDayDate);
@@ -300,7 +306,7 @@ const Calendar = ({
               </span>
             </div>
           ))}
-        </div>
+        </div>,
       );
     }
 
@@ -317,7 +323,7 @@ const Calendar = ({
               date: new Date(
                 currentDate.getFullYear(),
                 currentDate.getMonth() + 1,
-                day
+                day,
               ),
               time: "",
             })
@@ -325,7 +331,7 @@ const Calendar = ({
           className="h-24 p-2 text-gray-400 text-sm"
         >
           {day}
-        </div>
+        </div>,
       );
     }
 
@@ -348,7 +354,7 @@ const Calendar = ({
           }`}
         >
           {weekDays}
-        </div>
+        </div>,
       );
     }
 
@@ -494,11 +500,11 @@ const Calendar = ({
     const allEvents = events?.filter(
       (event) =>
         new Date(event?.date).getFullYear() === currentDate.getFullYear() &&
-        new Date(event?.date).getMonth() === currentDate.getMonth()
+        new Date(event?.date).getMonth() === currentDate.getMonth(),
     );
 
     allEvents.sort(
-      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
     );
 
     return (
