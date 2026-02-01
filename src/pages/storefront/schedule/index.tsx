@@ -417,54 +417,35 @@ import ScheduleTabs from "@/components/features/tabs/schedule-tabs";
 import { useFetch } from "@/hooks/use-fetch";
 import { useStore } from "@/store";
 import type { Appointment } from "@/types/appointment";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
-const tabs = ["Ongoing Appointments", "Completed Appointments"];
+const tabs = ["Approved", "Pending", "Completed", "Declined", "Cancelled"];
 
 const StorefrontSchedule = () => {
   const { patientAuth } = useStore();
 
-  const [activeTab, setActiveTab] = useState("Ongoing Appointments");
+  const [activeTab, setActiveTab] = useState("Approved");
 
   const {
     data: patientAppointmentsData,
-    isLoading: loadingAppointments,
+    isFetching: loadingAppointments,
     refetch: refetchAppointments,
   } = useFetch<Appointment[]>("/appointment/", {
     hideToast: "success",
     params: {
       patient_id: patientAuth?.details?.id,
+      status: activeTab.toLowerCase(),
     },
   });
-
-  const {
-    data: completedAppointmentsData,
-    isLoading: loadingCompletedAppointments,
-    refetch: refetchCompletedAppointments,
-  } = useFetch<Appointment[]>("/appointment/", {
-    hideToast: "success",
-    params: {
-      patient_id: patientAuth?.details?.id,
-      status: "completed",
-    },
-  });
-
-  const ongoingAppointments = useMemo(
-    () =>
-      patientAppointmentsData?.filter(
-        (appointment: Appointment) => appointment.status !== "completed",
-      ),
-    [patientAppointmentsData],
-  );
 
   const overview = [
     {
       label: "Ongoing Appointments",
-      value: ongoingAppointments?.length.toString() || "0",
+      value: "0",
     },
     {
       label: "Completed Appointments",
-      value: completedAppointmentsData?.length.toString() || "0",
+      value: "0",
     },
     {
       label: "Total Appointments",
@@ -503,24 +484,12 @@ const StorefrontSchedule = () => {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
       />
-      <div className="">
-        {activeTab === "Ongoing Appointments" && (
-          <AppointmentsTable
-            isLoading={loadingAppointments}
-            data={ongoingAppointments ?? []}
-            refresh={refetchAppointments}
-            type="patient"
-          />
-        )}
-        {activeTab === "Completed Appointments" && (
-          <AppointmentsTable
-            isLoading={loadingCompletedAppointments}
-            data={completedAppointmentsData ?? []}
-            refresh={refetchCompletedAppointments}
-            type="patient"
-          />
-        )}
-      </div>
+      <AppointmentsTable
+        isLoading={loadingAppointments}
+        data={patientAppointmentsData ?? []}
+        refresh={refetchAppointments}
+        type="patient"
+      />
     </div>
   );
 };

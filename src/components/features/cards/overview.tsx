@@ -33,7 +33,7 @@ const OverViewCard: React.FC<OverviewCardProps> = ({ data }) => {
             >
               <span className="font-semibold text-black">{stat.label}</span>
               <div>
-                <div className="text-6xl font-semibold text-black mb-2">
+                <div className="text-6xl font-semibold text-black mt-4 mb-2">
                   {stat.value}
                 </div>
                 {stat?.change && (

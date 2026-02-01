@@ -2,7 +2,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import ProfileInfo from "../profile/profile-info";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
+import { cn, getInitials } from "@/lib/utils";
 import GridData, { type GridDataProps } from "../common/grid-data";
 import dayjs from "dayjs";
 import type { IPatient } from "@/types/patient";
@@ -23,6 +23,7 @@ const ProfileModal = ({
   const ageInYears = dayjs().diff(dayjs(user?.date_of_birth), "years");
   const ageInMonths = dayjs().diff(dayjs(user?.date_of_birth), "months");
   const patientInsurance = patient?.insurance_details ?? [];
+  const fullName = `${user?.last_name} ${user?.first_name}`;
 
   const overviewData: GridDataProps[] = [
     {
@@ -78,10 +79,12 @@ const ProfileModal = ({
       <DialogContent>
         <div className="max-h-[35rem] md:max-h-full">
           <ProfileInfo
-            name={`${user?.last_name} ${user?.first_name}`}
+            name={fullName}
             profileImage={user?.photo_url ?? ""}
-            subName="AXA Mansard"
-            badge="Deluxe Pro II"
+            subName="Patient"
+            badge=""
+            showProgress={false}
+            fallback={getInitials(fullName)}
           />
           <div className="mt-7">
             <div className="flex gap-8">
@@ -112,7 +115,13 @@ const ProfileModal = ({
               )}
               {tab === "insurance" &&
                 insuranceData.map((i, index) => (
-                  <GridData className="my-7" data={i} key={index} />
+                  <GridData
+                    className={cn("my-7", {
+                      "border-b pb-3": index !== insuranceData.length - 1,
+                    })}
+                    data={i}
+                    key={index}
+                  />
                 ))}
             </div>
           </div>

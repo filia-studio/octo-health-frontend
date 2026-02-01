@@ -28,7 +28,10 @@ const RoleSelectionPage = () => {
   ];
 
   return (
-    <AuthLayout bgImage="/assets/images/family.png">
+    <AuthLayout
+      bgImage="/assets/images/family.png"
+      className="h-fit lg:h-dvh py-3"
+    >
       <div className="flex flex-col items-center justify-center w-full relative max-w-[80rem] mx-auto z-10 px-4">
         {/* Logo */}
         <div className="mb-8 lg:mb-12">
