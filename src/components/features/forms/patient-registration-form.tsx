@@ -27,6 +27,7 @@ import type { InsuranceProviderListResponse } from "@/types/insurance";
 import { useSend } from "@/hooks/use-send";
 import { useStore } from "@/store";
 import dayjs from "dayjs";
+import type { IPatient } from "@/types/patient";
 
 const schema = z.object({
   insurance: z.array(
@@ -67,15 +68,17 @@ const PatientRegistrationForm = ({
   loading?: boolean;
   handleSubmit: (data: FormSchema) => void;
 }) => {
-  const patient = useStore();
-
   const {
     patientAuth: { details },
-  } = patient;
+    patient: selectedPatient,
+    setPatientAuth,
+    setPatient,
+  } = useStore();
 
   const patientData = isEdit ? details : undefined;
+  const patient = isEdit ? patientData : selectedPatient;
 
-  const [preview, setPreview] = useState<string | null>(null);
+  const [preview, setPreview] = useState<string | null>(patient?.user?.photo_url || null);
   const [step, setStep] = useState<1 | 2>(1);
   const [patientPhoto, setPatientPhoto] = useState<File | null>(null);
 
@@ -123,13 +126,19 @@ const PatientRegistrationForm = ({
     },
   });
 
-  const { mutate } = useSend<unknown, { message: string }>(
+  const { mutate } = useSend<unknown, { data: IPatient }>(
     "patient/upload_patient_photo/",
     {
       useAuth: false,
-      // onSuccess: () => navigate(`${healthcareUrl}/patient-management`),
-      errorMessage: "An error occurred!",
-      successMessage: "Patient record created successfully",
+      errorMessage: "An error occurred while uploading profile picture",
+      hideToast: "success",
+      onSuccess: (data) => {
+        if (isEdit) {
+          setPatientAuth({ details: { ...patientData, ...data?.data } });
+          return
+        }
+        setPatient(data?.data);
+      },
     }
   );
 
@@ -167,8 +176,8 @@ const PatientRegistrationForm = ({
 
   useEffect(() => {
     const formData = new FormData();
-    if (!patient?.patient?.id || !patientPhoto) return;
-    const payload = { patient_id: patient?.patient?.id, photo: patientPhoto };
+    if (!patient?.id || !patientPhoto) return;
+    const payload = { patient_id: patient?.id, photo: patientPhoto };
     Object.entries(payload).forEach(([key, value]) => {
       formData.append(key, value);
     });
@@ -200,7 +209,7 @@ const PatientRegistrationForm = ({
               <h2 className="text-2xl font-bold text-gray-800">
                 User Information
               </h2>
-              {!isAuth && !isEdit && (
+              {(!isAuth || isEdit) && (
                 <FormItem>
                   <FormLabel>Profile Picture</FormLabel>
                   <FormControl>

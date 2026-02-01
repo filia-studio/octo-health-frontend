@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 const VerifyPatientOTP = () => {
   const navigate = useNavigate();
-  const { setPatientAuth, setPatient } = useStore();
+  const { setPatientAuth } = useStore();
   const { mutate, isPending } = useSend<
     { otp: string },
     PatientOtpVerificationResponse
@@ -21,7 +21,6 @@ const VerifyPatientOTP = () => {
         token: data?.data?.access,
         details: data?.data?.patient,
       });
-      setPatient(data?.data?.patient);
     },
   });
 

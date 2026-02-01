@@ -10,7 +10,7 @@ import { getInitials } from "@/lib/utils";
 
 const StorefrontNav = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
   const [showProfile, setShowProfile] = useState(false);
-  const { patient } = useStore();
+  const { patientAuth: { details: patient } } = useStore();
 
   const { data: insuranceProviders } = useFetch<
     InsuranceProviderListResponse[]
@@ -37,6 +37,7 @@ const StorefrontNav = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
     <div className="md:py-9 py-4 gap-2 flex justify-between items-center">
       <ProfileInfo
         resizeOnMobile
+        profileImage={patient?.user?.photo_url ?? ''}
         name={`${patient?.user?.last_name || ""} ${
           patient?.user?.first_name || ""
         }`}

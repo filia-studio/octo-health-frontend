@@ -4,9 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import GridData, { type GridDataProps } from "../common/grid-data";
-import type { User } from "@/types/otp";
 import dayjs from "dayjs";
-import { calculateAge } from "@/pages/healthcare/patient/utils";
 import type { IPatient } from "@/types/patient";
 
 const ProfileModal = ({
@@ -20,7 +18,11 @@ const ProfileModal = ({
 }) => {
   const [tab, setTab] = useState("overview");
 
-  const user: User | null = patient?.user || null;
+  const user = patient?.user;
+  const dateJoined = user?.date_joined || patient?.created_at;
+  const ageInYears = dayjs().diff(dayjs(user?.date_of_birth), "years");
+  const ageInMonths = dayjs().diff(dayjs(user?.date_of_birth), "months");
+  const patientInsurance = patient?.insurance_details ?? [];
 
   const overviewData: GridDataProps[] = [
     {
@@ -33,10 +35,7 @@ const ProfileModal = ({
     },
     {
       title: "Member since",
-      value:
-        dayjs(user?.date_joined || patient?.created_at).format(
-          "DD MMMM YYYY"
-        ) || "",
+      value: dayjs(dateJoined?.split("T")[0]).format("DD MMMM YYYY") || "",
     },
     {
       title: "Phone",
@@ -44,7 +43,10 @@ const ProfileModal = ({
     },
     {
       title: "Age",
-      value: calculateAge(user?.date_of_birth || "") || "",
+      value:
+        ageInYears < 1
+          ? `${ageInMonths} month${ageInMonths > 1 ? "s" : ""} old`
+          : `${ageInYears} year${ageInYears > 1 ? "s" : ""} old`,
     },
     {
       title: "Recent consultancy",
@@ -53,39 +55,31 @@ const ProfileModal = ({
     },
   ];
 
-  const insuranceData: GridDataProps[] = [
+  const insuranceData: GridDataProps[][] = patientInsurance.map((insurance) => [
     {
       title: "Provider",
-      value: "AXA Mansard",
+      value: insurance.name,
     },
     {
       title: "Code",
-      value: "90430439",
+      value: insurance.hmo_id,
     },
     {
-      title: "Support",
-      value: "help@axa.com",
-    },
-    {
-      title: "Plan Status",
-      value: (
-        <span>
-          400K / <span className="text-primary">N2M</span>
-        </span>
-      ),
+      title: "Type",
+      value: insurance.insurance_type,
     },
     {
       title: "Plan Tier",
-      value: "Deluxe Pro II",
+      value: insurance.insurance_plan,
     },
-  ];
-
+  ]);
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <div className="max-h-[35rem] md:max-h-full">
           <ProfileInfo
             name={`${user?.last_name} ${user?.first_name}`}
+            profileImage={user?.photo_url ?? ""}
             subName="AXA Mansard"
             badge="Deluxe Pro II"
           />
@@ -116,14 +110,10 @@ const ProfileModal = ({
               {tab === "overview" && (
                 <GridData className="my-7" data={overviewData} />
               )}
-              {tab === "insurance" && (
-                <>
-                  <GridData className="my-7" data={insuranceData} />
-                  <Button type="button" className="rounded-[3.125rem] mb-7">
-                    Upgrade
-                  </Button>
-                </>
-              )}
+              {tab === "insurance" &&
+                insuranceData.map((i, index) => (
+                  <GridData className="my-7" data={i} key={index} />
+                ))}
             </div>
           </div>
         </div>

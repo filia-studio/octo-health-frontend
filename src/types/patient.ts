@@ -27,6 +27,7 @@ export interface IUser {
   password: string;
   last_login: string | null;
   photo: string | null;
+  photo_url: string | null;
   email: string;
   first_name: string;
   last_name: string;
